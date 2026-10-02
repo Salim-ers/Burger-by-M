@@ -1,21 +1,18 @@
 import { cn } from "@/lib/utils";
 
-type Tone = "cheddar" | "line" | "muted" | "danger" | "success" | "ink";
+type Tone = "accent" | "line" | "muted" | "danger" | "success" | "ink";
 
 const tones: Record<Tone, string> = {
-  cheddar: "bg-cheddar text-ink",
-  line: "border border-current/40",
-  muted: "bg-fg/10 text-fg/75",
-  danger: "bg-danger/15 text-danger",
-  success: "bg-success/15 text-success",
-  ink: "bg-ink text-bone",
+  accent: "bg-fg text-canvas",
+  line: "border border-current/30",
+  muted: "bg-fg/8 text-fg/75",
+  danger: "bg-danger/12 text-danger",
+  success: "bg-success/12 text-success",
+  ink: "bg-ink text-white",
 };
 
-/** Étiquette rectangulaire (jamais de pastille ronde). */
-export function Badge({ tone = "cheddar", className, children }: { tone?: Tone; className?: string; children: React.ReactNode }) {
+export function Badge({ tone = "muted", className, children }: { tone?: Tone; className?: string; children: React.ReactNode }) {
   return (
-    <span className={cn("inline-flex h-5.5 items-center gap-1.5 rounded-xs px-1.5 text-[0.62rem] font-bold tracking-[0.14em] uppercase", tones[tone], className)}>
-      {children}
-    </span>
+    <span className={cn("inline-flex h-6 items-center gap-1 rounded-full px-2.5 text-[0.7rem] font-semibold whitespace-nowrap", tones[tone], className)}>{children}</span>
   );
 }

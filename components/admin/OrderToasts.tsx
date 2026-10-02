@@ -58,7 +58,7 @@ export function OrderToasts() {
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 60 }}
             transition={{ type: "spring", stiffness: 400, damping: 32 }}
-            className="pointer-events-auto flex items-start gap-3 rounded-sm bg-cheddar p-4 text-ink shadow-float"
+            className="pointer-events-auto flex items-start gap-3 rounded-sm bg-cream p-4 text-ink shadow-float"
             role="alert"
           >
             <BellRing className="mt-0.5 size-5 shrink-0" aria-hidden />

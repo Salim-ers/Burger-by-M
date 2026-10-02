@@ -7,26 +7,24 @@ export const metadata: Metadata = { title: "Page introuvable", robots: { index: 
 
 export default function NotFound() {
   return (
-    <main className="grain scheme-dark flex min-h-dvh flex-col bg-ink">
-      <div className="shell flex h-20 items-center md:h-24">
+    <main className="scheme-light flex min-h-dvh flex-col bg-cream">
+      <div className="shell flex h-16 items-center md:h-[72px]">
         <Link href="/" aria-label="Burger By M — accueil">
           <Logo size={44} />
         </Link>
       </div>
-      <div className="shell flex flex-1 flex-col justify-center pb-16">
-        <p className="font-display text-[clamp(9rem,42vw,34rem)] leading-[0.78] text-bone" aria-hidden>
-          404<span className="text-cheddar">.</span>
+      <div className="shell flex flex-1 flex-col items-center justify-center pb-20 text-center">
+        <p className="font-display text-[7rem] leading-none md:text-[10rem]" aria-hidden>
+          404
         </p>
-        <div className="mt-8 flex flex-col gap-10 border-t border-graphite pt-8 md:flex-row md:items-end md:justify-between">
-          <h1 className="font-display text-d3">
-            Ce burger
-            <br />
-            n’est pas
-            <br />
-            à la carte.
-          </h1>
-          <ButtonLink href="/menu" variant="primary" size="xl" arrow className="self-start md:self-auto">
-            Voir le menu
+        <h1 className="mt-2 text-2xl font-bold md:text-3xl">Cette page n’existe pas</h1>
+        <p className="mt-2 text-muted">Elle a peut-être été déplacée. La carte, elle, est toujours là.</p>
+        <div className="mt-8 flex flex-wrap justify-center gap-2">
+          <ButtonLink href="/menu" variant="dark" size="lg">
+            Voir la carte
+          </ButtonLink>
+          <ButtonLink href="/" variant="outline" size="lg">
+            Accueil
           </ButtonLink>
         </div>
       </div>

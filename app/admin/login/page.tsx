@@ -38,11 +38,11 @@ export default function AdminLogin() {
     <main className="grid min-h-dvh place-items-center px-5 py-16">
       <div className="w-full max-w-sm">
         <Logo size={72} priority />
-        <h1 className="mt-8 font-display text-5xl uppercase">Back-office</h1>
-        <Badge tone="cheddar" className="mt-4">
+        <h1 className="mt-8 text-3xl font-bold">Espace restaurateur</h1>
+        <Badge tone="accent" className="mt-4">
           Mode démonstration
         </Badge>
-        <p className="mt-4 text-sm leading-relaxed text-bone/60">
+        <p className="mt-4 text-sm leading-relaxed text-cream/60">
           Connexion fictive pour la démonstration : les identifiants pré-remplis suffisent. Aucune donnée n’est envoyée.
         </p>
         <form onSubmit={onSubmit} noValidate className="mt-8 space-y-5">

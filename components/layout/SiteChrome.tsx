@@ -1,20 +1,18 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { MobileCartBar } from "@/components/cart/MobileCartBar";
+import { MobileOrderBar } from "@/components/cart/MobileOrderBar";
+import { AddedToast } from "@/components/cart/AddedToast";
 
-// Modules chargés à la demande : ils ne pèsent pas sur le premier rendu.
+// Fiche produit chargée à la demande : elle ne pèse pas sur le premier rendu.
 const ProductSheet = dynamic(() => import("@/components/product/ProductSheet").then((m) => m.ProductSheet), { ssr: false });
-const CartDrawer = dynamic(() => import("@/components/cart/CartDrawer").then((m) => m.CartDrawer), { ssr: false });
-const Cursor = dynamic(() => import("@/components/motion/Cursor").then((m) => m.Cursor), { ssr: false });
 
 export function SiteChrome() {
   return (
     <>
       <ProductSheet />
-      <CartDrawer />
-      <MobileCartBar />
-      <Cursor />
+      <AddedToast />
+      <MobileOrderBar />
     </>
   );
 }

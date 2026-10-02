@@ -48,7 +48,11 @@ export const restaurant = {
 
 /** Réglages par défaut du Click & Collect (surchargés localement depuis /admin en mode démo). */
 export const orderingDefaults = {
+  /** Temps de préparation moyen ; la carte affiche une fourchette ± prepSpreadMinutes (20 → « 15–25 min »). */
   prepMinutes: 20,
+  prepSpreadMinutes: 5,
+  /** false : quand le restaurant est fermé, on peut consulter la carte et préparer son panier, mais pas commander. */
+  allowOrdersWhenClosed: false,
   rushPrepMinutes: 40,
   slotIntervalMinutes: 15,
   maxOrdersPerSlot: 8,

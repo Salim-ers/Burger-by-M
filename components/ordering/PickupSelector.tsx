@@ -62,7 +62,7 @@ export function PickupSelector({ className }: { className?: string }) {
     }
   }, [hydrated, asapOk, slots, pickup, setPickup]);
 
-  if (!hydrated) return <div className={cn("h-40 animate-pulse bg-fg/5", className)} aria-hidden />;
+  if (!hydrated) return <div className={cn("h-40 animate-pulse rounded-xl bg-ink/5", className)} aria-hidden />;
 
   const days = Array.from(new Set(slots.map((s) => s.dayLabel)));
 
@@ -75,7 +75,7 @@ export function PickupSelector({ className }: { className?: string }) {
           onSelect={() => setPickup({ mode: "asap" })}
           icon={<Clock className="size-5" aria-hidden />}
           title="Dès que possible"
-          text={asapOk ? `Prête dans ≈ ${prepMinutes} min` : "Indisponible : restaurant fermé"}
+          text={asapOk ? `Prête dans ${Math.max(5, prepMinutes - orderingDefaults.prepSpreadMinutes)}–${prepMinutes + orderingDefaults.prepSpreadMinutes} min` : "Indisponible pour le moment"}
         />
         <ModeOption
           active={pickup.mode === "scheduled"}
@@ -85,8 +85,8 @@ export function PickupSelector({ className }: { className?: string }) {
             if (first) setPickup({ mode: "scheduled", time: first.time });
           }}
           icon={<CalendarClock className="size-5" aria-hidden />}
-          title="Programmer"
-          text="Choisis ton créneau"
+          title="Choisir une heure"
+          text={slots.length ? "Selon les créneaux disponibles" : "Aucun créneau disponible"}
         />
       </div>
 
@@ -94,8 +94,8 @@ export function PickupSelector({ className }: { className?: string }) {
         <div className="mt-5 space-y-4">
           {days.map((day) => (
             <div key={day}>
-              <p className="kicker mb-2 text-fg/55">{day}</p>
-              <div role="radiogroup" aria-label={`Créneaux ${day}`} className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+              <p className="mb-2 text-sm font-semibold text-muted first-letter:uppercase">{day}</p>
+              <div role="radiogroup" aria-label={`Créneaux ${day}`} className="flex flex-wrap gap-2">
                 {slots
                   .filter((s) => s.dayLabel === day)
                   .map((s) => {
@@ -109,8 +109,8 @@ export function PickupSelector({ className }: { className?: string }) {
                         disabled={!s.available}
                         onClick={() => setPickup({ mode: "scheduled", time: s.time })}
                         className={cn(
-                          "h-11 shrink-0 border px-4 font-display text-lg tabular-nums transition-colors",
-                          selected ? "border-cheddar bg-cheddar text-ink" : "border-fg/20 text-fg/85 hover:border-fg/60",
+                          "h-11 min-w-[4.75rem] shrink-0 rounded-full border px-4 text-[0.95rem] font-semibold tabular-nums transition-colors",
+                          selected ? "border-ink bg-ink text-white" : "border-line bg-white text-ink hover:border-ink/50",
                           !s.available && "line-through opacity-35",
                         )}
                       >
@@ -137,14 +137,14 @@ function ModeOption({ active, disabled, onSelect, icon, title, text }: { active:
       disabled={disabled}
       onClick={onSelect}
       className={cn(
-        "flex min-h-16 items-center gap-4 border-2 px-4 py-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-40",
-        active ? "border-fg bg-fg text-canvas" : "border-fg/15 hover:border-fg/45",
+        "flex min-h-16 items-center gap-3 rounded-xl border-2 bg-white px-4 py-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-45",
+        active ? "border-ink" : "border-line hover:border-ink/40",
       )}
     >
-      <span className={cn("grid size-10 shrink-0 place-items-center", active ? "bg-cheddar text-ink" : "bg-fg/10")}>{icon}</span>
+      <span className={cn("grid size-10 shrink-0 place-items-center rounded-full", active ? "bg-ink text-white" : "bg-cream text-ink")}>{icon}</span>
       <span>
-        <span className="block font-display text-xl leading-none uppercase">{title}</span>
-        <span className={cn("mt-1 block text-sm", active ? "opacity-70" : "text-fg/60")}>{text}</span>
+        <span className="block font-bold">{title}</span>
+        <span className="mt-0.5 block text-sm text-muted">{text}</span>
       </span>
     </button>
   );

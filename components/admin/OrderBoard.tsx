@@ -28,14 +28,10 @@ export function OrderBoard({ large }: { large?: boolean }) {
 
   if (active.length === 0) {
     return (
-      <div className="grid min-h-[50vh] place-items-center border border-dashed border-edge text-center">
+      <div className="grid min-h-[40vh] place-items-center rounded-lg border border-dashed border-edge text-center">
         <div>
-          <p className="font-display text-5xl leading-none uppercase md:text-6xl">
-            Tout est calme
-            <br />
-            pour l’instant.
-          </p>
-          <p className="mt-4 text-sm text-bone/55">Les nouvelles commandes apparaîtront ici automatiquement.</p>
+          <p className="text-2xl font-bold">Aucune commande en cours</p>
+          <p className="mt-4 text-sm text-cream/55">Les nouvelles commandes apparaîtront ici automatiquement.</p>
         </div>
       </div>
     );
@@ -50,17 +46,17 @@ export function OrderBoard({ large }: { large?: boolean }) {
             .sort((a, b) => new Date(a.pickup.time).getTime() - new Date(b.pickup.time).getTime());
           return (
             <section key={col.id} aria-labelledby={`col-${col.id}`} className="min-w-0">
-              <h2 id={`col-${col.id}`} className="flex items-center justify-between border border-b-0 border-edge bg-panel px-3 py-2.5 font-display text-xl leading-none">
+              <h2 id={`col-${col.id}`} className="flex items-center justify-between rounded-t-lg border border-b-0 border-edge bg-panel px-3 py-3 text-base font-bold">
                 {col.title}
-                <span className={cn("grid h-6 min-w-6 place-items-center rounded-sm px-1 font-sans text-[0.7rem] font-bold tabular-nums", col.id === "new" && list.length ? "bg-cheddar text-ink" : "bg-white/[0.06] text-bone/70")}>{list.length}</span>
+                <span className={cn("grid h-6 min-w-6 place-items-center rounded-full px-1.5 text-[0.72rem] font-bold tabular-nums", col.id === "new" && list.length ? "bg-cream text-ink" : "bg-white/[0.06] text-cream/70")}>{list.length}</span>
               </h2>
-              <div className="space-y-2 border border-edge bg-white/[0.015] p-2 lg:min-h-[60vh]">
+              <div className="space-y-2 rounded-b-lg border border-edge bg-white/[0.015] p-2 lg:min-h-[50vh]">
                 <AnimatePresence mode="popLayout">
                   {list.map((o) => (
                     <OrderCard key={o.id} order={o} onAccept={setAccepting} large={large} now={now} />
                   ))}
                 </AnimatePresence>
-                {list.length === 0 && <p className="py-10 text-center text-sm text-bone/35">Rien ici.</p>}
+                {list.length === 0 && <p className="py-10 text-center text-sm text-cream/35">Rien ici.</p>}
               </div>
             </section>
           );

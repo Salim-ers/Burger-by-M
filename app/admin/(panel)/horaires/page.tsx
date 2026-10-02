@@ -4,9 +4,10 @@ import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { PageHeader } from "@/components/admin/PageHeader";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
+import { Switch } from "@/components/ui/Switch";
 import { useAdminStore } from "@/stores/admin-store";
 import { DAY_NAMES, DAY_ORDER, OPENING_HOURS_VALIDATED, type WeekSchedule } from "@/data/opening-hours";
+import { orderingDefaults } from "@/data/restaurant";
 import { toMinutes } from "@/lib/hours";
 import { cn } from "@/lib/utils";
 
@@ -50,7 +51,7 @@ export default function HoursPage() {
 
   const numberSetting = (key: "prepMinutes" | "rushPrepMinutes" | "slotIntervalMinutes" | "maxOrdersPerSlot", label: string, min: number, max: number) => (
     <label className="flex flex-col gap-2 text-sm">
-      <span className="font-semibold text-bone/80">{label}</span>
+      <span className="font-semibold text-cream/80">{label}</span>
       <input
         type="number"
         min={min}
@@ -69,7 +70,7 @@ export default function HoursPage() {
     <>
       <PageHeader title="Horaires" text="Horaires d’ouverture et de prise de commande Click & Collect. Les créneaux proposés aux clients en découlent." />
       {!OPENING_HOURS_VALIDATED && (
-        <p className="mb-6 rounded-sm border border-cheddar/40 bg-cheddar/10 p-4 text-sm text-cheddar">
+        <p className="mb-6 rounded-sm border border-cream/40 bg-cream/10 p-4 text-sm text-cream">
           Horaires relevés sur la carte imprimée, à faire valider par le restaurant (data/opening-hours.ts).
         </p>
       )}
@@ -81,7 +82,7 @@ export default function HoursPage() {
             ["clickAndCollect", "Click & Collect"],
           ] as const
         ).map(([k, label]) => (
-          <button key={k} type="button" role="tab" aria-selected={kind === k} onClick={() => switchKind(k)} className={cn("h-10 rounded-sm px-4 text-xs font-bold uppercase", kind === k ? "bg-bone text-ink" : "text-bone/60")}>
+          <button key={k} type="button" role="tab" aria-selected={kind === k} onClick={() => switchKind(k)} className={cn("h-10 rounded-sm px-4 text-xs font-bold uppercase", kind === k ? "bg-cream text-ink" : "text-cream/60")}>
             {label}
           </button>
         ))}
@@ -91,7 +92,13 @@ export default function HoursPage() {
         {DAY_ORDER.map((d) => (
           <div key={d} className="flex flex-wrap items-center gap-3 rounded-sm border border-edge bg-panel px-4 py-3">
             <span className="w-24 font-semibold">{DAY_NAMES[d]}</span>
-            {draft[d].length === 0 && <Badge tone="muted">Fermé</Badge>}
+            <Switch
+              checked={draft[d].length > 0}
+              onChange={(open) => update(d, () => (open ? [{ open: "18:00", close: "22:00" }] : []))}
+              label={draft[d].length > 0 ? "Ouvert" : "Fermé"}
+              tone="success"
+              className="w-28"
+            />
             {draft[d].map((r, i) => (
               <span key={i} className="flex items-center gap-1.5">
                 <input
@@ -101,7 +108,7 @@ export default function HoursPage() {
                   onChange={(e) => update(d, (rs) => rs.map((x, j) => (j === i ? { ...x, open: e.target.value } : x)))}
                   className="h-10 rounded-sm border border-edge bg-transparent px-2 tabular-nums [color-scheme:dark]"
                 />
-                <span className="text-bone/40">–</span>
+                <span className="text-cream/40">–</span>
                 <input
                   type="time"
                   aria-label={`${DAY_NAMES[d]} fermeture ${i + 1}`}
@@ -109,13 +116,13 @@ export default function HoursPage() {
                   onChange={(e) => update(d, (rs) => rs.map((x, j) => (j === i ? { ...x, close: e.target.value } : x)))}
                   className="h-10 rounded-sm border border-edge bg-transparent px-2 tabular-nums [color-scheme:dark]"
                 />
-                <button type="button" aria-label="Supprimer la plage" onClick={() => update(d, (rs) => rs.filter((_, j) => j !== i))} className="grid size-9 place-items-center rounded-sm text-bone/50 hover:bg-bone/10 hover:text-bone">
+                <button type="button" aria-label="Supprimer la plage" onClick={() => update(d, (rs) => rs.filter((_, j) => j !== i))} className="grid size-9 place-items-center rounded-sm text-cream/50 hover:bg-cream/10 hover:text-cream">
                   <Trash2 className="size-4" aria-hidden />
                 </button>
               </span>
             ))}
-            {draft[d].length < 3 && (
-              <button type="button" onClick={() => update(d, (rs) => [...rs, { open: "18:00", close: "22:00" }])} className="ml-auto inline-flex h-9 items-center gap-1 rounded-sm px-3 text-xs font-semibold text-bone/60 hover:bg-bone/10 hover:text-bone">
+            {draft[d].length > 0 && draft[d].length < 3 && (
+              <button type="button" onClick={() => update(d, (rs) => [...rs, { open: "18:00", close: "22:00" }])} className="ml-auto inline-flex h-9 items-center gap-1 rounded-sm px-3 text-xs font-semibold text-cream/60 hover:bg-cream/10 hover:text-cream">
                 <Plus className="size-3.5" aria-hidden /> Plage
               </button>
             )}
@@ -135,11 +142,14 @@ export default function HoursPage() {
       </div>
 
       <section aria-labelledby="cc-title" className="mt-12">
-        <h2 id="cc-title" className="mb-4 text-xs font-bold tracking-[0.16em] text-bone/55 uppercase">
+        <h2 id="cc-title" className="mb-4 text-xs font-bold tracking-[0.16em] text-cream/55 uppercase">
           Réglages Click & Collect
         </h2>
-        <div className="grid gap-4 rounded-sm border border-edge bg-panel p-5 sm:grid-cols-2 xl:grid-cols-4">
-          {numberSetting("prepMinutes", "Préparation (min)", 5, 90)}
+        <p className="mb-3 text-sm text-cream/60">
+          Temps estimé affiché aux clients : {Math.max(5, settings.prepMinutes - orderingDefaults.prepSpreadMinutes)}–{settings.prepMinutes + orderingDefaults.prepSpreadMinutes} min.
+        </p>
+        <div className="grid gap-4 rounded-lg border border-edge bg-panel p-5 sm:grid-cols-2 xl:grid-cols-4">
+          {numberSetting("prepMinutes", "Temps de préparation (min)", 5, 90)}
           {numberSetting("rushPrepMinutes", "Coup de feu (min)", 10, 120)}
           {numberSetting("slotIntervalMinutes", "Intervalle des créneaux (min)", 5, 60)}
           {numberSetting("maxOrdersPerSlot", "Commandes max / créneau", 1, 50)}

@@ -68,20 +68,20 @@ export default function PromotionsPage() {
 
         <div>
           {promotions.length === 0 ? (
-            <p className="rounded-sm border border-dashed border-edge p-10 text-center text-bone/50">Aucune promotion pour le moment.</p>
+            <p className="rounded-sm border border-dashed border-edge p-10 text-center text-cream/50">Aucune promotion pour le moment.</p>
           ) : (
             <ul className="space-y-2">
               {promotions.map((p) => (
                 <li key={p.id} className="flex flex-wrap items-center gap-4 rounded-sm border border-edge bg-panel px-4 py-3">
                   <div className="flex-1">
-                    <p className="font-display text-2xl">{p.code}</p>
-                    <p className="text-xs text-bone/55">
+                    <p className="text-xl font-bold">{p.code}</p>
+                    <p className="text-xs text-cream/55">
                       {p.name} · {p.type === "percent" ? `${p.value} %` : formatPrice(p.value)} · du {p.startsAt} au {p.endsAt}
                       {p.minimumOrder > 0 && ` · dès ${formatPrice(p.minimumOrder)}`}
                     </p>
                   </div>
                   <Switch checked={p.active} onChange={() => toggle(p.id)} label="Active" srOnlyLabel tone="success" />
-                  <button type="button" onClick={() => remove(p.id)} aria-label={`Supprimer ${p.code}`} className="grid size-10 place-items-center rounded-sm text-bone/50 hover:bg-bone/10 hover:text-bone">
+                  <button type="button" onClick={() => remove(p.id)} aria-label={`Supprimer ${p.code}`} className="grid size-10 place-items-center rounded-sm text-cream/50 hover:bg-cream/10 hover:text-cream">
                     <Trash2 className="size-4" aria-hidden />
                   </button>
                 </li>

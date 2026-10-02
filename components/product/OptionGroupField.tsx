@@ -12,6 +12,7 @@ interface Props {
   invalid?: boolean;
 }
 
+/** Groupe d'options en liste (cases à cocher / boutons radio), lisible au pouce. */
 export function OptionGroupField({ group, value, onChange, invalid }: Props) {
   const single = group.kind === "single";
   const toggle = (id: string) => {
@@ -21,39 +22,32 @@ export function OptionGroupField({ group, value, onChange, invalid }: Props) {
     onChange([...value, id]);
   };
   return (
-    <fieldset className="border-t border-fg/12 pt-5">
-      {/* float-left : la légende se comporte comme un bloc normal (pas de coupure de bordure) */}
-      <legend className="float-left flex w-full items-baseline justify-between gap-3">
-        <span className="font-display text-xl leading-none">{group.label}</span>
-        <span className={cn("kicker", invalid ? "text-danger" : "text-fg/45")}>{group.required ? "Obligatoire" : "Facultatif"}</span>
+    <fieldset>
+      <legend className="flex w-full items-baseline justify-between gap-3">
+        <span className="text-base font-bold">{group.label}</span>
+        <span className={cn("kicker text-[0.68rem]", invalid ? "text-danger" : "text-muted")}>{group.required ? "Obligatoire" : "Facultatif"}</span>
       </legend>
-      {group.helper && <p className="clear-both pt-1.5 text-xs text-fg/50">{group.helper}</p>}
-      <div className={cn("clear-both grid gap-1.5 pt-3", group.choices.length > 4 ? "grid-cols-2" : "grid-cols-1 sm:grid-cols-2")}>
+      {group.helper && <p className="mt-1 text-sm text-muted">{group.helper}</p>}
+      <div className="mt-2 divide-y divide-line">
         {group.choices.map((c) => {
           const checked = value.includes(c.id);
           return (
-            <label
-              key={c.id}
-              className={cn(
-                "flex min-h-12 cursor-pointer items-center justify-between gap-3 rounded-sm border px-3 py-2 text-sm transition-colors",
-                checked ? "border-cheddar bg-cheddar text-ink" : "border-fg/15 text-fg/80 hover:border-fg/45",
-              )}
-            >
+            <label key={c.id} className="relative flex min-h-12 cursor-pointer items-center justify-between gap-3 py-2">
               <span className="flex items-center gap-3">
                 <input type={single ? "radio" : "checkbox"} name={group.id} value={c.id} checked={checked} onChange={() => toggle(c.id)} className="peer sr-only" />
                 <span
                   aria-hidden
                   className={cn(
-                    "grid size-4.5 shrink-0 place-items-center border transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-cheddar",
-                    single ? "rounded-full" : "rounded-xs",
-                    checked ? "border-ink bg-ink text-cheddar" : "border-fg/35",
+                    "grid size-[22px] shrink-0 place-items-center border-2 transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink",
+                    single ? "rounded-full" : "rounded-[5px]",
+                    checked ? "border-ink bg-ink text-white" : "border-stone bg-white",
                   )}
                 >
-                  {checked && <Check className="size-3" strokeWidth={3.5} />}
+                  {checked && (single ? <span className="size-2 rounded-full bg-white" /> : <Check className="size-3.5" strokeWidth={3.5} />)}
                 </span>
-                <span className="leading-tight font-medium">{c.label}</span>
+                <span className="text-[0.95rem] leading-tight">{c.label}</span>
               </span>
-              {c.priceDelta > 0 && <span className={cn("shrink-0 text-xs tabular-nums", checked ? "text-ink/70" : "text-fg/55")}>+{formatPrice(c.priceDelta)}</span>}
+              {c.priceDelta > 0 && <span className="shrink-0 text-sm font-semibold text-muted tabular-nums">+{formatPrice(c.priceDelta)}</span>}
             </label>
           );
         })}

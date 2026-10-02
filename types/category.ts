@@ -5,27 +5,23 @@ export type CategoryId =
   | "frites"
   | "extras"
   | "kids"
-  | "boissons"
+  | "desserts"
   | "milkshakes"
-  | "desserts";
-
-/** Regroupements affichés dans la sous-navigation de /menu. */
-export type MenuGroupId = "smash" | "classics" | "frenchys" | "sides" | "boissons" | "desserts";
+  | "boissons";
 
 export interface Category {
   id: CategoryId;
-  group: MenuGroupId;
+  /** Libellé court (barre de catégories, accueil). */
   name: string;
-  /** Titre éditorial affiché en grand sur la carte. */
+  /** Titre de section sur la carte. */
   title: string;
   /** Mention issue de la carte imprimée (ex. « Servi dans un potatoes bun frais »). */
   note?: string;
+  /** Photo réelle représentative (accès rapide de l'accueil). */
   imageId?: string;
   order: number;
   active: boolean;
 }
 
-export interface MenuGroup {
-  id: MenuGroupId;
-  label: string;
-}
+/** Ancre de section sur /menu : #cat-smash, #cat-classics… */
+export const categoryAnchor = (id: string) => `cat-${id}`;

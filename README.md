@@ -2,7 +2,7 @@
 
 Site officiel de **Burger By M**, 19 avenue de la Gare, 60290 Rantigny (03 44 24 89 18).
 
-- Site public premium : accueil, carte, fiches produit, restaurant, contact, pages légales, 404.
+- Site public pensé « application de commande », mobile d’abord : accueil court, **carte au centre**, fiche produit en bottom sheet (mobile) / modale (desktop), contact, pages légales, 404.
 - Commande à emporter (Click & Collect) : panier persistant, créneaux de retrait, checkout, confirmation avec suivi.
 - Back-office de démonstration : commandes en temps réel, écran cuisine, produits, ruptures, horaires, promotions, notifications.
 
@@ -34,7 +34,7 @@ npm run dev                  # http://localhost:3000
 
 1. Ouvrir le site dans un onglet, et **/admin** dans un second onglet (connexion fictive : les identifiants sont pré-remplis).
 2. Côté site : ajouter des produits, aller jusqu’au checkout, confirmer.
-3. Côté admin : la commande arrive instantanément (alerte + cloche). L’accepter, choisir un temps de préparation, la faire avancer.
+3. Côté admin : la commande arrive instantanément (alerte + cloche). L’accepter, choisir un temps de préparation, puis Préparer → Prête → Terminer.
 4. La page de confirmation client se met à jour en direct (Envoyée → Acceptée → En préparation → Prête).
 5. Le bouton **« Simuler une nouvelle commande »** génère une commande fictive.
 6. **Paramètres → Réinitialiser la démo** remet toutes les données à zéro.
@@ -43,19 +43,21 @@ npm run dev                  # http://localhost:3000
 
 ```
 app/
-  (site)/            Site public (navbar, footer, transitions de page)
-    page.tsx           Accueil
-    menu/              Carte + fiches produit /menu/[slug] (générées statiquement)
-    commander/         Prise de commande (carte + panier latéral + créneaux)
-    panier/  checkout/  commande/confirmation/
-    restaurant/  contact/  legal/(mentions-legales|confidentialite|cookies)
+  (site)/            Site public (en-tête, pied de page, barre de commande mobile)
+    page.tsx           Accueil : hero, accès rapide aux catégories, incontournables, restaurant
+    menu/              Carte (ancres #cat-smash, #cat-classics…) + /menu/[slug] (statiques)
+    commander/         La carte + panier latéral (desktop)
+    panier/  checkout/  confirmation/
+    contact/           Le restaurant : façade, coordonnées, horaires, plan, formulaire
+    legal/(mentions-legales|confidentialite|cookies)
+                       (/restaurant et /commande/confirmation redirigent vers les nouvelles routes)
   admin/
     login/             Connexion de démonstration (DEMO AUTH ONLY)
     (panel)/           Back-office protégé côté client : dashboard, commandes,
                        commandes/[id], kitchen, menu, produits, categories,
                        disponibilites, horaires, promotions, notifications, parametres
   sitemap.ts  robots.ts  not-found.tsx  icon.png  apple-icon.png
-components/          ui · brand · motion · layout · home · menu · product
+components/          ui · brand · layout · home · menu · product
                      cart · ordering · checkout · restaurant · admin
 data/                SOURCE UNIQUE des contenus (voir §5)
 lib/                 prix, horaires/créneaux, validation (Zod), SEO, repositories
@@ -64,19 +66,19 @@ config/demo.ts       DEMO_MODE et outils de développement
 types/               Types partagés (Product, CartItem, Order…)
 ```
 
-Stack : Next.js 16 (App Router, Turbopack), React 19, TypeScript strict, Tailwind CSS 4, Framer Motion, Zustand, Zod, Lucide, Recharts (chargé à la demande, uniquement dans l’admin).
+Stack : Next.js 16 (App Router, Turbopack), React 19, TypeScript strict, Tailwind CSS 4, Framer Motion, Zustand, Zod, Lucide.
 
 Principes :
 - **Prix en centimes** (entiers) partout ; formatage `11,90 €` via `lib/currency.ts`.
 - Les pages statiques sont pré-rendues ; tout ce qui dépend du navigateur (panier, heure, admin) s’affiche après hydratation, sans écart serveur/client.
 - `prefers-reduced-motion` est respecté (Framer Motion + CSS).
-- Polices auto-hébergées (`app/fonts/`) : Anton (titres, affiche) et Inter (texte). Aucun appel à Google Fonts.
+- Polices auto-hébergées (`app/fonts/`) : Anton (titres) et Inter (interface). Aucun appel à Google Fonts.
 
 Direction artistique (tokens dans `app/globals.css`) :
-- Palette : noir `#050505`, charbon `#101010`, graphite `#1A1A18`, blanc cassé `#F2EFE7`, gris chaud `#D8D1C4`, accent cheddar `#F0A21A` (avec parcimonie). Le rose ne subsiste que dans le logo d'origine.
-- Rayons limités à 6 px, boutons rectangulaires, grille éditoriale 12 colonnes (`shell` + `grid-12`).
-- Schémas `scheme-dark` / `scheme-light` : les composants utilisent `text-fg`, `bg-canvas`, `border-fg/…` et s'adaptent au fond.
-- Motion (`components/motion/`) : Framer Motion uniquement (pas de GSAP). Les animations liées au scroll passent par `useScrollMap` (calcul JS, évite les écarts du ViewTimeline natif) et `useReduce` (préférence « mouvement réduit » sans écart d'hydratation). Intro du hero en CSS pur (joue avant l'hydratation).
+- Palette dérivée du logo : noir `#0B0B0B`, `#161616`, crème `#F5F1E8` (fond), blanc (cards), gris `#D6D1C8`, bordures `#E6E2DA`. Rose `#D8A1A6` réservé aux micro-détails (cœur « Best-seller »). CTA noir / blanc.
+- Cards produit : fond blanc, bordure `#E6E2DA`, rayon 12 px max, pas d’ombre forte, bouton « + » rond noir.
+- Motion discret : fondu des pages, apparition de la fiche produit, pastille de catégorie active, compteur du panier, confirmation d’ajout.
+- Le back-office reste sombre (`scheme-dark`) ; les composants partagés utilisent `text-fg` / `bg-canvas` et s’adaptent au fond.
 
 ## 5. Modifier les contenus
 
@@ -92,8 +94,11 @@ Tout se fait dans `data/`. Aucune donnée n’est codée en dur dans les composa
 | Photos                       | `data/images.ts` + `public/images/` |
 | Mentions légales             | `data/legal.ts`            |
 
-- **Prix** : en centimes (`1190` = 11,90 €). `price: null` affiche « Prix à confirmer » et rend le produit non commandable.
-- **Images** : déposer le fichier dans `public/images/…`, puis mettre à jour `src`, `width`, `height`, `alt` et le cadrage `position` (object-position propre à chaque photo, `zoom`/`origin` pour un crop serré) dans `data/images.ts`. Un produit sans photo correspondante (`image: null`) affiche une affiche typographique : on n’utilise jamais la photo d’un autre plat.
+- **Prix** : en centimes (`1190` = 11,90 €). `price: null` affiche « Voir au restaurant » et rend le produit non commandable en ligne (la fiche propose d’appeler).
+- **Statut et commande** (`data/restaurant.ts` → `orderingDefaults`) : `prepMinutes` + `prepSpreadMinutes` donnent le « Temps estimé : 15–25 min » ; `allowOrdersWhenClosed: false` bloque la validation quand le restaurant est fermé (message « Les commandes reprendront … »). Les horaires et le temps de préparation se règlent aussi depuis **/admin/horaires**.
+- **Accueil** : la sélection « Nos incontournables » est `featuredProductIds` dans `data/products.ts`.
+- **Options** : définies produit par produit dans `data/products.ts` (`burgerOptions([...])` liste uniquement les ingrédients réellement présents dans la recette, pour « Retirer un ingrédient »).
+- **Images** : déposer le fichier dans `public/images/…`, puis mettre à jour `src`, `width`, `height`, `alt` et le cadrage `position` (object-position propre à chaque photo, `zoom`/`origin` pour un crop serré) dans `data/images.ts`. Un produit sans photo correspondante (`image: null`) affiche un visuel neutre au logo (`PhotoPlaceholder`) : on n’utilise jamais la photo d’un autre plat.
 - **Horaires** : passer `OPENING_HOURS_VALIDATED` à `true` une fois validés, pour les publier dans le balisage Google (JSON-LD).
 - **Réseaux sociaux** : renseigner les `url` dans `data/restaurant.ts` ; tant qu’elles valent `null`, aucun lien n’est affiché.
 

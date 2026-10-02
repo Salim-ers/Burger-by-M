@@ -9,13 +9,13 @@ import { mapsEmbedUrl, mapsUrl, fullAddress } from "@/data/restaurant";
 export function MapEmbed() {
   const [consent, setConsent] = useState(false);
   if (consent) {
-    return <iframe title={`Carte : ${fullAddress}`} src={mapsEmbedUrl} className="aspect-[16/10] w-full border-0 grayscale" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />;
+    return <iframe title={`Carte : ${fullAddress}`} src={mapsEmbedUrl} className="aspect-[16/10] w-full rounded-xl border-0" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />;
   }
   return (
-    <div className="flex aspect-[16/10] flex-col justify-between border-2 border-fg/15 p-5 md:p-6">
-      <MapPin className="size-7 text-cheddar-deep" aria-hidden />
+    <div className="flex min-h-56 flex-col justify-between gap-6 rounded-xl border border-line bg-white p-5 md:p-6">
+      <MapPin className="size-7" aria-hidden />
       <div>
-        <p className="max-w-sm text-sm leading-relaxed text-fg/65">La carte interactive est fournie par Google Maps, qui peut déposer des cookies. Elle ne se charge qu’avec ton accord.</p>
+        <p className="max-w-sm text-sm leading-relaxed text-muted">La carte interactive est fournie par Google Maps, qui peut déposer des cookies. Elle ne se charge qu’avec votre accord.</p>
         <div className="mt-4 flex flex-wrap gap-2">
           <Button variant="dark" onClick={() => setConsent(true)}>
             Afficher la carte

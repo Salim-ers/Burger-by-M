@@ -16,12 +16,12 @@ export function AcceptDialog({ order, onClose }: { order: Order | null; onClose:
   const value = minutes ?? effectivePrepMinutes(settings);
 
   return (
-    <Dialog open={Boolean(order)} onClose={onClose} labelledBy="accept-title" className="md:max-w-md">
+    <Dialog scheme="dark" open={Boolean(order)} onClose={onClose} labelledBy="accept-title" className="md:max-w-md">
       <div className="p-6 pt-8 md:p-8">
-        <h2 id="accept-title" className="font-display text-4xl uppercase">
+        <h2 id="accept-title" className="text-2xl font-bold">
           Accepter #{order?.number.replace("BYM-", "")}
         </h2>
-        <p className="mt-2 text-sm text-bone/60">Temps de préparation annoncé au client :</p>
+        <p className="mt-2 text-sm text-cream/60">Temps de préparation annoncé au client :</p>
         <div role="radiogroup" aria-label="Temps de préparation" className="mt-5 grid grid-cols-5 gap-2">
           {CHOICES.map((m) => (
             <button
@@ -30,7 +30,7 @@ export function AcceptDialog({ order, onClose }: { order: Order | null; onClose:
               role="radio"
               aria-checked={value === m}
               onClick={() => setMinutes(m)}
-              className={cn("h-14 rounded-sm border text-lg font-bold tabular-nums", value === m ? "border-cheddar bg-cheddar text-ink" : "border-edge hover:border-edge/600")}
+              className={cn("h-14 rounded-sm border text-lg font-bold tabular-nums", value === m ? "border-cream bg-cream text-ink" : "border-edge hover:border-edge/600")}
             >
               {m}
               <span className="block text-[0.6rem] font-semibold uppercase opacity-70">min</span>

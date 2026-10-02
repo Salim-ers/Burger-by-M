@@ -34,11 +34,11 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div role="status" className="border-2 border-ink p-6 md:p-8">
-        <CheckCircle2 className="size-8 text-cheddar-deep" aria-hidden />
-        <p className="mt-4 font-display text-d4">Merci {values.name.split(" ")[0]}.</p>
+      <div role="status" className="rounded-xl border border-line bg-white p-6 md:p-8">
+        <CheckCircle2 className="size-8 text-open" aria-hidden />
+        <p className="mt-4 text-2xl font-bold">Merci {values.name.split(" ")[0]} !</p>
         <p className="mt-3 text-ink/70">
-          Ton message est prêt. En mode démonstration, il n’est pas encore transmis : pour une réponse rapide, appelle-nous au{" "}
+          Votre message est prêt. En mode démonstration, il n’est pas encore transmis : pour une réponse rapide, appelez-nous au{" "}
           <a href={restaurant.phone.href} className="font-semibold underline">
             {restaurant.phone.display}
           </a>
@@ -49,7 +49,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-x-6 gap-y-6 sm:grid-cols-2">
+    <form onSubmit={onSubmit} noValidate className="grid gap-4 sm:grid-cols-2">
       <Field label="Nom" id="c-name" name="name" autoComplete="name" value={values.name} onChange={set("name")} error={errors.name} />
       <Field label="Email" id="c-email" name="email" type="email" autoComplete="email" value={values.email} onChange={set("email")} error={errors.email} />
       <Field label="Téléphone (facultatif)" id="c-phone" name="phone" type="tel" autoComplete="tel" value={values.phone} onChange={set("phone")} error={errors.phone} className="sm:col-span-2" />

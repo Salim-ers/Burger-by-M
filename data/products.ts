@@ -229,6 +229,9 @@ export const products: Product[] = [
   }),
 ];
 
+/** « Nos incontournables » sur l'accueil (4 produits avec une vraie photo). */
+export const featuredProductIds = ["le-special", "spicy-chicken", "le-hot", "dubai-shake"];
+
 export function getProductBySlug(s: string) {
   return products.find((p) => p.slug === s);
 }

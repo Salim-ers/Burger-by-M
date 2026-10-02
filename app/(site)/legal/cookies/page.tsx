@@ -17,7 +17,7 @@ export default function Cookies() {
       <section>
         <h2>Contenus tiers</h2>
         <p>
-          La carte Google Maps de la page « Le restaurant » n’est chargée qu’après ton clic sur « Afficher la carte ». Google peut alors déposer ses propres cookies. Le lien « Ouvrir dans Google
+          La carte Google Maps de la page « Contact » n’est chargée qu’après votre clic sur « Afficher la carte ». Google peut alors déposer ses propres cookies. Le lien « Ouvrir dans Google
           Maps » ne dépose rien sur ce site.
         </p>
       </section>

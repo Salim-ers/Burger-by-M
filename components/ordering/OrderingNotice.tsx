@@ -2,20 +2,20 @@
 
 import { AlertTriangle, Flame } from "lucide-react";
 import { useOrdering } from "@/hooks/use-menu";
-import { useHydrated } from "@/hooks/use-hydrated";
+import { useStoreStatus } from "@/hooks/use-store-status";
 import { restaurant } from "@/data/restaurant";
 
-/** Informe le client si la prise de commande est suspendue ou en mode « coup de feu ». */
+/** Prévient le client quand la commande en ligne est impossible, ou en cas de forte affluence. */
 export function OrderingNotice() {
-  const hydrated = useHydrated();
-  const { accepting, rush, prepMinutes } = useOrdering();
-  if (!hydrated) return null;
-  if (!accepting) {
+  const { rush } = useOrdering();
+  const status = useStoreStatus();
+  if (!status.ready) return null;
+  if (!status.canOrder) {
     return (
-      <div role="status" className="flex items-start gap-3 border-l-4 border-danger bg-danger/10 p-4 text-sm">
-        <AlertTriangle className="mt-0.5 size-5 shrink-0 text-danger" aria-hidden />
+      <div role="status" className="flex items-start gap-3 rounded-lg bg-closed/8 p-4 text-sm">
+        <AlertTriangle className="mt-0.5 size-5 shrink-0 text-closed" aria-hidden />
         <p>
-          <strong className="font-semibold">Les commandes en ligne sont momentanément suspendues.</strong> Appelle-nous au{" "}
+          <strong className="font-semibold">{status.blockedMessage}</strong> Pour toute question :{" "}
           <a href={restaurant.phone.href} className="font-semibold underline">
             {restaurant.phone.display}
           </a>
@@ -26,10 +26,10 @@ export function OrderingNotice() {
   }
   if (rush) {
     return (
-      <div role="status" className="flex items-start gap-3 border-l-4 border-cheddar bg-cheddar/15 p-4 text-sm">
-        <Flame className="mt-0.5 size-5 shrink-0 text-cheddar-deep" aria-hidden />
+      <div role="status" className="flex items-start gap-3 rounded-lg bg-ink/5 p-4 text-sm">
+        <Flame className="mt-0.5 size-5 shrink-0" aria-hidden />
         <p>
-          <strong className="font-semibold">Grosse affluence.</strong> Temps de préparation actuel : environ {prepMinutes} minutes.
+          <strong className="font-semibold">Forte affluence.</strong> Temps de préparation actuel : {status.prepRange}.
         </p>
       </div>
     );

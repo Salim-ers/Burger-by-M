@@ -47,7 +47,7 @@ export function ProductForm({ product, onDone }: { product?: Product; onDone: ()
 
   return (
     <form onSubmit={submit} noValidate className="grid gap-5 overflow-y-auto p-6 pt-8 md:grid-cols-2 md:p-8">
-      <h2 id="product-form-title" className="font-display text-4xl uppercase md:col-span-2">
+      <h2 id="product-form-title" className="text-2xl font-bold md:col-span-2">
         {product ? "Modifier le produit" : "Nouveau produit"}
       </h2>
       <Field label="Nom" id="pf-name" value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} error={errors.name} />
@@ -78,13 +78,13 @@ export function ProductForm({ product, onDone }: { product?: Product; onDone: ()
             </option>
           ))}
         </select>
-        <p className="text-xs text-bone/45">Upload d’images : prévu avec le futur backend.</p>
+        <p className="text-xs text-cream/45">Upload d’images : prévu avec le futur backend.</p>
       </div>
       <div className="grid grid-cols-2 gap-x-4 md:col-span-2">
         <Switch checked={v.available} onChange={(x) => setV({ ...v, available: x })} label="Disponible" tone="success" />
         <Switch checked={v.popular} onChange={(x) => setV({ ...v, popular: x })} label="Best seller" />
         <Switch checked={v.vegetarian} onChange={(x) => setV({ ...v, vegetarian: x })} label="Végétarien" tone="success" />
-        <Switch checked={v.spicy} onChange={(x) => setV({ ...v, spicy: x })} label="Épicé" tone="cheddar" />
+        <Switch checked={v.spicy} onChange={(x) => setV({ ...v, spicy: x })} label="Épicé" tone="accent" />
       </div>
       <div className="flex justify-end gap-3 md:col-span-2">
         <Button variant="outline" onClick={onDone}>

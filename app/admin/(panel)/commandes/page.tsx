@@ -29,7 +29,7 @@ export default function OrdersPage() {
                 aria-selected={tab === t}
                 type="button"
                 onClick={() => setTab(t)}
-                className={cn("h-10 rounded-sm px-4 text-xs font-bold uppercase", tab === t ? "bg-bone text-ink" : "text-bone/60")}
+                className={cn("h-10 rounded-sm px-4 text-xs font-bold uppercase", tab === t ? "bg-cream text-ink" : "text-cream/60")}
               >
                 {t === "live" ? "En cours" : "Historique"}
               </button>
@@ -40,7 +40,7 @@ export default function OrdersPage() {
       {tab === "live" ? (
         <OrderBoard />
       ) : history.length === 0 ? (
-        <p className="py-16 text-center text-bone/50">Aucune commande terminée pour le moment.</p>
+        <p className="py-16 text-center text-cream/50">Aucune commande terminée pour le moment.</p>
       ) : (
         <ul className="divide-y divide-edge rounded-sm border border-edge">
           {history.map((o) => (
@@ -48,7 +48,7 @@ export default function OrdersPage() {
               <Link href={`/admin/commandes/${o.id}`} className="flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-4 hover:bg-white/[0.02]">
                 <span className="text-xl font-extrabold tabular-nums">#{o.number.replace("BYM-", "")}</span>
                 <span className="flex-1">{o.customer.firstName}</span>
-                <span className="text-sm text-bone/60">{formatDayTime(o.pickup.time)}</span>
+                <span className="text-sm text-cream/60">{formatDayTime(o.pickup.time)}</span>
                 <span className="tabular-nums">{formatPrice(o.total)}</span>
                 <StatusBadge status={o.status} />
               </Link>

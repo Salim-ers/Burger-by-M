@@ -1,10 +1,4 @@
-import { RouteTransition } from "@/components/layout/RouteTransition";
-
+/** Légère apparition du contenu à chaque changement de page. */
 export default function SiteTemplate({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <RouteTransition />
-      {children}
-    </>
-  );
+  return <div className="animate-fade-in">{children}</div>;
 }

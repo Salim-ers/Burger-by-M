@@ -1,39 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useAdminStore } from "@/stores/admin-store";
-import { useHydrated } from "@/hooks/use-hydrated";
-import { getOpeningState, type OpeningState } from "@/lib/hours";
+import { useStoreStatus } from "@/hooks/use-store-status";
 import { cn } from "@/lib/utils";
 
-/** « ■ OUVERT · ferme à 22:00 » / « ■ FERMÉ · ouvre demain à 18:00 » — calculé depuis les horaires configurés. */
-export function OpeningStatus({ className, compact }: { className?: string; compact?: boolean }) {
-  const hydrated = useHydrated();
-  const hours = useAdminStore((s) => s.hours.restaurant);
-  const [state, setState] = useState<OpeningState | null>(null);
-
-  useEffect(() => {
-    if (!hydrated) return;
-    const update = () => setState(getOpeningState(hours));
-    update();
-    const id = window.setInterval(update, 60_000);
-    return () => window.clearInterval(id);
-  }, [hydrated, hours]);
-
-  if (!state) return <span className={cn("inline-block h-5 w-36", className)} aria-hidden />;
-
+/** « ● Ouvert · aujourd'hui 11h – 14h · 18h – 22h » / « ● Fermé · ... ». */
+export function OpeningStatus({ className, withHours = true }: { className?: string; withHours?: boolean }) {
+  const status = useStoreStatus();
+  if (!status.ready) return <span className={cn("inline-block h-5 w-40", className)} aria-hidden />;
   return (
-    <span className={cn("inline-flex items-center gap-2 text-[0.72rem] font-semibold tracking-[0.14em] uppercase", className)}>
-      <span className="relative flex size-2">
-        {state.open && <span className="absolute inset-0 animate-ping bg-success opacity-60" />}
-        <span className={cn("relative size-2", state.open ? "bg-success" : "bg-steel")} />
-      </span>
-      <span>{state.open ? "Ouvert" : "Fermé"}</span>
-      {!compact && (
-        <span className="font-medium tracking-[0.06em] normal-case opacity-60">
-          {state.open ? `ferme à ${state.closesAt}` : state.opensLabel ? state.opensLabel.replace("Ouvre", "ouvre") : ""}
-        </span>
-      )}
+    <span className={cn("inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.9rem]", className)}>
+      <StatusDot open={status.open} />
+      <span className={cn("font-bold tracking-wide uppercase", status.open ? "text-open" : "text-closed")}>{status.open ? "Ouvert" : "Fermé"}</span>
+      {withHours && <span className="text-current/70">· Aujourd’hui : {status.today}</span>}
+    </span>
+  );
+}
+
+export function StatusDot({ open }: { open: boolean }) {
+  return (
+    <span className="relative flex size-2.5 shrink-0">
+      {open && <span className="absolute inset-0 animate-ping rounded-full bg-open opacity-50" />}
+      <span className={cn("relative size-2.5 rounded-full", open ? "bg-open" : "bg-closed")} />
     </span>
   );
 }

@@ -128,3 +128,28 @@ export function formatRanges(ranges: { open: string; close: string }[]) {
   if (ranges.length === 0) return "Fermé";
   return ranges.map((r) => `${r.open.replace(":", "h")} – ${r.close.replace(":", "h")}`).join(" · ");
 }
+
+/** « 18:00 » → « 18h », « 22:30 » → « 22h30 ». */
+export function formatHour(hhmm: string) {
+  const [h = "0", m = "00"] = hhmm.split(":");
+  return `${Number(h)}h${m === "00" ? "" : m}`;
+}
+
+/** « 11h – 14h · 18h – 22h » ou « Fermé ». */
+export function formatRangesShort(ranges: { open: string; close: string }[]) {
+  if (ranges.length === 0) return "Fermé";
+  return ranges.map((r) => `${formatHour(r.open)} – ${formatHour(r.close)}`).join(" · ");
+}
+
+/** Prochaine ouverture : { when: "aujourd'hui" | "demain" | "mercredi", time: "18:00" }. */
+export function nextOpening(schedule: WeekSchedule, date = new Date()): { when: string; time: string } | null {
+  const { day, minutes } = parisNow(date);
+  const later = schedule[day as Day].find((r) => toMinutes(r.open) > minutes);
+  if (later) return { when: "aujourd’hui", time: later.open };
+  for (let i = 1; i <= 7; i++) {
+    const d = ((day + i) % 7) as Day;
+    const first = schedule[d][0];
+    if (first) return { when: i === 1 ? "demain" : DAY_NAMES[d].toLowerCase(), time: first.open };
+  }
+  return null;
+}

@@ -8,6 +8,7 @@ import { Dialog } from "@/components/ui/Dialog";
 import { Button } from "@/components/ui/Button";
 import { Switch } from "@/components/ui/Switch";
 import { Price } from "@/components/ui/Price";
+import { ProductVisual } from "@/components/product/ProductVisual";
 import { useMenuProducts } from "@/hooks/use-menu";
 import { useAdminStore } from "@/stores/admin-store";
 import { categories } from "@/data/categories";
@@ -39,7 +40,7 @@ export default function ProductsPage() {
       <div className="mb-5 flex flex-wrap gap-3">
         <label className="relative min-w-60 flex-1">
           <span className="sr-only">Rechercher un produit</span>
-          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-bone/40" aria-hidden />
+          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-cream/40" aria-hidden />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Rechercher…" className="h-12 w-full rounded-sm border border-edge bg-transparent pr-4 pl-10 text-sm" />
         </label>
         <label>
@@ -57,8 +58,9 @@ export default function ProductsPage() {
 
       <div className="relative overflow-x-auto rounded-sm border border-edge">
         <table className="w-full min-w-[720px] text-sm">
-          <thead className="bg-white/[0.02] text-left text-xs text-bone/55">
+          <thead className="bg-white/[0.02] text-left text-xs text-cream/55">
             <tr>
+              <th className="px-4 py-3 font-semibold">Photo</th>
               <th className="px-4 py-3 font-semibold">Produit</th>
               <th className="px-4 py-3 font-semibold">Catégorie</th>
               <th className="px-4 py-3 font-semibold">Prix</th>
@@ -71,23 +73,26 @@ export default function ProductsPage() {
           <tbody>
             {list.map((p) => (
               <tr key={p.id} className="border-t border-edge/60">
+                <td className="px-4 py-2">
+                  <ProductVisual product={p} sizes="48px" className="size-12 rounded-md" />
+                </td>
                 <td className="px-4 py-2.5">
                   <span className="font-semibold">{p.name}</span>
                   {p.todo && p.todo.length > 1 && (
-                    <span className="ml-2 inline-flex items-center gap-1 text-xs text-cheddar" title={p.todo.join("\n")}>
+                    <span className="ml-2 inline-flex items-center gap-1 text-xs text-cream" title={p.todo.join("\n")}>
                       <AlertTriangle className="size-3.5" aria-hidden /> à compléter
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-2.5 text-bone/65">{categories.find((c) => c.id === p.category)?.name}</td>
+                <td className="px-4 py-2.5 text-cream/65">{categories.find((c) => c.id === p.category)?.name}</td>
                 <td className="px-4 py-2.5">
                   <Price cents={p.price} className="text-sm" />
                 </td>
                 <td className="px-4 py-1">
-                  <Switch checked={p.available} onChange={(v) => setAvailability(p.id, v, p.name)} label={`${p.name} disponible`} srOnlyLabel tone="success" />
+                  <Switch checked={p.available} onChange={(v) => setAvailability(p.id, v, p.name)} label={p.available ? "Disponible" : "Indisponible"} tone="success" className={p.available ? "" : "text-cream/50"} />
                 </td>
                 <td className="px-4 py-2.5 text-right">
-                  <button type="button" onClick={() => setEditing(p)} className="inline-flex h-10 items-center gap-1.5 rounded-sm px-3 text-xs font-semibold text-bone/70 hover:bg-bone/10 hover:text-bone">
+                  <button type="button" onClick={() => setEditing(p)} className="inline-flex h-10 items-center gap-1.5 rounded-sm px-3 text-xs font-semibold text-cream/70 hover:bg-cream/10 hover:text-cream">
                     <Pencil className="size-3.5" aria-hidden /> Modifier
                   </button>
                 </td>
@@ -95,10 +100,10 @@ export default function ProductsPage() {
             ))}
           </tbody>
         </table>
-        {list.length === 0 && <p className="py-12 text-center text-bone/50">Aucun produit ne correspond.</p>}
+        {list.length === 0 && <p className="py-12 text-center text-cream/50">Aucun produit ne correspond.</p>}
       </div>
 
-      <Dialog open={editing !== null} onClose={() => setEditing(null)} labelledBy="product-form-title" className="md:max-w-2xl">
+      <Dialog scheme="dark" open={editing !== null} onClose={() => setEditing(null)} labelledBy="product-form-title" className="md:max-w-2xl">
         {editing !== null && <ProductForm key={editing === "new" ? "new" : editing.id} product={editing === "new" ? undefined : editing} onDone={() => setEditing(null)} />}
       </Dialog>
     </>

@@ -19,11 +19,11 @@ export default function KitchenPage() {
   return (
     <>
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <h1 className="font-display text-[clamp(2.4rem,5vw,3.8rem)] leading-none uppercase">
-          Cuisine <span className="text-bone/40 tabular-nums">{clock}</span>
+        <h1 className="text-2xl font-bold md:text-3xl">
+          Cuisine <span className="text-cream/40 tabular-nums">{clock}</span>
         </h1>
         <div className="flex items-center gap-3">
-          {rush && <span className="rounded-sm bg-cheddar px-4 py-2 text-xs font-bold text-ink uppercase">Coup de feu</span>}
+          {rush && <span className="rounded-sm bg-cream px-4 py-2 text-xs font-bold text-ink uppercase">Coup de feu</span>}
           <button
             type="button"
             onClick={() => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.())}

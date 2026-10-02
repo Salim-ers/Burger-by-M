@@ -15,6 +15,12 @@ const nextConfig: NextConfig = {
     qualities: [70, 80, 90],
     deviceSizes: [384, 640, 750, 828, 1080, 1200, 1600, 1920],
   },
+  async redirects() {
+    return [
+      { source: "/restaurant", destination: "/contact", permanent: true },
+      { source: "/commande/confirmation", destination: "/confirmation", permanent: true },
+    ];
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

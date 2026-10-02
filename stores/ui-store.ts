@@ -2,34 +2,22 @@
 
 import { create } from "zustand";
 
-/** Rectangle (viewport) de la vignette cliquée : la photo de la fiche produit s'étend depuis là. */
-export interface OriginRect {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-}
-
 interface UiState {
-  product: { productId: string; editLineId?: string; origin?: OriginRect | null } | null;
-  cartOpen: boolean;
-  openProduct: (productId: string, editLineId?: string, origin?: OriginRect | null) => void;
+  /** Fiche produit ouverte (modale desktop / bottom sheet mobile). */
+  product: { productId: string; editLineId?: string } | null;
+  /** Confirmation discrète après un ajout au panier. */
+  toast: { key: number; name: string; quantity: number } | null;
+  openProduct: (productId: string, editLineId?: string) => void;
   closeProduct: () => void;
-  setCartOpen: (open: boolean) => void;
+  showToast: (name: string, quantity: number) => void;
+  hideToast: () => void;
 }
 
 export const useUiStore = create<UiState>()((set) => ({
   product: null,
-  cartOpen: false,
-  openProduct: (productId, editLineId, origin) => set({ product: { productId, editLineId, origin: origin ?? null }, cartOpen: false }),
+  toast: null,
+  openProduct: (productId, editLineId) => set({ product: { productId, editLineId } }),
   closeProduct: () => set({ product: null }),
-  setCartOpen: (cartOpen) => set({ cartOpen }),
+  showToast: (name, quantity) => set({ toast: { key: Date.now(), name, quantity } }),
+  hideToast: () => set({ toast: null }),
 }));
-
-/** Rectangle d'un élément, à passer comme origine d'ouverture. */
-export function rectOf(el: Element | null | undefined): OriginRect | null {
-  if (!el) return null;
-  const r = el.getBoundingClientRect();
-  if (r.width === 0 || r.height === 0) return null;
-  return { x: r.left, y: r.top, w: r.width, h: r.height };
-}

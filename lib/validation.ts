@@ -3,8 +3,8 @@ import { z } from "zod";
 const frPhone = /^(?:(?:\+|00)33\s?|0)[1-9](?:[\s.-]?\d{2}){4}$/;
 
 export const checkoutSchema = z.object({
-  firstName: z.string().trim().min(1, "Indique ton prénom.").max(60, "60 caractères maximum."),
-  lastName: z.string().trim().min(1, "Indique ton nom.").max(80, "80 caractères maximum."),
+  firstName: z.string().trim().min(1, "Indiquez votre prénom.").max(60, "60 caractères maximum."),
+  lastName: z.string().trim().min(1, "Indiquez votre nom.").max(80, "80 caractères maximum."),
   phone: z.string().trim().regex(frPhone, "Numéro de téléphone français invalide (ex. 06 12 34 56 78)."),
   email: z.string().trim().pipe(z.email("Adresse email invalide.")),
   marketingOptIn: z.boolean(),
@@ -13,10 +13,10 @@ export const checkoutSchema = z.object({
 export type CheckoutValues = z.infer<typeof checkoutSchema>;
 
 export const contactSchema = z.object({
-  name: z.string().trim().min(1, "Indique ton nom.").max(80),
+  name: z.string().trim().min(1, "Indiquez votre nom.").max(80),
   email: z.string().trim().pipe(z.email("Adresse email invalide.")),
   phone: z.string().trim().refine((v) => v === "" || frPhone.test(v), "Numéro invalide.").optional(),
-  message: z.string().trim().min(10, "Ton message doit faire au moins 10 caractères.").max(1500),
+  message: z.string().trim().min(10, "Votre message doit faire au moins 10 caractères.").max(1500),
 });
 export type ContactValues = z.infer<typeof contactSchema>;
 

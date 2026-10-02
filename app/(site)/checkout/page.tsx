@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
-import { OrderHeader } from "@/components/ordering/OrderHeader";
 
 export const metadata: Metadata = {
   title: "Finaliser la commande",
@@ -10,7 +9,10 @@ export const metadata: Metadata = {
 export default function CheckoutPage() {
   return (
     <>
-      <OrderHeader title="Dernière étape." active={[3, 4]} />
+      <header className="shell pt-8 pb-6 md:pt-12 md:pb-8">
+        <h1 className="font-display text-[3rem] leading-none md:text-[4.2rem]">Finaliser la commande</h1>
+        <p className="mt-3 text-muted">Retrait sur place · paiement au restaurant.</p>
+      </header>
       <CheckoutForm />
     </>
   );
