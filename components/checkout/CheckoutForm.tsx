@@ -5,9 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Banknote, CreditCard, Loader2 } from "lucide-react";
 import { Field, TextArea, Checkbox } from "@/components/ui/Field";
-import { Button } from "@/components/ui/Button";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { BagLineArt } from "@/components/ui/LineArt";
 import { PickupSelector } from "@/components/ordering/PickupSelector";
 import { OrderingNotice } from "@/components/ordering/OrderingNotice";
 import { useCartStore } from "@/stores/cart-store";
@@ -21,10 +19,12 @@ import { formatPrice, multiplyCents } from "@/lib/currency";
 import { formatDayTime } from "@/lib/hours";
 import { sanitizeText, cn } from "@/lib/utils";
 import { DEMO_MODE } from "@/config/demo";
+import { restaurant } from "@/data/restaurant";
 import type { PaymentMethod } from "@/types/order";
 
 const initial = { firstName: "", lastName: "", phone: "", email: "", marketingOptIn: false, notes: "" };
 
+/** Étapes 3 (infos) et 4 (retrait) : fond blanc cassé, récapitulatif noir collant. */
 export function CheckoutForm() {
   const hydrated = useHydrated();
   const router = useRouter();
@@ -40,17 +40,13 @@ export function CheckoutForm() {
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
-  if (!hydrated) return <div className="min-h-[70vh]" aria-busy="true" />;
+  if (!hydrated) return <div className="min-h-[70vh] bg-bone" aria-busy="true" />;
 
   if (items.length === 0 && !submitting) {
     return (
-      <EmptyState
-        className="min-h-[70vh] justify-center pt-32"
-        art={<BagLineArt />}
-        lines={["Ton panier", "a faim."]}
-        text="Ajoute quelques produits avant de passer commande."
-        action={{ href: "/menu", label: "Découvrir la carte" }}
-      />
+      <div className="scheme-light bg-bone">
+        <EmptyState className="min-h-[60vh] justify-center" lines={["Ton panier", "a faim."]} text="Ajoute quelques produits avant de passer commande." action={{ href: "/commander", label: "Voir la carte" }} />
+      </div>
     );
   }
 
@@ -103,81 +99,90 @@ export function CheckoutForm() {
   };
 
   return (
-    <form onSubmit={onSubmit} noValidate className="container-site pt-32 pb-24 md:pt-44">
-      <h1 className="font-display text-giant font-medium uppercase">Dernière étape.</h1>
-
-      <div className="mt-12 grid gap-12 lg:grid-cols-12 lg:gap-16">
-        <div className="space-y-14 lg:col-span-7">
-          <Step n="1" title="Tes coordonnées">
-            <div className="grid gap-5 sm:grid-cols-2">
+    <form onSubmit={onSubmit} noValidate className="scheme-light bg-bone pt-10 pb-24 text-ink md:pt-14">
+      <div className="shell grid-12 gap-y-12">
+        <div className="col-span-12 space-y-14 lg:col-span-7">
+          <Step n="03" id="infos" title="Infos">
+            <div className="grid gap-x-6 gap-y-6 sm:grid-cols-2">
               <Field label="Prénom" name="firstName" id="firstName" autoComplete="given-name" value={values.firstName} onChange={set("firstName")} error={errors.firstName} required />
               <Field label="Nom" name="lastName" id="lastName" autoComplete="family-name" value={values.lastName} onChange={set("lastName")} error={errors.lastName} required />
               <Field label="Téléphone" name="phone" id="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="06 12 34 56 78" value={values.phone} onChange={set("phone")} error={errors.phone} hint="Pour te prévenir si besoin." required />
               <Field label="Email" name="email" id="email" type="email" autoComplete="email" value={values.email} onChange={set("email")} error={errors.email} required />
             </div>
-            <Checkbox className="mt-4" name="marketingOptIn" checked={values.marketingOptIn} onChange={set("marketingOptIn")} label="Je souhaite recevoir les nouveautés et offres de Burger By M (désinscription possible à tout moment)." />
+            <Checkbox className="mt-5" name="marketingOptIn" checked={values.marketingOptIn} onChange={set("marketingOptIn")} label="Je souhaite recevoir les nouveautés et offres de Burger By M (désinscription possible à tout moment)." />
           </Step>
 
-          <Step n="2" title="Retrait">
+          <Step n="04" id="retrait" title="Retrait">
+            <p className="mb-4 text-sm text-ink/65">
+              Au restaurant : {restaurant.address.street}, {restaurant.address.postalCode} {restaurant.address.city}.
+            </p>
             <PickupSelector />
           </Step>
 
-          <Step n="3" title="Paiement">
+          <Step n="—" id="paiement" title="Paiement">
             <div role="radiogroup" aria-label="Moyen de paiement" className="grid gap-2 sm:grid-cols-2">
               <PayOption active={payment === "cash_on_pickup"} onSelect={() => setPayment("cash_on_pickup")} icon={<Banknote className="size-5" aria-hidden />} title="Au restaurant" text="Tu paies au moment du retrait." />
               <PayOption active={false} disabled onSelect={() => undefined} icon={<CreditCard className="size-5" aria-hidden />} title="Carte en ligne" text="Bientôt disponible" />
             </div>
           </Step>
 
-          <Step n="4" title="Une précision ?">
+          <Step n="—" id="note" title="Une précision ?">
             <TextArea label="Instructions pour la cuisine (facultatif)" name="notes" id="notes" maxLength={300} placeholder="Ex. : sauce à part, svp." value={values.notes} onChange={set("notes")} error={errors.notes} />
           </Step>
         </div>
 
-        <aside aria-labelledby="recap-title" className="lg:col-span-5">
-          <div className="space-y-6 rounded-sm border border-cream/12 bg-ink-warm p-6 md:p-8 lg:sticky lg:top-28">
-            <h2 id="recap-title" className="text-xs font-bold tracking-[0.16em] text-cream/55 uppercase">
+        <aside aria-labelledby="recap-title" className="col-span-12 lg:col-span-5">
+          <div className="scheme-dark space-y-5 bg-ink p-5 text-bone md:p-7 lg:sticky lg:top-24">
+            <h2 id="recap-title" className="kicker text-bone/55">
               Ta commande
             </h2>
-            <ul className="space-y-4">
+            <ul className="space-y-3">
               {items.map((i) => (
                 <li key={i.lineId} className="flex justify-between gap-4 text-[0.95rem]">
                   <div className="min-w-0">
-                    <p className="font-semibold">
+                    <p className="font-display text-xl leading-none">
                       {i.quantity} × {i.name}
                     </p>
-                    {visibleOptions(i.options).length > 0 && <p className="mt-0.5 text-xs text-cream/55">{visibleOptions(i.options).map((o) => o.label).join(" · ")}</p>}
+                    {visibleOptions(i.options).length > 0 && <p className="mt-1 text-xs text-bone/55">{visibleOptions(i.options).map((o) => o.label).join(" · ")}</p>}
                   </div>
                   <span className="shrink-0 tabular-nums">{formatPrice(multiplyCents(i.unitPrice, i.quantity))}</span>
                 </li>
               ))}
             </ul>
-            <div className="space-y-2 border-t border-cream/10 pt-5 text-sm text-cream/70">
+            <div className="space-y-1.5 border-t border-graphite pt-4 text-sm text-bone/70">
               <p>Retrait : {pickup.mode === "asap" ? `dès que possible (≈ ${prepMinutes} min)` : formatDayTime(pickup.time)}</p>
               <p>Paiement : au restaurant</p>
             </div>
-            <div className="flex items-baseline justify-between border-t border-cream/10 pt-5">
-              <span className="text-sm font-bold uppercase">Total</span>
-              <span className="font-display text-4xl tabular-nums"><Price cents={total} /></span>
+            <div className="flex items-baseline justify-between border-t border-graphite pt-4">
+              <span className="kicker">Total</span>
+              <span className="font-display text-5xl tabular-nums">
+                <Price cents={total} />
+              </span>
             </div>
             <OrderingNotice />
             {formError && (
-              <p role="alert" className="rounded-sm border border-danger/40 bg-danger/10 p-3 text-sm">
+              <p role="alert" className="border-l-4 border-danger bg-danger/10 p-3 text-sm">
                 {formError}
               </p>
             )}
-            <Button type="submit" variant="rose" size="lg" className="w-full" disabled={submitting || !accepting}>
+            <button
+              type="submit"
+              disabled={submitting || !accepting}
+              data-cursor="go"
+              className="flex h-16 w-full items-center justify-between gap-3 rounded-sm bg-cheddar px-5 font-display text-2xl text-ink uppercase transition-colors hover:bg-bone disabled:pointer-events-none disabled:opacity-40"
+            >
               {submitting ? (
-                <>
-                  <Loader2 className="size-4 animate-spin" aria-hidden /> Envoi en cours…
-                </>
+                <span className="flex items-center gap-3">
+                  <Loader2 className="size-5 animate-spin" aria-hidden /> Envoi en cours…
+                </span>
               ) : (
                 <>
-                  Confirmer · <span className="tabular-nums">{formatPrice(total)}</span>
+                  <span>Confirmer</span>
+                  <span className="tabular-nums">{formatPrice(total)}</span>
                 </>
               )}
-            </Button>
-            <p className="text-center text-xs leading-relaxed text-cream/50">
+            </button>
+            <p className="text-center text-xs leading-relaxed text-bone/50">
               En confirmant, tu acceptes que tes coordonnées soient utilisées pour traiter ta commande.{" "}
               {DEMO_MODE && <span className="block pt-1">Démonstration : la commande reste dans ce navigateur, aucun paiement n’est effectué.</span>}
             </p>
@@ -188,11 +193,11 @@ export function CheckoutForm() {
   );
 }
 
-function Step({ n, title, children }: { n: string; title: string; children: React.ReactNode }) {
+function Step({ n, id, title, children }: { n: string; id: string; title: string; children: React.ReactNode }) {
   return (
-    <section aria-labelledby={`step-${n}`}>
-      <h2 id={`step-${n}`} className="mb-6 flex items-baseline gap-4 border-b border-cream/12 pb-4 font-display text-3xl uppercase md:text-4xl">
-        <span className="font-sans text-sm font-bold text-rose tabular-nums">0{n}</span>
+    <section id={id} aria-labelledby={`step-${id}`} className="scroll-mt-28">
+      <h2 id={`step-${id}`} className="mb-6 flex items-baseline gap-4 border-b-2 border-ink pb-3 font-display text-d4">
+        <span className="font-sans text-xs font-semibold text-ink/45 tabular-nums">{n}</span>
         {title}
       </h2>
       {children}
@@ -208,15 +213,12 @@ function PayOption({ active, disabled, onSelect, icon, title, text }: { active: 
       aria-checked={active}
       disabled={disabled}
       onClick={onSelect}
-      className={cn(
-        "flex min-h-16 items-center gap-4 rounded-sm border px-4 py-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-40",
-        active ? "border-rose bg-rose/10" : "border-cream/15",
-      )}
+      className={cn("flex min-h-16 items-center gap-4 border-2 px-4 py-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-40", active ? "border-ink bg-ink text-bone" : "border-ink/15")}
     >
-      <span className={cn("grid size-10 shrink-0 place-items-center rounded-full", active ? "bg-rose text-ink" : "bg-cream/10")}>{icon}</span>
+      <span className={cn("grid size-10 shrink-0 place-items-center", active ? "bg-cheddar text-ink" : "bg-ink/10")}>{icon}</span>
       <span>
-        <span className="block font-semibold">{title}</span>
-        <span className="block text-sm text-cream/60">{text}</span>
+        <span className="block font-display text-xl leading-none uppercase">{title}</span>
+        <span className={cn("mt-1 block text-sm", active ? "text-bone/65" : "text-ink/60")}>{text}</span>
       </span>
     </button>
   );

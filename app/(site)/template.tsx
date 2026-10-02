@@ -1,9 +1,9 @@
-import { PageCurtain } from "@/components/layout/PageCurtain";
+import { RouteTransition } from "@/components/layout/RouteTransition";
 
 export default function SiteTemplate({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <PageCurtain />
+      <RouteTransition />
       {children}
     </>
   );

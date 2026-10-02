@@ -4,17 +4,17 @@ import dynamic from "next/dynamic";
 import { MobileCartBar } from "@/components/cart/MobileCartBar";
 
 // Modules chargés à la demande : ils ne pèsent pas sur le premier rendu.
-const ProductModal = dynamic(() => import("@/components/product/ProductModal").then((m) => m.ProductModal), { ssr: false });
+const ProductSheet = dynamic(() => import("@/components/product/ProductSheet").then((m) => m.ProductSheet), { ssr: false });
 const CartDrawer = dynamic(() => import("@/components/cart/CartDrawer").then((m) => m.CartDrawer), { ssr: false });
-const CustomCursor = dynamic(() => import("@/components/animations/CustomCursor").then((m) => m.CustomCursor), { ssr: false });
+const Cursor = dynamic(() => import("@/components/motion/Cursor").then((m) => m.Cursor), { ssr: false });
 
 export function SiteChrome() {
   return (
     <>
-      <ProductModal />
+      <ProductSheet />
       <CartDrawer />
       <MobileCartBar />
-      <CustomCursor />
+      <Cursor />
     </>
   );
 }

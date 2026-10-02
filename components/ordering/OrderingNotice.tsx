@@ -12,11 +12,11 @@ export function OrderingNotice() {
   if (!hydrated) return null;
   if (!accepting) {
     return (
-      <div role="status" className="flex items-start gap-3 rounded-sm border border-danger/40 bg-danger/10 p-4 text-sm">
-        <AlertTriangle className="mt-0.5 size-5 shrink-0 text-[#ff9b94]" aria-hidden />
+      <div role="status" className="flex items-start gap-3 border-l-4 border-danger bg-danger/10 p-4 text-sm">
+        <AlertTriangle className="mt-0.5 size-5 shrink-0 text-danger" aria-hidden />
         <p>
           <strong className="font-semibold">Les commandes en ligne sont momentanément suspendues.</strong> Appelle-nous au{" "}
-          <a href={restaurant.phone.href} className="underline">
+          <a href={restaurant.phone.href} className="font-semibold underline">
             {restaurant.phone.display}
           </a>
           .
@@ -26,8 +26,8 @@ export function OrderingNotice() {
   }
   if (rush) {
     return (
-      <div role="status" className="flex items-start gap-3 rounded-sm border border-cheddar/40 bg-cheddar/10 p-4 text-sm">
-        <Flame className="mt-0.5 size-5 shrink-0 text-cheddar" aria-hidden />
+      <div role="status" className="flex items-start gap-3 border-l-4 border-cheddar bg-cheddar/15 p-4 text-sm">
+        <Flame className="mt-0.5 size-5 shrink-0 text-cheddar-deep" aria-hidden />
         <p>
           <strong className="font-semibold">Grosse affluence.</strong> Temps de préparation actuel : environ {prepMinutes} minutes.
         </p>

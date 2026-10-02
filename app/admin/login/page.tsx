@@ -42,13 +42,13 @@ export default function AdminLogin() {
         <Badge tone="cheddar" className="mt-4">
           Mode démonstration
         </Badge>
-        <p className="mt-4 text-sm leading-relaxed text-cream/60">
+        <p className="mt-4 text-sm leading-relaxed text-bone/60">
           Connexion fictive pour la démonstration : les identifiants pré-remplis suffisent. Aucune donnée n’est envoyée.
         </p>
         <form onSubmit={onSubmit} noValidate className="mt-8 space-y-5">
           <Field label="Email" id="email" name="email" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} error={errors.email} />
           <Field label="Mot de passe" id="password" name="password" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} error={errors.password} />
-          <Button type="submit" variant="rose" size="lg" arrow className="w-full">
+          <Button type="submit" variant="primary" size="lg" arrow className="w-full">
             Entrer
           </Button>
         </form>

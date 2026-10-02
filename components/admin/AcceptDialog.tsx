@@ -21,7 +21,7 @@ export function AcceptDialog({ order, onClose }: { order: Order | null; onClose:
         <h2 id="accept-title" className="font-display text-4xl uppercase">
           Accepter #{order?.number.replace("BYM-", "")}
         </h2>
-        <p className="mt-2 text-sm text-cream/60">Temps de préparation annoncé au client :</p>
+        <p className="mt-2 text-sm text-bone/60">Temps de préparation annoncé au client :</p>
         <div role="radiogroup" aria-label="Temps de préparation" className="mt-5 grid grid-cols-5 gap-2">
           {CHOICES.map((m) => (
             <button
@@ -30,7 +30,7 @@ export function AcceptDialog({ order, onClose }: { order: Order | null; onClose:
               role="radio"
               aria-checked={value === m}
               onClick={() => setMinutes(m)}
-              className={cn("h-14 rounded-sm border text-lg font-bold tabular-nums", value === m ? "border-rose bg-rose text-ink" : "border-cream/20 hover:border-cream/50")}
+              className={cn("h-14 rounded-sm border text-lg font-bold tabular-nums", value === m ? "border-cheddar bg-cheddar text-ink" : "border-edge hover:border-edge/600")}
             >
               {m}
               <span className="block text-[0.6rem] font-semibold uppercase opacity-70">min</span>
@@ -38,11 +38,11 @@ export function AcceptDialog({ order, onClose }: { order: Order | null; onClose:
           ))}
         </div>
         <div className="mt-8 grid grid-cols-2 gap-3">
-          <Button variant="outline-light" onClick={onClose}>
+          <Button variant="outline" onClick={onClose}>
             Annuler
           </Button>
           <Button
-            variant="rose"
+            variant="primary"
             onClick={() => {
               if (order) accept(order.id, value);
               setMinutes(null);

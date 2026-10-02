@@ -1,35 +1,43 @@
 import Image from "next/image";
-import { getImage } from "@/data/images";
+import { getImage, imageStyle } from "@/data/images";
 import type { Product } from "@/types/product";
-import { BurgerLineArt } from "@/components/ui/LineArt";
 import { cn } from "@/lib/utils";
 
 /**
- * Photo réelle du produit, ou composition typographique si aucune vraie photo ne correspond
+ * Photo réelle du produit, ou affiche typographique si aucune vraie photo ne correspond
  * (on n'utilise jamais la photo d'un autre plat).
  */
-export function ProductVisual({ product, sizes, className, priority, position }: { product: Product; sizes: string; className?: string; priority?: boolean; position?: string }) {
+export function ProductVisual({ product, sizes, className, priority, quality = 85 }: { product: Product; sizes: string; className?: string; priority?: boolean; quality?: number }) {
   const image = getImage(product.image);
   const unavailable = !product.available;
   if (image) {
     return (
-      <div className={cn("relative overflow-hidden bg-ink-soft", className)}>
+      <div className={cn("relative overflow-hidden bg-graphite", className)}>
         <Image
           src={image.src}
           alt={image.alt}
           fill
           sizes={sizes}
           priority={priority}
-          className={cn("object-cover transition-[transform,filter] duration-700 ease-out-expo", unavailable && "grayscale-[0.85] opacity-70")}
-          style={position ? { objectPosition: position } : undefined}
+          quality={quality}
+          className={cn("object-cover", unavailable && "opacity-60 grayscale")}
+          style={imageStyle(image)}
         />
       </div>
     );
   }
+  return <ProductPoster name={product.name} className={cn(unavailable && "opacity-60", className)} />;
+}
+
+/** Affiche typographique : le nom du produit devient l'image. */
+export function ProductPoster({ name, className, label = "Burger By M" }: { name: string; className?: string; label?: string }) {
   return (
-    <div className={cn("relative flex flex-col items-center justify-center overflow-hidden bg-ink-soft p-4 text-center", unavailable && "opacity-60", className)} aria-hidden>
-      <BurgerLineArt className="w-[38%] max-w-24 text-rose/70" />
-      <span className="mt-3 font-display text-[clamp(0.85rem,2.2vw,1.35rem)] leading-none text-cream/80 italic">{product.name}</span>
+    <div className={cn("@container relative overflow-hidden bg-graphite text-bone", className)} aria-hidden>
+      <div className="absolute inset-0 flex flex-col justify-end p-[7cqw]">
+        <span className="absolute top-[7cqw] left-[7cqw] font-sans text-[max(0.5rem,3.2cqw)] font-semibold tracking-[0.2em] text-bone/45 uppercase @max-[12rem]:hidden">{label}</span>
+        <span className="mb-[5cqw] block h-[1.6cqw] min-h-0.5 w-1/4 bg-cheddar" />
+        <span className="font-display text-[clamp(0.75rem,21cqw,11rem)] leading-[0.84] uppercase [overflow-wrap:anywhere]">{name}</span>
+      </div>
     </div>
   );
 }

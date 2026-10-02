@@ -31,14 +31,16 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = getProductBySlug(slug);
   if (!product) notFound();
   return (
-    <div className="container-site pt-28 pb-24 md:pt-36">
-      <nav aria-label="Fil d’Ariane" className="mb-8 text-sm text-cream/55">
-        <Link href="/menu" className="hover:text-cream">
-          La carte
-        </Link>{" "}
-        / <span className="text-cream/85">{product.name}</span>
-      </nav>
-      <ProductPageClient productId={product.id} />
+    <div className="scheme-dark bg-ink pt-24 pb-24 md:pt-28">
+      <div className="shell">
+        <nav aria-label="Fil d’Ariane" className="kicker mb-6 text-bone/50">
+          <Link href="/menu" className="hover:text-bone">
+            La carte
+          </Link>{" "}
+          / <span className="text-bone/85">{product.name}</span>
+        </nav>
+        <ProductPageClient productId={product.id} />
+      </div>
     </div>
   );
 }

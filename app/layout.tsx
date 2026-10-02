@@ -5,19 +5,17 @@ import { siteUrl } from "@/lib/seo";
 import { restaurant } from "@/data/restaurant";
 import "./globals.css";
 
-const bodoni = localFont({
-  src: [
-    { path: "./fonts/bodoni-moda.woff2", style: "normal", weight: "400 900" },
-    { path: "./fonts/bodoni-moda-italic.woff2", style: "italic", weight: "400 900" },
-  ],
-  variable: "--font-bodoni",
+const anton = localFont({
+  src: [{ path: "./fonts/anton.woff2", style: "normal", weight: "400" }],
+  variable: "--font-anton",
   display: "swap",
   preload: true,
+  adjustFontFallback: "Arial",
 });
 
-const manrope = localFont({
-  src: [{ path: "./fonts/manrope.woff2", style: "normal", weight: "200 800" }],
-  variable: "--font-manrope",
+const inter = localFont({
+  src: [{ path: "./fonts/inter.woff2", style: "normal", weight: "300 800" }],
+  variable: "--font-inter",
   display: "swap",
 });
 
@@ -51,13 +49,13 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#080808",
+  themeColor: "#050505",
   colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" className={`${bodoni.variable} ${manrope.variable}`}>
+    <html lang="fr" data-scroll-behavior="smooth" className={`${anton.variable} ${inter.variable}`}>
       <body className="min-h-dvh">
         <Providers>{children}</Providers>
       </body>

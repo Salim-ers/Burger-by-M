@@ -9,29 +9,19 @@ interface Props {
   min?: number;
   max?: number;
   label?: string;
-  tone?: "light" | "dark";
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "lg";
 }
 
-export function QuantitySelector({ value, onChange, min = 1, max = 20, label = "Quantité", tone = "dark", size = "md" }: Props) {
-  const btn = cn(
-    "grid place-items-center rounded-full transition-colors disabled:opacity-30",
-    size === "md" ? "size-11" : "size-10",
-    tone === "dark" ? "hover:bg-cream/10" : "hover:bg-ink/10",
-  );
+/** Sélecteur de quantité rectangulaire ; couleurs héritées du schéma (text-fg). */
+export function QuantitySelector({ value, onChange, min = 1, max = 20, label = "Quantité", size = "md" }: Props) {
+  const box = size === "lg" ? "size-14" : size === "md" ? "size-12" : "size-10";
+  const btn = cn("grid place-items-center transition-colors hover:bg-fg hover:text-canvas disabled:opacity-25 disabled:hover:bg-transparent disabled:hover:text-fg", box);
   return (
-    <div
-      role="group"
-      aria-label={label}
-      className={cn(
-        "inline-flex items-center rounded-full border",
-        tone === "dark" ? "border-cream/20 text-cream" : "border-ink/20 text-ink",
-      )}
-    >
+    <div role="group" aria-label={label} className="inline-flex shrink-0 items-center rounded-sm border border-fg/25 text-fg">
       <button type="button" className={btn} onClick={() => onChange(value - 1)} disabled={value <= min} aria-label="Retirer un">
         <Minus className="size-4" aria-hidden />
       </button>
-      <span className="min-w-8 text-center font-semibold tabular-nums" aria-live="polite">
+      <span className={cn("min-w-9 text-center font-display tabular-nums", size === "lg" ? "text-2xl" : "text-xl")} aria-live="polite">
         {value}
       </span>
       <button type="button" className={btn} onClick={() => onChange(value + 1)} disabled={value >= max} aria-label="Ajouter un">

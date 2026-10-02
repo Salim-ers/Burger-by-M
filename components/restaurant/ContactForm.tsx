@@ -34,9 +34,9 @@ export function ContactForm() {
 
   if (sent) {
     return (
-      <div role="status" className="rounded-sm border border-ink/15 bg-ivory p-8">
-        <CheckCircle2 className="size-8 text-brown" aria-hidden />
-        <p className="mt-4 font-display text-3xl uppercase">Merci {values.name.split(" ")[0]}.</p>
+      <div role="status" className="border-2 border-ink p-6 md:p-8">
+        <CheckCircle2 className="size-8 text-cheddar-deep" aria-hidden />
+        <p className="mt-4 font-display text-d4">Merci {values.name.split(" ")[0]}.</p>
         <p className="mt-3 text-ink/70">
           Ton message est prêt. En mode démonstration, il n’est pas encore transmis : pour une réponse rapide, appelle-nous au{" "}
           <a href={restaurant.phone.href} className="font-semibold underline">
@@ -49,17 +49,17 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="grid gap-5 sm:grid-cols-2">
-      <Field tone="light" label="Nom" id="c-name" name="name" autoComplete="name" value={values.name} onChange={set("name")} error={errors.name} />
-      <Field tone="light" label="Email" id="c-email" name="email" type="email" autoComplete="email" value={values.email} onChange={set("email")} error={errors.email} />
-      <Field tone="light" label="Téléphone (facultatif)" id="c-phone" name="phone" type="tel" autoComplete="tel" value={values.phone} onChange={set("phone")} error={errors.phone} className="sm:col-span-2" />
-      <TextArea tone="light" label="Message" id="c-message" name="message" rows={6} value={values.message} onChange={set("message")} error={errors.message} className="sm:col-span-2" />
+    <form onSubmit={onSubmit} noValidate className="grid gap-x-6 gap-y-6 sm:grid-cols-2">
+      <Field label="Nom" id="c-name" name="name" autoComplete="name" value={values.name} onChange={set("name")} error={errors.name} />
+      <Field label="Email" id="c-email" name="email" type="email" autoComplete="email" value={values.email} onChange={set("email")} error={errors.email} />
+      <Field label="Téléphone (facultatif)" id="c-phone" name="phone" type="tel" autoComplete="tel" value={values.phone} onChange={set("phone")} error={errors.phone} className="sm:col-span-2" />
+      <TextArea label="Message" id="c-message" name="message" rows={6} value={values.message} onChange={set("message")} error={errors.message} className="sm:col-span-2" />
       <div aria-hidden className="absolute -left-[9999px]">
         <label htmlFor="c-website">Ne pas remplir</label>
         <input id="c-website" tabIndex={-1} autoComplete="off" value={values.website} onChange={set("website")} />
       </div>
       <div className="sm:col-span-2">
-        <Button type="submit" variant="ink" size="lg" arrow>
+        <Button type="submit" variant="dark" size="lg" arrow>
           Envoyer
         </Button>
       </div>

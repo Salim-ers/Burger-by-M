@@ -1,93 +1,131 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useMotionValue, useSpring, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll } from "framer-motion";
+import { useReduce } from "@/components/motion/use-reduced";
+import { useScrollMap } from "@/components/motion/use-scroll-map";
+import { Logo } from "@/components/brand/Logo";
 import { ButtonLink } from "@/components/ui/Button";
-import { MagneticButton } from "@/components/animations/MagneticButton";
 import { OpeningStatus } from "@/components/ui/OpeningStatus";
-import { images } from "@/data/images";
+import { Magnetic } from "@/components/motion/Magnetic";
+import { shots } from "@/data/images";
 import { restaurant } from "@/data/restaurant";
 
-const WORDS = ["Smash.", "Crunch.", "Repeat."];
+const hero = shots.heroBurger;
 
+/**
+ * 01 — HERO CINÉMATIQUE.
+ * Intro CSS (avant hydratation, ≈ 1 s) : écran noir → logo → wipe horizontal → photo en clip-path → titre ligne à ligne.
+ * Composition asymétrique : titre géant à gauche, burger énorme à droite qui sort du cadre.
+ */
 export function Hero() {
-  const reduce = useReducedMotion();
-  const mx = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 });
-  const my = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 });
-
-  const onMove = (e: React.PointerEvent<HTMLElement>) => {
-    if (reduce || e.pointerType !== "mouse") return;
-    const { innerWidth: w, innerHeight: h } = window;
-    mx.set((e.clientX / w - 0.5) * -18);
-    my.set((e.clientY / h - 0.5) * -12);
-  };
+  const ref = useRef<HTMLElement>(null);
+  const reduce = useReduce();
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const photoY = useScrollMap(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const photoScale = useScrollMap(scrollYProgress, [0, 1], [1, 1.1]);
+  const titleY = useScrollMap(scrollYProgress, [0, 1], ["0%", "-35%"]);
+  const fade = useScrollMap(scrollYProgress, [0, 0.6], [1, 0]);
 
   return (
-    <section onPointerMove={onMove} aria-labelledby="hero-title" className="relative isolate h-[100svh] min-h-[640px] overflow-hidden bg-ink">
-      {/* Burger : la star. Plein cadre sur mobile, grand panneau vertical sur desktop (photo source 720 px). */}
-      <motion.div style={{ x: mx, y: my }} className="absolute -inset-x-3 -top-3 h-[60svh] overflow-hidden md:inset-y-[-1rem] md:right-[-1rem] md:left-auto md:h-auto md:w-[min(64vw,1000px)]">
-        <div className="kenburns absolute inset-0">
-          <Image
-            src={images.smashSpecial.src}
-            alt={images.smashSpecial.alt}
-            fill
-            priority
-            quality={90}
-            sizes="(min-width: 768px) 64vw, 100vw"
-            className="object-cover object-[50%_62%] md:object-[50%_50%]"
-          />
+    <section ref={ref} aria-label="Burger By M" className="scheme-dark relative min-h-[100svh] overflow-hidden bg-ink lg:h-[100svh] lg:min-h-[680px]">
+      {/* Intro : écran noir + logo, puis wipe horizontal. */}
+      <div className="intro" aria-hidden>
+        <Logo size={96} priority />
+      </div>
+
+      {/* Photo : 58 % de la largeur sur desktop, plein cadre en haut sur mobile. */}
+      <motion.div
+        className="absolute inset-x-0 top-0 h-[66svh] lg:inset-y-0 lg:right-0 lg:left-auto lg:h-full lg:w-[58%]"
+        style={reduce ? undefined : { y: photoY }}
+      >
+        <div className="hero-clip absolute inset-0 overflow-hidden" data-cursor="view">
+          <motion.div className="absolute inset-0" style={reduce ? undefined : { scale: photoScale }}>
+            <div className="hero-zoom absolute inset-0 origin-[70%_55%]">
+              <Image
+                src={hero.src}
+                alt={hero.alt}
+                fill
+                priority
+                quality={90}
+                sizes="(min-width: 1024px) 58vw, 100vw"
+                className="object-cover lg:scale-[1.08] lg:origin-[85%_55%]"
+                style={{ objectPosition: hero.position }}
+              />
+            </div>
+          </motion.div>
+          {/* Fondu vers le noir : à gauche sur desktop, en bas sur mobile. */}
+          <span aria-hidden className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink via-ink/60 to-transparent lg:inset-y-0 lg:right-auto lg:h-full lg:w-2/5 lg:bg-gradient-to-r" />
+          <span aria-hidden className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-ink/70 to-transparent" />
         </div>
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink via-ink/35 to-ink/10 md:bg-gradient-to-r md:from-ink md:via-ink/5 md:to-transparent" />
-        <div aria-hidden className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-ink to-transparent" />
-        <div aria-hidden className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-ink/80 to-transparent" />
+
+        <p className="fade-up absolute right-4 bottom-4 hidden items-center gap-3 text-bone/80 lg:right-8 lg:bottom-8 lg:flex" style={{ "--d": "0.95s" } as React.CSSProperties}>
+          <span className="kicker">N°01 — Le Spécial</span>
+          <span className="h-px w-10 bg-bone/40" />
+          <span className="font-display text-xl">11,90 €</span>
+        </p>
       </motion.div>
 
-      <div className="container-site relative z-10 flex h-full flex-col justify-end pt-28 pb-20 md:justify-center md:pb-10">
-        <div className="hero-fade mb-6 md:mb-8" style={{ ["--d" as string]: "80ms" }}>
-          <OpeningStatus className="text-cream/85" />
-        </div>
-
-        <h1 id="hero-title" className="font-display text-[clamp(3.3rem,16.5vw,6.6rem)] md:text-[clamp(5rem,11.5vw,10.6rem)] leading-[0.84] font-medium tracking-[-0.035em] uppercase">
-          <span className="sr-only">Burger By M, smash burgers à Rantigny. </span>
-          {WORDS.map((w, i) => (
-            <span key={w} className="hero-line" style={{ ["--i" as string]: i }} aria-hidden>
-              <span className={i === 2 ? "text-rose" : undefined}>{w}</span>
-            </span>
-          ))}
-        </h1>
-
-        <p className="hero-fade mt-7 max-w-sm text-[1.05rem] leading-relaxed text-cream/80 md:mt-9 md:text-lg" style={{ ["--d" as string]: "520ms" }}>
-          Des burgers généreux.
-          <br />
-          Des sauces maison.
-          <br />À Rantigny.
-        </p>
-
-        <div className="hero-fade mt-8 flex flex-wrap items-center gap-3 md:mt-10" style={{ ["--d" as string]: "640ms" }}>
-          <MagneticButton>
-            <ButtonLink href="/commander" variant="rose" size="lg" arrow data-cursor="Go">
-              Commander maintenant
-            </ButtonLink>
-          </MagneticButton>
-          <ButtonLink href="/menu" variant="outline-light" size="lg">
-            Voir la carte
-          </ButtonLink>
-        </div>
-      </div>
-
-      <div className="hero-fade absolute inset-x-0 bottom-0 z-10" style={{ ["--d" as string]: "900ms" }}>
-        <div className="container-site flex items-end justify-between pb-6 text-[0.78rem] text-cream/65">
-          <p>
-            {restaurant.address.street.replace("Avenue", "avenue")} <span className="text-rose">·</span> {restaurant.address.city}
+      <motion.div className="shell relative flex min-h-[100svh] flex-col justify-end pt-[44svh] pb-24 lg:h-full lg:min-h-0 lg:pt-28 lg:pb-12" style={reduce ? undefined : { opacity: fade }}>
+        {/* Infos en petit */}
+        <div className="fade-up absolute top-28 left-[clamp(1rem,3.2vw,3rem)] hidden gap-12 lg:flex" style={{ "--d": "0.8s" } as React.CSSProperties}>
+          <p className="kicker leading-[1.7] text-bone/70">
+            {restaurant.address.street}
+            <br />
+            {restaurant.address.postalCode} {restaurant.address.city}
           </p>
-          <a href="#signature" className="hidden items-center gap-3 tracking-[0.18em] uppercase hover:text-cream md:flex">
-            <span className="relative block h-10 w-px overflow-hidden bg-cream/15">
-              <span className="scroll-cue absolute inset-0 bg-rose" />
-            </span>
-            Scroll to taste
-          </a>
+          <p className="kicker leading-[1.7] text-bone/70">
+            Smash burgers
+            <br />
+            Frenchy’s
+            <br />
+            Shakes
+          </p>
         </div>
-      </div>
+
+        <motion.h1 className="relative font-display text-[clamp(5.4rem,26vw,10rem)] leading-[0.84] text-bone lg:text-[clamp(8rem,16.5vw,17.5rem)]" style={reduce ? undefined : { y: titleY }}>
+          <span className="line-mask" style={{ "--i": 0 } as React.CSSProperties}>
+            <span>Burger</span>
+          </span>
+          <span className="line-mask" style={{ "--i": 1 } as React.CSSProperties}>
+            <span>
+              By M<span className="text-cheddar">.</span>
+            </span>
+          </span>
+        </motion.h1>
+
+        <div className="fade-up mt-8 flex flex-col gap-6 lg:mt-10 lg:flex-row lg:items-end lg:justify-between" style={{ "--d": "0.85s" } as React.CSSProperties}>
+          <div className="flex flex-wrap gap-3">
+            <Magnetic>
+              <ButtonLink href="/commander" variant="primary" size="lg" arrow>
+                Commander
+              </ButtonLink>
+            </Magnetic>
+            <Magnetic>
+              <ButtonLink href="#la-carte" variant="outline" size="lg" arrow>
+                Voir la carte
+              </ButtonLink>
+            </Magnetic>
+          </div>
+          <div className="flex flex-col gap-2 lg:hidden">
+            <p className="kicker text-bone/65">
+              {restaurant.address.street} — {restaurant.address.postalCode} {restaurant.address.city}
+            </p>
+            <p className="kicker text-bone/65">Smash burgers · Frenchy’s · Shakes</p>
+          </div>
+        </div>
+
+        <div className="fade-up mt-8 flex items-center justify-between gap-6 border-t border-bone/15 pt-4 lg:mt-10 lg:w-[40%]" style={{ "--d": "1s" } as React.CSSProperties}>
+          <OpeningStatus className="text-bone/80" />
+          <span className="flex items-center gap-3 text-bone/55">
+            <span className="kicker">Scroll</span>
+            <span className="relative block h-8 w-px overflow-hidden bg-bone/15">
+              <span className="scroll-cue absolute inset-0 bg-cheddar" />
+            </span>
+          </span>
+        </div>
+      </motion.div>
     </section>
   );
 }

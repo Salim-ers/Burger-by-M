@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CartPage } from "@/components/cart/CartPage";
+import { OrderHeader } from "@/components/ordering/OrderHeader";
 
 export const metadata: Metadata = {
   title: "Panier",
@@ -7,5 +8,10 @@ export const metadata: Metadata = {
 };
 
 export default function PanierPage() {
-  return <CartPage />;
+  return (
+    <>
+      <OrderHeader title="Panier." active={[2]} />
+      <CartPage />
+    </>
+  );
 }

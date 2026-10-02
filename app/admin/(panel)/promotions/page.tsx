@@ -40,14 +40,14 @@ export default function PromotionsPage() {
     <>
       <PageHeader title="Promotions" text="Préparez vos codes promo. Leur application au panier sera activée avec le backend (architecture prête)." />
       <div className="grid gap-8 xl:grid-cols-2">
-        <form onSubmit={submit} noValidate className="grid gap-4 rounded-sm border border-cream/10 bg-ink-warm p-5 sm:grid-cols-2">
+        <form onSubmit={submit} noValidate className="grid gap-4 rounded-sm border border-edge bg-panel p-5 sm:grid-cols-2">
           <Field label="Code" id="pr-code" value={v.code} onChange={(e) => setV({ ...v, code: e.target.value.toUpperCase() })} error={errors.code} placeholder="SMASH10" />
           <Field label="Nom interne" id="pr-name" value={v.name} onChange={(e) => setV({ ...v, name: e.target.value })} error={errors.name} />
           <div className="flex flex-col gap-2">
             <label htmlFor="pr-type" className="text-[0.78rem] font-semibold opacity-80">
               Type
             </label>
-            <select id="pr-type" value={v.type} onChange={(e) => setV({ ...v, type: e.target.value as "percent" | "fixed" })} className="h-13 rounded-sm border border-cream/20 bg-ink-warm px-3">
+            <select id="pr-type" value={v.type} onChange={(e) => setV({ ...v, type: e.target.value as "percent" | "fixed" })} className="h-13 rounded-sm border border-edge bg-panel px-3">
               <option value="percent">Pourcentage</option>
               <option value="fixed">Montant fixe (€)</option>
             </select>
@@ -60,7 +60,7 @@ export default function PromotionsPage() {
             <Switch checked={v.active} onChange={(a) => setV({ ...v, active: a })} label="Active" tone="success" />
           </div>
           <div className="sm:col-span-2">
-            <Button type="submit" variant="rose">
+            <Button type="submit" variant="primary">
               Créer la promotion
             </Button>
           </div>
@@ -68,20 +68,20 @@ export default function PromotionsPage() {
 
         <div>
           {promotions.length === 0 ? (
-            <p className="rounded-sm border border-dashed border-cream/15 p-10 text-center text-cream/50">Aucune promotion pour le moment.</p>
+            <p className="rounded-sm border border-dashed border-edge p-10 text-center text-bone/50">Aucune promotion pour le moment.</p>
           ) : (
             <ul className="space-y-2">
               {promotions.map((p) => (
-                <li key={p.id} className="flex flex-wrap items-center gap-4 rounded-sm border border-cream/10 bg-ink-warm px-4 py-3">
+                <li key={p.id} className="flex flex-wrap items-center gap-4 rounded-sm border border-edge bg-panel px-4 py-3">
                   <div className="flex-1">
                     <p className="font-display text-2xl">{p.code}</p>
-                    <p className="text-xs text-cream/55">
+                    <p className="text-xs text-bone/55">
                       {p.name} · {p.type === "percent" ? `${p.value} %` : formatPrice(p.value)} · du {p.startsAt} au {p.endsAt}
                       {p.minimumOrder > 0 && ` · dès ${formatPrice(p.minimumOrder)}`}
                     </p>
                   </div>
                   <Switch checked={p.active} onChange={() => toggle(p.id)} label="Active" srOnlyLabel tone="success" />
-                  <button type="button" onClick={() => remove(p.id)} aria-label={`Supprimer ${p.code}`} className="grid size-10 place-items-center rounded-full text-cream/50 hover:bg-cream/10 hover:text-cream">
+                  <button type="button" onClick={() => remove(p.id)} aria-label={`Supprimer ${p.code}`} className="grid size-10 place-items-center rounded-sm text-bone/50 hover:bg-bone/10 hover:text-bone">
                     <Trash2 className="size-4" aria-hidden />
                   </button>
                 </li>

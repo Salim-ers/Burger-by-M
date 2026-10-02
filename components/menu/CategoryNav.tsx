@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import type { MenuGroup } from "@/types/category";
 import { cn } from "@/lib/utils";
 
-/** Sous-navigation collante, suit la section visible (IntersectionObserver). */
-export function CategoryNav({ groups, top = "top-16" }: { groups: MenuGroup[]; top?: string }) {
-  const [active, setActive] = useState<string>("tout");
+/** Sous-navigation collante (sous la barre noire), suit la section visible. */
+export function CategoryNav({ groups, className }: { groups: MenuGroup[]; className?: string }) {
+  const [active, setActive] = useState<string>(groups[0]?.id ?? "");
   const listRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
@@ -16,39 +16,34 @@ export function CategoryNav({ groups, top = "top-16" }: { groups: MenuGroup[]; t
         const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
         if (visible) setActive(visible.target.id);
       },
-      { rootMargin: "-30% 0px -60% 0px" },
+      { rootMargin: "-25% 0px -65% 0px" },
     );
     sections.forEach((s) => io.observe(s));
     return () => io.disconnect();
   }, [groups]);
 
   useEffect(() => {
-    const el = listRef.current?.querySelector<HTMLElement>(`[data-id="${active}"]`);
-    el?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+    const list = listRef.current;
+    const el = list?.querySelector<HTMLElement>(`[data-id="${active}"]`);
+    if (!list || !el) return;
+    list.scrollTo({ left: el.offsetLeft - list.clientWidth / 2 + el.clientWidth / 2, behavior: "smooth" });
   }, [active]);
 
-  const items = [{ id: "tout", label: "Tout" }, ...groups];
-
   return (
-    <nav aria-label="Catégories de la carte" className={cn("sticky z-30 border-y border-cream/10 bg-ink/90 backdrop-blur-[6px]", top)}>
-      <ul ref={listRef} className="no-scrollbar container-site flex gap-1 overflow-x-auto py-2.5">
-        {items.map((g) => (
-          <li key={g.id} data-id={g.id}>
+    <nav aria-label="Catégories de la carte" className={cn("scheme-light sticky top-16 z-30 border-b border-ink/15 bg-bone/95", className)}>
+      <ul ref={listRef} className="no-scrollbar shell flex overflow-x-auto">
+        {groups.map((g, i) => (
+          <li key={g.id} data-id={g.id} className="shrink-0">
             <a
-              href={g.id === "tout" ? "#carte" : `#${g.id}`}
+              href={`#${g.id}`}
               aria-current={active === g.id ? "true" : undefined}
               className={cn(
-                "relative flex h-11 items-center px-4 text-[0.82rem] font-semibold whitespace-nowrap transition-colors",
-                active === g.id ? "text-cream" : "text-cream/55 hover:text-cream",
+                "flex h-12 items-center gap-2 px-3 font-display text-[1.05rem] leading-none tracking-[0.03em] whitespace-nowrap uppercase transition-colors md:px-4",
+                active === g.id ? "bg-ink text-bone" : "text-ink/55 hover:text-ink",
               )}
             >
+              <span className={cn("font-sans text-[0.6rem] font-semibold tabular-nums", active === g.id ? "text-cheddar" : "text-ink/35")}>{String(i + 1).padStart(2, "0")}</span>
               {g.label}
-              <span
-                className={cn(
-                  "absolute inset-x-4 bottom-1.5 h-px origin-left bg-rose transition-transform duration-500 ease-out-expo",
-                  active === g.id ? "scale-x-100" : "scale-x-0",
-                )}
-              />
             </a>
           </li>
         ))}

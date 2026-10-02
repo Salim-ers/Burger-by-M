@@ -32,63 +32,63 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
 
   return (
     <>
-      <Link href="/admin/commandes" className="mb-6 inline-flex items-center gap-2 text-sm text-cream/60 hover:text-cream">
+      <Link href="/admin/commandes" className="mb-6 inline-flex items-center gap-2 text-sm text-bone/60 hover:text-bone">
         <ArrowLeft className="size-4" aria-hidden /> Commandes
       </Link>
       <div className="mb-8 flex flex-wrap items-center gap-4">
         <h1 className="text-5xl leading-none font-extrabold tracking-tight tabular-nums">#{order.number.replace("BYM-", "")}</h1>
         <StatusBadge status={order.status} />
-        {order.isDemo && <span className="text-xs text-cream/40">Commande de démonstration</span>}
+        {order.isDemo && <span className="text-xs text-bone/40">Commande de démonstration</span>}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <section className="rounded-sm border border-cream/10 bg-ink-warm p-6 lg:col-span-2">
-          <h2 className="text-xs font-bold tracking-[0.16em] text-cream/55 uppercase">Contenu</h2>
-          <ul className="mt-4 divide-y divide-cream/10">
+        <section className="rounded-sm border border-edge bg-panel p-6 lg:col-span-2">
+          <h2 className="text-xs font-bold tracking-[0.16em] text-bone/55 uppercase">Contenu</h2>
+          <ul className="mt-4 divide-y divide-edge">
             {order.items.map((i, idx) => (
               <li key={idx} className="flex justify-between gap-4 py-3">
                 <div>
                   <p className="font-semibold">
                     {i.quantity} × {i.name}
                   </p>
-                  {visibleOptions(i.options).length > 0 && <p className="text-sm text-cream/55">{visibleOptions(i.options).map((o) => o.label).join(" · ")}</p>}
+                  {visibleOptions(i.options).length > 0 && <p className="text-sm text-bone/55">{visibleOptions(i.options).map((o) => o.label).join(" · ")}</p>}
                 </div>
                 <span className="tabular-nums">{formatPrice(multiplyCents(i.unitPrice, i.quantity))}</span>
               </li>
             ))}
           </ul>
           {order.notes && <p className="mt-4 rounded-xs bg-cheddar/10 p-3 text-sm text-cheddar">Note client : {order.notes}</p>}
-          <div className="mt-6 flex justify-between border-t border-cream/10 pt-4">
+          <div className="mt-6 flex justify-between border-t border-edge pt-4">
             <span className="font-semibold">Total</span>
             <span className="font-display text-3xl tabular-nums">{formatPrice(order.total)}</span>
           </div>
-          <p className="mt-1 text-right text-xs text-cream/50">
+          <p className="mt-1 text-right text-xs text-bone/50">
             Paiement : {order.paymentMethod === "cash_on_pickup" ? "au retrait" : "en ligne"} · {order.paymentStatus === "paid" ? "réglé" : "non réglé"}
           </p>
         </section>
 
         <div className="space-y-6">
-          <section className="rounded-sm border border-cream/10 bg-ink-warm p-6">
-            <h2 className="text-xs font-bold tracking-[0.16em] text-cream/55 uppercase">Client</h2>
+          <section className="rounded-sm border border-edge bg-panel p-6">
+            <h2 className="text-xs font-bold tracking-[0.16em] text-bone/55 uppercase">Client</h2>
             <p className="mt-3 text-lg font-semibold">
               {order.customer.firstName} {order.customer.lastName}
             </p>
-            <a href={`tel:${order.customer.phone.replace(/\s/g, "")}`} className="mt-2 flex items-center gap-2 text-sm hover:text-rose">
+            <a href={`tel:${order.customer.phone.replace(/\s/g, "")}`} className="mt-2 flex items-center gap-2 text-sm hover:text-cheddar">
               <Phone className="size-4" aria-hidden /> {order.customer.phone}
             </a>
-            <a href={`mailto:${order.customer.email}`} className="mt-1 flex items-center gap-2 text-sm break-all hover:text-rose">
+            <a href={`mailto:${order.customer.email}`} className="mt-1 flex items-center gap-2 text-sm break-all hover:text-cheddar">
               <Mail className="size-4" aria-hidden /> {order.customer.email}
             </a>
           </section>
-          <section className="rounded-sm border border-cream/10 bg-ink-warm p-6">
-            <h2 className="text-xs font-bold tracking-[0.16em] text-cream/55 uppercase">Retrait</h2>
+          <section className="rounded-sm border border-edge bg-panel p-6">
+            <h2 className="text-xs font-bold tracking-[0.16em] text-bone/55 uppercase">Retrait</h2>
             <p className="mt-3 text-lg first-letter:uppercase">{formatDayTime(order.pickup.time)}</p>
-            <p className="text-sm text-cream/55">{order.pickup.mode === "asap" ? "Dès que possible" : "Créneau choisi"} · reçue {timeAgo(order.createdAt)}</p>
-            {order.announcedMinutes && <p className="mt-1 text-sm text-cream/55">Préparation annoncée : {order.announcedMinutes} min</p>}
+            <p className="text-sm text-bone/55">{order.pickup.mode === "asap" ? "Dès que possible" : "Créneau choisi"} · reçue {timeAgo(order.createdAt)}</p>
+            {order.announcedMinutes && <p className="mt-1 text-sm text-bone/55">Préparation annoncée : {order.announcedMinutes} min</p>}
           </section>
           <section className="space-y-2">
             {order.status === "PENDING" && (
-              <Button variant="rose" className="w-full" onClick={() => setAccepting(order)}>
+              <Button variant="primary" className="w-full" onClick={() => setAccepting(order)}>
                 Accepter
               </Button>
             )}
@@ -97,7 +97,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               .map((s) => (
                 <Button
                   key={s}
-                  variant={s === "CANCELLED" ? "outline-light" : "cream"}
+                  variant={s === "CANCELLED" ? "outline" : "light"}
                   className="w-full"
                   onClick={() => (s !== "CANCELLED" || window.confirm("Annuler cette commande ?")) && setStatus(order.id, s)}
                 >

@@ -1,84 +1,97 @@
 "use client";
 
-import Image from "next/image";
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CategoryNav } from "./CategoryNav";
-import { FoodRow } from "./FoodRow";
-import { useMenuCategories, useMenuProducts } from "@/hooks/use-menu";
-import { menuGroups } from "@/data/categories";
+import { MenuRow } from "./MenuRow";
+import { PreviewPane } from "./PreviewPane";
+import { useMenuSections } from "@/hooks/use-menu-sections";
+import { rectOf } from "@/stores/ui-store";
 import { getImage } from "@/data/images";
+import type { Product } from "@/types/product";
 import { cn } from "@/lib/utils";
 
-/** Carte complète, regroupée et filtrable. Réutilisée par /menu et /commander. */
-export function MenuBrowser({ navTop, showBanners = true }: { navTop?: string; showBanners?: boolean }) {
-  const products = useMenuProducts();
-  const categories = useMenuCategories();
+/**
+ * Carte complète façon carte imprimée (fond blanc cassé).
+ * editorial (/menu) : grandes lignes + photo contextuelle collante à droite, qui suit la rubrique lue.
+ * compact (/commander) : liste dense, sans photo, orientée conversion.
+ */
+export function MenuBrowser({ variant = "editorial" }: { variant?: "editorial" | "compact" }) {
+  const { sections, groups } = useMenuSections();
+  const editorial = variant === "editorial";
+  const [hovered, setHovered] = useState<Product | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const paneRef = useRef<HTMLDivElement>(null);
 
-  const sections = useMemo(() => {
-    const seen = new Set<string>();
-    return categories
-      .filter((c) => c.active)
-      .map((c) => {
-        const anchor = seen.has(c.group) ? undefined : c.group;
-        seen.add(c.group);
-        return { category: c, anchor, items: products.filter((p) => p.category === c.id) };
-      })
-      .filter((s) => s.items.length > 0);
-  }, [categories, products]);
+  // Rubrique en cours de lecture → photo de couverture du panneau.
+  useEffect(() => {
+    if (!editorial) return;
+    const els = Array.from(document.querySelectorAll<HTMLElement>("[data-menu-category]"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (visible) {
+          setActiveCategory(visible.target.getAttribute("data-menu-category"));
+          setHovered(null);
+        }
+      },
+      { rootMargin: "-30% 0px -60% 0px" },
+    );
+    els.forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, [editorial, sections]);
 
-  const groups = menuGroups.filter((g) => sections.some((s) => s.category.group === g.id));
+  const cover = useMemo(() => {
+    const items = sections.find((s) => s.category.id === activeCategory)?.items ?? sections[0]?.items ?? [];
+    return items.find((p) => p.popular && p.image) ?? items.find((p) => p.image) ?? items[0] ?? null;
+  }, [sections, activeCategory]);
+
+  const getOrigin = useCallback(
+    (p: Product) => {
+      const pane = paneRef.current;
+      const paneShowsIt = editorial && pane && pane.offsetParent !== null && (hovered?.id ?? cover?.id) === p.id && getImage(p.image);
+      return paneShowsIt ? rectOf(pane) : null;
+    },
+    [editorial, hovered, cover],
+  );
 
   return (
-    <div id="carte">
-      <CategoryNav groups={groups} top={navTop} />
-      <div className="container-site">
-        {sections.map(({ category, anchor, items }) => {
-          const banner = showBanners ? getImage(category.imageId) : null;
-          return (
-            <section key={category.id} id={anchor} aria-labelledby={`cat-${category.id}`} className="scroll-mt-32 pt-20 md:pt-28">
-              {banner ? (
-                <div className="relative isolate grid overflow-hidden rounded-xs bg-ink-warm md:grid-cols-2">
-                  <div className="relative h-56 md:order-2 md:h-72">
-                    <Image src={banner.src} alt="" fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover object-[50%_55%]" />
-                    <span aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/30 to-transparent md:hidden" />
-                  </div>
-                  <div className="absolute inset-x-0 bottom-0 p-6 md:static md:flex md:items-end md:p-10">
-                    <CategoryTitle id={category.id} title={category.title} note={category.note} count={items.length} />
-                  </div>
+    <div id="carte" className="scheme-light bg-bone text-ink">
+      <CategoryNav groups={groups} />
+      <div className={cn("shell", editorial && "lg:grid-12")}>
+        <div className={cn(editorial && "lg:col-span-8")}>
+          {sections.map(({ category, anchor, items }, si) => (
+            <section key={category.id} id={anchor} data-menu-category={category.id} aria-labelledby={`cat-${category.id}`} className={cn("scroll-mt-32", editorial ? "pt-16 md:pt-24" : "pt-12")}>
+              <header className="flex items-end justify-between gap-6 border-b-2 border-ink pb-4">
+                <div className="min-w-0">
+                  <h2 id={`cat-${category.id}`} className={cn("font-display", editorial ? "text-d3" : "text-d4")}>
+                    {category.title.replace(/\.$/, "")} <span className="text-ink/25">— {String(si + 1).padStart(2, "0")}</span>
+                  </h2>
+                  {category.note && <p className="kicker mt-3 text-ink/55">{category.note}</p>}
                 </div>
-              ) : (
-                <div className="border-b border-cream/15 pb-6">
-                  <CategoryTitle id={category.id} title={category.title} note={category.note} count={items.length} />
-                </div>
-              )}
-              <div className={cn(banner && "mt-2")}>
-                {items.map((p) => (
-                  <FoodRow key={p.id} product={p} />
+                <span className="kicker shrink-0 pb-1 text-ink/45 tabular-nums">{items.length} choix</span>
+              </header>
+              <div>
+                {items.map((p, i) => (
+                  <MenuRow key={p.id} product={p} index={i} variant={variant} onHover={editorial ? setHovered : undefined} active={editorial && hovered?.id === p.id} getOrigin={getOrigin} />
                 ))}
               </div>
             </section>
-          );
-        })}
-        <p className="py-16 text-center text-xs leading-relaxed text-cream/45">
-          Photos non contractuelles. Certaines préparations sont faites maison (précisé sur chaque produit).
-          <br />
-          Allergènes : informations disponibles auprès du restaurant.
-        </p>
-      </div>
-    </div>
-  );
-}
+          ))}
+          <p className="py-16 text-xs leading-relaxed text-ink/45">
+            Photos non contractuelles. Les préparations faites maison sont précisées sur chaque produit.
+            <br />
+            Allergènes : informations disponibles auprès du restaurant.
+          </p>
+        </div>
 
-function CategoryTitle({ id, title, note, count }: { id: string; title: string; note?: string; count: number }) {
-  return (
-    <div className="flex w-full items-end justify-between gap-6">
-      <div>
-        <h2 id={`cat-${id}`} className="font-display text-[clamp(2.4rem,8vw,6.5rem)] leading-[0.85] font-medium tracking-[-0.035em] uppercase">
-          {title}
-        </h2>
-        {note && <p className="mt-3 text-sm text-cream/70">{note}</p>}
+        {editorial && (
+          <aside aria-label="Aperçu du produit" className="hidden lg:col-span-4 lg:block">
+            <div className="sticky top-36 pt-24">
+              <PreviewPane ref={paneRef} product={hovered} cover={cover ? { product: cover } : null} />
+            </div>
+          </aside>
+        )}
       </div>
-      <span className="shrink-0 pb-2 text-xs text-cream/55 tabular-nums">{count} choix</span>
     </div>
   );
 }

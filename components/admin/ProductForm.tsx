@@ -58,7 +58,7 @@ export function ProductForm({ product, onDone }: { product?: Product; onDone: ()
         <label htmlFor="pf-cat" className="text-[0.78rem] font-semibold opacity-80">
           Catégorie
         </label>
-        <select id="pf-cat" value={v.category} onChange={(e) => setV({ ...v, category: e.target.value as CategoryId })} className="h-13 rounded-sm border border-cream/20 bg-ink-warm px-3">
+        <select id="pf-cat" value={v.category} onChange={(e) => setV({ ...v, category: e.target.value as CategoryId })} className="h-13 rounded-sm border border-edge bg-panel px-3">
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
@@ -70,7 +70,7 @@ export function ProductForm({ product, onDone }: { product?: Product; onDone: ()
         <label htmlFor="pf-img" className="text-[0.78rem] font-semibold opacity-80">
           Photo
         </label>
-        <select id="pf-img" value={v.image} onChange={(e) => setV({ ...v, image: e.target.value })} className="h-13 rounded-sm border border-cream/20 bg-ink-warm px-3">
+        <select id="pf-img" value={v.image} onChange={(e) => setV({ ...v, image: e.target.value })} className="h-13 rounded-sm border border-edge bg-panel px-3">
           <option value="">Aucune (visuel typographique)</option>
           {Object.entries(images).map(([id, img]) => (
             <option key={id} value={id}>
@@ -78,7 +78,7 @@ export function ProductForm({ product, onDone }: { product?: Product; onDone: ()
             </option>
           ))}
         </select>
-        <p className="text-xs text-cream/45">Upload d’images : prévu avec le futur backend.</p>
+        <p className="text-xs text-bone/45">Upload d’images : prévu avec le futur backend.</p>
       </div>
       <div className="grid grid-cols-2 gap-x-4 md:col-span-2">
         <Switch checked={v.available} onChange={(x) => setV({ ...v, available: x })} label="Disponible" tone="success" />
@@ -87,10 +87,10 @@ export function ProductForm({ product, onDone }: { product?: Product; onDone: ()
         <Switch checked={v.spicy} onChange={(x) => setV({ ...v, spicy: x })} label="Épicé" tone="cheddar" />
       </div>
       <div className="flex justify-end gap-3 md:col-span-2">
-        <Button variant="outline-light" onClick={onDone}>
+        <Button variant="outline" onClick={onDone}>
           Annuler
         </Button>
-        <Button type="submit" variant="rose">
+        <Button type="submit" variant="primary">
           Enregistrer
         </Button>
       </div>

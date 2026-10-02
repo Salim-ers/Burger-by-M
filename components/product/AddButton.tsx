@@ -3,7 +3,7 @@
 import { Plus } from "lucide-react";
 import type { Product } from "@/types/product";
 import { useCartStore } from "@/stores/cart-store";
-import { useUiStore } from "@/stores/ui-store";
+import { rectOf, useUiStore } from "@/stores/ui-store";
 import { canQuickAdd, defaultSelections, toSelectedOptions } from "@/lib/product-options";
 import { unitPriceFor } from "@/lib/order";
 import { flyToCart } from "@/lib/fly-to-cart";
@@ -11,11 +11,10 @@ import { cn } from "@/lib/utils";
 
 interface Props {
   product: Product;
-  /** Élément contenant la photo, pour l'animation vers le panier. */
+  /** Élément contenant la photo, pour l'animation vers le panier / l'ouverture de la fiche. */
   sourceRef?: React.RefObject<HTMLElement | null>;
-  tone?: "dark" | "light";
-  /** expand : « + » qui devient « Ajouter » au survol (desktop). */
-  variant?: "expand" | "pill";
+  /** square : « + » discret de la carte ; wide : bouton « Ajouter » pleine largeur. */
+  variant?: "square" | "wide";
   className?: string;
 }
 
@@ -23,7 +22,7 @@ interface Props {
  * Ajout rapide : les produits sans choix obligatoire s'ajoutent en un tap (options par défaut) ;
  * les autres ouvrent la fiche produit.
  */
-export function AddButton({ product, sourceRef, tone = "dark", variant = "expand", className }: Props) {
+export function AddButton({ product, sourceRef, variant = "square", className }: Props) {
   const addItem = useCartStore((s) => s.addItem);
   const openProduct = useUiStore((s) => s.openProduct);
   const orderable = product.available && product.price !== null;
@@ -31,9 +30,9 @@ export function AddButton({ product, sourceRef, tone = "dark", variant = "expand
   const onClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!orderable) return;
-    if (!canQuickAdd(product)) return openProduct(product.id);
+    if (!canQuickAdd(product)) return openProduct(product.id, undefined, rectOf(sourceRef?.current));
     const options = toSelectedOptions(product, defaultSelections(product));
-    flyToCart(sourceRef?.current ?? null);
+    flyToCart(sourceRef?.current ?? (e.currentTarget as HTMLElement));
     addItem({ productId: product.id, slug: product.slug, name: product.name, unitPrice: unitPriceFor(product, options), quantity: 1, options, image: product.image });
   };
 
@@ -45,25 +44,15 @@ export function AddButton({ product, sourceRef, tone = "dark", variant = "expand
       onClick={onClick}
       disabled={!orderable}
       aria-label={orderable ? `${label} ${product.name}` : `${product.name} : ${label.toLowerCase()}`}
-      data-cursor={orderable ? label : undefined}
+      data-cursor={orderable ? "add" : undefined}
       className={cn(
-        "group/add relative z-10 inline-flex h-11 shrink-0 items-center justify-center overflow-hidden rounded-full text-[0.72rem] font-bold tracking-[0.12em] uppercase transition-all duration-500 ease-out-expo disabled:cursor-not-allowed disabled:opacity-40",
-        tone === "dark" ? "bg-cream text-ink hover:bg-rose" : "bg-ink text-cream hover:bg-brown-dark",
-        variant === "expand" ? "w-11 hover:w-32 focus-visible:w-32 max-md:w-auto max-md:px-4 max-[360px]:px-3.5" : "px-5",
+        "relative z-10 inline-flex shrink-0 items-center justify-center rounded-sm border border-fg/30 text-fg transition-colors duration-200 hover:border-cheddar hover:bg-cheddar hover:text-ink disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-fg/30 disabled:hover:bg-transparent disabled:hover:text-fg",
+        variant === "square" ? "size-11" : "h-12 gap-2 px-5 font-display text-[1.05rem] uppercase",
         className,
       )}
     >
-      <Plus className={cn("size-4 shrink-0", variant === "expand" && "md:absolute md:left-3.5 md:transition-transform md:duration-500 group-hover/add:md:rotate-90")} aria-hidden />
-      <span
-        className={cn(
-          "whitespace-nowrap",
-          variant === "expand"
-            ? "ml-1.5 max-[360px]:sr-only md:ml-0 md:pl-6 md:opacity-0 md:transition-opacity md:duration-300 md:group-hover/add:opacity-100 md:group-focus-visible/add:opacity-100"
-            : "ml-2",
-        )}
-      >
-        {label}
-      </span>
+      <Plus className="size-4.5" strokeWidth={2.5} aria-hidden />
+      {variant === "wide" && <span>{label}</span>}
     </button>
   );
 }

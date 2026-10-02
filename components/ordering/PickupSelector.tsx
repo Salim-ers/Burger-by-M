@@ -62,7 +62,7 @@ export function PickupSelector({ className }: { className?: string }) {
     }
   }, [hydrated, asapOk, slots, pickup, setPickup]);
 
-  if (!hydrated) return <div className={cn("h-40 animate-pulse rounded-sm bg-cream/5", className)} aria-hidden />;
+  if (!hydrated) return <div className={cn("h-40 animate-pulse bg-fg/5", className)} aria-hidden />;
 
   const days = Array.from(new Set(slots.map((s) => s.dayLabel)));
 
@@ -94,7 +94,7 @@ export function PickupSelector({ className }: { className?: string }) {
         <div className="mt-5 space-y-4">
           {days.map((day) => (
             <div key={day}>
-              <p className="mb-2 text-xs font-bold tracking-[0.14em] text-cream/55 uppercase">{day}</p>
+              <p className="kicker mb-2 text-fg/55">{day}</p>
               <div role="radiogroup" aria-label={`Créneaux ${day}`} className="no-scrollbar -mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
                 {slots
                   .filter((s) => s.dayLabel === day)
@@ -109,8 +109,8 @@ export function PickupSelector({ className }: { className?: string }) {
                         disabled={!s.available}
                         onClick={() => setPickup({ mode: "scheduled", time: s.time })}
                         className={cn(
-                          "h-11 shrink-0 rounded-full border px-4 text-sm font-semibold tabular-nums transition-colors",
-                          selected ? "border-rose bg-rose text-ink" : "border-cream/20 text-cream/85 hover:border-cream/50",
+                          "h-11 shrink-0 border px-4 font-display text-lg tabular-nums transition-colors",
+                          selected ? "border-cheddar bg-cheddar text-ink" : "border-fg/20 text-fg/85 hover:border-fg/60",
                           !s.available && "line-through opacity-35",
                         )}
                       >
@@ -137,14 +137,14 @@ function ModeOption({ active, disabled, onSelect, icon, title, text }: { active:
       disabled={disabled}
       onClick={onSelect}
       className={cn(
-        "flex min-h-16 items-center gap-4 rounded-sm border px-4 py-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-40",
-        active ? "border-rose bg-rose/10" : "border-cream/15 hover:border-cream/40",
+        "flex min-h-16 items-center gap-4 border-2 px-4 py-3 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-40",
+        active ? "border-fg bg-fg text-canvas" : "border-fg/15 hover:border-fg/45",
       )}
     >
-      <span className={cn("grid size-10 shrink-0 place-items-center rounded-full", active ? "bg-rose text-ink" : "bg-cream/10")}>{icon}</span>
+      <span className={cn("grid size-10 shrink-0 place-items-center", active ? "bg-cheddar text-ink" : "bg-fg/10")}>{icon}</span>
       <span>
-        <span className="block font-semibold">{title}</span>
-        <span className="block text-sm text-cream/60">{text}</span>
+        <span className="block font-display text-xl leading-none uppercase">{title}</span>
+        <span className={cn("mt-1 block text-sm", active ? "opacity-70" : "text-fg/60")}>{text}</span>
       </span>
     </button>
   );

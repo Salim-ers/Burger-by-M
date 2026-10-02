@@ -1,8 +1,7 @@
 export const mainNav = [
-  { href: "/menu", label: "La carte" },
-  { href: "/menu#smash", label: "Nos burgers" },
+  { href: "/menu", label: "Carte" },
+  { href: "/commander", label: "Commander" },
   { href: "/restaurant", label: "Le restaurant" },
-  { href: "/contact", label: "Contact" },
 ] as const;
 
 export const legalNav = [

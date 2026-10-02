@@ -18,45 +18,45 @@ export default function SettingsPage() {
     <>
       <PageHeader title="Paramètres" />
       <div className="grid gap-6 xl:grid-cols-2">
-        <section className="space-y-2 rounded-sm border border-cream/10 bg-ink-warm p-5">
-          <h2 className="mb-2 text-xs font-bold tracking-[0.16em] text-cream/55 uppercase">Service</h2>
+        <section className="space-y-2 rounded-sm border border-edge bg-panel p-5">
+          <h2 className="mb-2 text-xs font-bold tracking-[0.16em] text-bone/55 uppercase">Service</h2>
           <Switch checked={settings.acceptingOrders} onChange={(v) => setSetting("acceptingOrders", v)} label="Accepter les commandes en ligne" tone="success" />
           <Switch checked={settings.rushMode} onChange={(v) => setSetting("rushMode", v)} label={`Mode coup de feu (${settings.prepMinutes} → ${settings.rushPrepMinutes} min)`} tone="cheddar" />
           <div className="flex flex-wrap items-center gap-3">
             <Switch checked={settings.soundEnabled} onChange={(v) => setSetting("soundEnabled", v)} label="Son des nouvelles commandes" />
-            <button type="button" onClick={playOrderChime} className="text-xs text-cream/60 underline underline-offset-4 hover:text-cream">
+            <button type="button" onClick={playOrderChime} className="text-xs text-bone/60 underline underline-offset-4 hover:text-bone">
               Tester le son
             </button>
           </div>
         </section>
 
-        <section className="rounded-sm border border-cream/10 bg-ink-warm p-5">
-          <h2 className="mb-4 text-xs font-bold tracking-[0.16em] text-cream/55 uppercase">Établissement</h2>
+        <section className="rounded-sm border border-edge bg-panel p-5">
+          <h2 className="mb-4 text-xs font-bold tracking-[0.16em] text-bone/55 uppercase">Établissement</h2>
           <dl className="space-y-2 text-sm">
             <div className="flex justify-between gap-4">
-              <dt className="text-cream/55">Nom</dt>
+              <dt className="text-bone/55">Nom</dt>
               <dd>{restaurant.name}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-cream/55">Adresse</dt>
+              <dt className="text-bone/55">Adresse</dt>
               <dd className="text-right">{fullAddress}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt className="text-cream/55">Téléphone</dt>
+              <dt className="text-bone/55">Téléphone</dt>
               <dd>{restaurant.phone.display}</dd>
             </div>
           </dl>
-          <p className="mt-4 text-xs text-cream/45">Modifiable dans data/restaurant.ts (source unique), puis depuis l’admin une fois le backend branché.</p>
+          <p className="mt-4 text-xs text-bone/45">Modifiable dans data/restaurant.ts (source unique), puis depuis l’admin une fois le backend branché.</p>
         </section>
 
         <section className="rounded-sm border border-danger/30 bg-danger/5 p-5 xl:col-span-2">
-          <h2 className="text-xs font-bold tracking-[0.16em] text-[#ff9b94] uppercase">Démonstration</h2>
-          <p className="mt-2 max-w-xl text-sm text-cream/65">
+          <h2 className="text-xs font-bold tracking-[0.16em] text-danger uppercase">Démonstration</h2>
+          <p className="mt-2 max-w-xl text-sm text-bone/65">
             Réinitialise les commandes fictives, produits, horaires, promotions et notifications stockés dans ce navigateur.
           </p>
           <div className="mt-4 flex items-center gap-4">
             <Button
-              variant="outline-light"
+              variant="outline"
               onClick={() => {
                 if (window.confirm("Réinitialiser toutes les données de démonstration ?")) {
                   resetDemo();

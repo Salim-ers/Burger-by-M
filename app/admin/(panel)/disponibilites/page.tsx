@@ -22,13 +22,13 @@ export default function AvailabilityPage() {
           if (!list.length) return null;
           return (
             <section key={c.id} aria-labelledby={`dispo-${c.id}`}>
-              <h2 id={`dispo-${c.id}`} className="mb-3 text-xs font-bold tracking-[0.16em] text-cream/55 uppercase">
+              <h2 id={`dispo-${c.id}`} className="mb-3 text-xs font-bold tracking-[0.16em] text-bone/55 uppercase">
                 {c.name}
               </h2>
               <ul className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
                 {list.map((p) => (
-                  <li key={p.id} className={cn("flex items-center justify-between gap-3 rounded-sm border px-4 py-2", p.available ? "border-cream/10 bg-ink-warm" : "border-danger/40 bg-danger/10")}>
-                    <span className={cn("font-semibold", !p.available && "text-cream/60 line-through")}>{p.name}</span>
+                  <li key={p.id} className={cn("flex items-center justify-between gap-3 rounded-sm border px-4 py-2", p.available ? "border-edge bg-panel" : "border-danger/40 bg-danger/10")}>
+                    <span className={cn("font-semibold", !p.available && "text-bone/60 line-through")}>{p.name}</span>
                     <Switch checked={p.available} onChange={(v) => setAvailability(p.id, v, p.name)} label={p.available ? "En stock" : "Rupture"} tone="success" className="text-xs" />
                   </li>
                 ))}

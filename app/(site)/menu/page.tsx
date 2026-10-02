@@ -1,8 +1,9 @@
-import Image from "next/image";
 import type { Metadata } from "next";
 import { MenuBrowser } from "@/components/menu/MenuBrowser";
 import { ButtonLink } from "@/components/ui/Button";
-import { images } from "@/data/images";
+import { LineReveal } from "@/components/motion/LineReveal";
+import { products } from "@/data/products";
+import { categories } from "@/data/categories";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -12,30 +13,30 @@ export const metadata: Metadata = pageMetadata({
   path: "/menu",
 });
 
+/** /menu : en-tête noir, carte imprimée sur blanc cassé. */
 export default function MenuPage() {
   return (
     <>
-      <header className="relative isolate overflow-hidden bg-ink pt-36 pb-16 md:pt-48 md:pb-24">
-        <div aria-hidden className="absolute top-0 right-0 -z-10 h-full w-full md:w-[46%]">
-          <Image src={images.plateau.src} alt="" fill priority sizes="(min-width: 768px) 46vw, 100vw" className="object-cover object-[50%_35%] opacity-45 md:opacity-80" />
-          <div className="absolute inset-0 bg-gradient-to-r from-ink via-ink/50 to-transparent max-md:bg-ink/50" />
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-ink to-transparent" />
-        </div>
-        <div className="container-site">
-          <h1 className="font-display text-mega font-medium uppercase">
-            La
-            <br />
-            carte.
-          </h1>
-          <div className="mt-8 flex flex-col gap-6 md:flex-row md:items-center">
-            <p className="max-w-md text-lg text-cream/75">Smash, Classics, Frenchy’s, sides et shakes. Tout se commande en ligne, à emporter.</p>
-            <ButtonLink href="/commander" variant="rose" arrow className="self-start md:self-auto">
-              Commander
-            </ButtonLink>
+      <header className="scheme-dark bg-ink pt-32 pb-10 md:pt-40 md:pb-14">
+        <div className="shell">
+          <div className="flex items-center justify-between border-b border-graphite pb-3">
+            <span className="kicker text-bone/55">Burger By M — Rantigny</span>
+            <span className="kicker text-bone/55 tabular-nums">
+              {products.length} produits · {categories.length} rubriques
+            </span>
+          </div>
+          <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <LineReveal as="h1" lines={[<>Menu<span className="text-cheddar">.</span></>]} className="font-display text-[clamp(6rem,30vw,22rem)] leading-[0.8]" />
+            <div className="max-w-sm lg:pb-6">
+              <p className="text-[0.95rem] leading-relaxed text-bone/70">Smash, Classics, Frenchy’s, sides, shakes et desserts. Tout se commande en ligne, retrait au 19 avenue de la Gare.</p>
+              <ButtonLink href="/commander" variant="primary" size="lg" arrow className="mt-6">
+                Commander
+              </ButtonLink>
+            </div>
           </div>
         </div>
       </header>
-      <MenuBrowser />
+      <MenuBrowser variant="editorial" />
     </>
   );
 }

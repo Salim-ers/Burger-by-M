@@ -55,7 +55,7 @@ app/
                        commandes/[id], kitchen, menu, produits, categories,
                        disponibilites, horaires, promotions, notifications, parametres
   sitemap.ts  robots.ts  not-found.tsx  icon.png  apple-icon.png
-components/          ui · brand · animations · layout · home · menu · product
+components/          ui · brand · motion · layout · home · menu · product
                      cart · ordering · checkout · restaurant · admin
 data/                SOURCE UNIQUE des contenus (voir §5)
 lib/                 prix, horaires/créneaux, validation (Zod), SEO, repositories
@@ -70,7 +70,13 @@ Principes :
 - **Prix en centimes** (entiers) partout ; formatage `11,90 €` via `lib/currency.ts`.
 - Les pages statiques sont pré-rendues ; tout ce qui dépend du navigateur (panier, heure, admin) s’affiche après hydratation, sans écart serveur/client.
 - `prefers-reduced-motion` est respecté (Framer Motion + CSS).
-- Polices auto-hébergées (`app/fonts/`) : Bodoni Moda (titres) et Manrope (texte). Aucun appel à Google Fonts.
+- Polices auto-hébergées (`app/fonts/`) : Anton (titres, affiche) et Inter (texte). Aucun appel à Google Fonts.
+
+Direction artistique (tokens dans `app/globals.css`) :
+- Palette : noir `#050505`, charbon `#101010`, graphite `#1A1A18`, blanc cassé `#F2EFE7`, gris chaud `#D8D1C4`, accent cheddar `#F0A21A` (avec parcimonie). Le rose ne subsiste que dans le logo d'origine.
+- Rayons limités à 6 px, boutons rectangulaires, grille éditoriale 12 colonnes (`shell` + `grid-12`).
+- Schémas `scheme-dark` / `scheme-light` : les composants utilisent `text-fg`, `bg-canvas`, `border-fg/…` et s'adaptent au fond.
+- Motion (`components/motion/`) : Framer Motion uniquement (pas de GSAP). Les animations liées au scroll passent par `useScrollMap` (calcul JS, évite les écarts du ViewTimeline natif) et `useReduce` (préférence « mouvement réduit » sans écart d'hydratation). Intro du hero en CSS pur (joue avant l'hydratation).
 
 ## 5. Modifier les contenus
 
@@ -84,14 +90,12 @@ Tout se fait dans `data/`. Aucune donnée n’est codée en dur dans les composa
 | Suppléments, formule menu    | `data/options.ts`          |
 | Catégories et leur ordre     | `data/categories.ts`       |
 | Photos                       | `data/images.ts` + `public/images/` |
-| Avis clients                 | `data/testimonials.ts`     |
 | Mentions légales             | `data/legal.ts`            |
 
 - **Prix** : en centimes (`1190` = 11,90 €). `price: null` affiche « Prix à confirmer » et rend le produit non commandable.
-- **Images** : déposer le fichier dans `public/images/…`, puis mettre à jour `src`, `width`, `height` et `alt` dans `data/images.ts`. Un produit sans photo correspondante (`image: null`) affiche un visuel typographique : on n’utilise jamais la photo d’un autre plat.
+- **Images** : déposer le fichier dans `public/images/…`, puis mettre à jour `src`, `width`, `height`, `alt` et le cadrage `position` (object-position propre à chaque photo, `zoom`/`origin` pour un crop serré) dans `data/images.ts`. Un produit sans photo correspondante (`image: null`) affiche une affiche typographique : on n’utilise jamais la photo d’un autre plat.
 - **Horaires** : passer `OPENING_HOURS_VALIDATED` à `true` une fois validés, pour les publier dans le balisage Google (JSON-LD).
 - **Réseaux sociaux** : renseigner les `url` dans `data/restaurant.ts` ; tant qu’elles valent `null`, aucun lien n’est affiché.
-- **Avis** : n’ajouter que de vrais avis (`published: true`). Sans avis, la section affiche une invitation.
 
 En mode démo, les changements faits depuis l’admin (prix, ruptures, horaires…) sont enregistrés dans le navigateur et **surchargent** les fichiers `data/` pour ce navigateur uniquement.
 

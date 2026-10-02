@@ -148,6 +148,8 @@ export const products: Product[] = [
     product({
       id: `frites-${slug(v)}`, slug: `frites-${slug(v)}`, name: `Frites ${v.toLowerCase() === "classique" ? "classiques" : v.toLowerCase()}`,
       category: "frites", price: null, description: "",
+      // Seule variante visible sur la photo du plateau (sauce cheddar + oignons frits) : crop « loadedFries ».
+      image: v === "Cheddar & oignons frits" ? "loadedFries" : null,
       todo: ["TODO_PRODUCT_INFORMATION: prix et description illisibles sur la carte fournie"],
     }),
   ),

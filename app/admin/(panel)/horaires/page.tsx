@@ -50,7 +50,7 @@ export default function HoursPage() {
 
   const numberSetting = (key: "prepMinutes" | "rushPrepMinutes" | "slotIntervalMinutes" | "maxOrdersPerSlot", label: string, min: number, max: number) => (
     <label className="flex flex-col gap-2 text-sm">
-      <span className="font-semibold text-cream/80">{label}</span>
+      <span className="font-semibold text-bone/80">{label}</span>
       <input
         type="number"
         min={min}
@@ -60,7 +60,7 @@ export default function HoursPage() {
           const n = Math.max(min, Math.min(max, Number(e.target.value) || min));
           setSetting(key, n);
         }}
-        className="h-12 rounded-sm border border-cream/15 bg-transparent px-3 tabular-nums"
+        className="h-12 rounded-sm border border-edge bg-transparent px-3 tabular-nums"
       />
     </label>
   );
@@ -74,14 +74,14 @@ export default function HoursPage() {
         </p>
       )}
 
-      <div role="tablist" aria-label="Type d’horaires" className="mb-6 inline-flex rounded-full border border-cream/15 p-1">
+      <div role="tablist" aria-label="Type d’horaires" className="mb-6 inline-flex rounded-sm border border-edge p-1">
         {(
           [
             ["restaurant", "Restaurant"],
             ["clickAndCollect", "Click & Collect"],
           ] as const
         ).map(([k, label]) => (
-          <button key={k} type="button" role="tab" aria-selected={kind === k} onClick={() => switchKind(k)} className={cn("h-10 rounded-full px-4 text-xs font-bold uppercase", kind === k ? "bg-cream text-ink" : "text-cream/60")}>
+          <button key={k} type="button" role="tab" aria-selected={kind === k} onClick={() => switchKind(k)} className={cn("h-10 rounded-sm px-4 text-xs font-bold uppercase", kind === k ? "bg-bone text-ink" : "text-bone/60")}>
             {label}
           </button>
         ))}
@@ -89,7 +89,7 @@ export default function HoursPage() {
 
       <div className="space-y-2">
         {DAY_ORDER.map((d) => (
-          <div key={d} className="flex flex-wrap items-center gap-3 rounded-sm border border-cream/10 bg-ink-warm px-4 py-3">
+          <div key={d} className="flex flex-wrap items-center gap-3 rounded-sm border border-edge bg-panel px-4 py-3">
             <span className="w-24 font-semibold">{DAY_NAMES[d]}</span>
             {draft[d].length === 0 && <Badge tone="muted">Fermé</Badge>}
             {draft[d].map((r, i) => (
@@ -99,23 +99,23 @@ export default function HoursPage() {
                   aria-label={`${DAY_NAMES[d]} ouverture ${i + 1}`}
                   value={r.open}
                   onChange={(e) => update(d, (rs) => rs.map((x, j) => (j === i ? { ...x, open: e.target.value } : x)))}
-                  className="h-10 rounded-sm border border-cream/15 bg-transparent px-2 tabular-nums [color-scheme:dark]"
+                  className="h-10 rounded-sm border border-edge bg-transparent px-2 tabular-nums [color-scheme:dark]"
                 />
-                <span className="text-cream/40">–</span>
+                <span className="text-bone/40">–</span>
                 <input
                   type="time"
                   aria-label={`${DAY_NAMES[d]} fermeture ${i + 1}`}
                   value={r.close}
                   onChange={(e) => update(d, (rs) => rs.map((x, j) => (j === i ? { ...x, close: e.target.value } : x)))}
-                  className="h-10 rounded-sm border border-cream/15 bg-transparent px-2 tabular-nums [color-scheme:dark]"
+                  className="h-10 rounded-sm border border-edge bg-transparent px-2 tabular-nums [color-scheme:dark]"
                 />
-                <button type="button" aria-label="Supprimer la plage" onClick={() => update(d, (rs) => rs.filter((_, j) => j !== i))} className="grid size-9 place-items-center rounded-full text-cream/50 hover:bg-cream/10 hover:text-cream">
+                <button type="button" aria-label="Supprimer la plage" onClick={() => update(d, (rs) => rs.filter((_, j) => j !== i))} className="grid size-9 place-items-center rounded-sm text-bone/50 hover:bg-bone/10 hover:text-bone">
                   <Trash2 className="size-4" aria-hidden />
                 </button>
               </span>
             ))}
             {draft[d].length < 3 && (
-              <button type="button" onClick={() => update(d, (rs) => [...rs, { open: "18:00", close: "22:00" }])} className="ml-auto inline-flex h-9 items-center gap-1 rounded-full px-3 text-xs font-semibold text-cream/60 hover:bg-cream/10 hover:text-cream">
+              <button type="button" onClick={() => update(d, (rs) => [...rs, { open: "18:00", close: "22:00" }])} className="ml-auto inline-flex h-9 items-center gap-1 rounded-sm px-3 text-xs font-semibold text-bone/60 hover:bg-bone/10 hover:text-bone">
                 <Plus className="size-3.5" aria-hidden /> Plage
               </button>
             )}
@@ -123,22 +123,22 @@ export default function HoursPage() {
         ))}
       </div>
       {error && (
-        <p role="alert" className="mt-4 text-sm text-[#ff9b94]">
+        <p role="alert" className="mt-4 text-sm text-danger">
           {error}
         </p>
       )}
       <div className="mt-5 flex items-center gap-4">
-        <Button variant="rose" onClick={save}>
+        <Button variant="primary" onClick={save}>
           Enregistrer
         </Button>
         {saved && <span role="status" className="text-sm text-success">Horaires enregistrés.</span>}
       </div>
 
       <section aria-labelledby="cc-title" className="mt-12">
-        <h2 id="cc-title" className="mb-4 text-xs font-bold tracking-[0.16em] text-cream/55 uppercase">
+        <h2 id="cc-title" className="mb-4 text-xs font-bold tracking-[0.16em] text-bone/55 uppercase">
           Réglages Click & Collect
         </h2>
-        <div className="grid gap-4 rounded-sm border border-cream/10 bg-ink-warm p-5 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 rounded-sm border border-edge bg-panel p-5 sm:grid-cols-2 xl:grid-cols-4">
           {numberSetting("prepMinutes", "Préparation (min)", 5, 90)}
           {numberSetting("rushPrepMinutes", "Coup de feu (min)", 10, 120)}
           {numberSetting("slotIntervalMinutes", "Intervalle des créneaux (min)", 5, 60)}
