@@ -1,0 +1,25 @@
+{
+  "id": "/admin/kitchen",
+  "name": "Burger By M — Cuisine",
+  "short_name": "BBM Cuisine",
+  "description": "Écran cuisine et gestion des commandes Burger By M.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "/admin/kitchen",
+  "scope": "/admin/",
+  "display": "standalone",
+  "display_override": ["standalone", "fullscreen"],
+  "orientation": "any",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
+  "categories": ["food", "business"],
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Écran cuisine", "url": "/admin/kitchen", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Commandes", "url": "/admin/orders", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}

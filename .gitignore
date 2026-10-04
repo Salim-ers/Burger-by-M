@@ -2,7 +2,13 @@ node_modules
 .next
 out
 .env
-.env.local
+.env.*
+!.env.example
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store
+
+# Base locale PGlite, rapports de tests
+.data
+/test-results
+/playwright-report
