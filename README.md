@@ -37,6 +37,7 @@ Sans clés Stripe, seul le paiement au retrait est proposé ; sans clés VAPID, 
 | Commande | Rôle |
 | --- | --- |
 | `npm run dev` / `build` / `start` | Développement, build de production, serveur de production |
+| `npm run vercel-build` | Build utilisé par Vercel : contrôle de la configuration + migrations + carte initiale (production), puis `next build` |
 | `npm run typecheck` | Vérification TypeScript |
 | `npm test` | Tests unitaires et d’intégration (Vitest, base PostgreSQL PGlite en mémoire) |
 | `npm run test:e2e` | Tests navigateur (Playwright) sur un serveur démarré — voir `playwright.config.ts` |
@@ -66,15 +67,23 @@ Seule `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` est exposée au navigateur ; aucun se
 
 ## 4. Mise en production (Vercel + Neon + Stripe)
 
-1. **Neon** : créer le projet (région UE, ex. Francfort), copier la chaîne *pooled* dans `DATABASE_URL`.
-2. **Vercel** : importer le dépôt, saisir les variables, déployer.
-3. **Base** : depuis un poste, avec `DATABASE_URL` de production : `npm run db:setup`, puis `npm run admin:create -- --email … --role owner`.
-4. **Stripe** (Dashboard → Développeurs → Webhooks) : point de terminaison `https://<domaine>/api/webhooks/stripe`, événements :
-   `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled`, `charge.refunded`. Copier le secret `whsec_…` dans `STRIPE_WEBHOOK_SECRET`.
-   Activer les moyens de paiement voulus (CB, Apple Pay, Google Pay) dans Paramètres → Moyens de paiement ; pour Apple Pay, vérifier le domaine.
-   En local : `stripe listen --forward-to localhost:3000/api/webhooks/stripe`.
-5. **Push** : `npm run vapid:generate`, renseigner les trois variables `VAPID_*`, redéployer.
-6. Dans `/admin/settings` : vérifier coordonnées, temps de préparation, capacité par créneau, moyens de paiement, lien des avis Google ; ouvrir les commandes en ligne depuis le tableau de bord.
+1. **Neon** : dans le projet Vercel → onglet **Storage** → *Create Database* → **Neon** (région UE, ex. Francfort) → connecter au projet. Vercel ajoute `DATABASE_URL` (et `DATABASE_URL_UNPOOLED`) automatiquement.
+   *(Ou créer le projet sur neon.tech et copier la chaîne « pooled » dans `DATABASE_URL`.)*
+2. **Vercel** → Settings → Environment Variables (Production) : `BETTER_AUTH_SECRET` (`openssl rand -base64 32`), `BETTER_AUTH_URL` et `NEXT_PUBLIC_APP_URL` = l’URL publique en `https://` (ex. `https://burger-by-m.vercel.app`, puis le domaine définitif).
+3. **Redéployer**. Le build de production (`vercel-build`) vérifie la configuration, **applique les migrations** et insère la carte initiale si la base est vide. Si une variable manque, le build échoue avec la liste des variables en cause et **le site en ligne n’est pas remplacé**.
+4. **Compte gérant** : copier la valeur de `DATABASE_URL` (Vercel → Storage → Neon, ou Settings → Environment Variables) et la passer **uniquement pour cette commande** (ne pas la mettre dans `.env.local`, sinon le développement local écrirait dans la base de production) :
+   - Git Bash : `DATABASE_URL="postgres://…" npm run admin:create -- --email vous@exemple.fr --name "Gérant" --role owner`
+   - PowerShell : `$env:DATABASE_URL="postgres://…"; npm run admin:create -- --email vous@exemple.fr --name "Gérant" --role owner; Remove-Item Env:DATABASE_URL`
+
+En cas de déploiement défectueux : Vercel → Deployments → déploiement précédent → *Instant Rollback*. Après un rollback, Vercel ne publie plus automatiquement les nouveaux déploiements : utiliser *Promote* (ou *Undo Rollback*) une fois le correctif déployé.
+
+Puis, quand les comptes sont prêts :
+- **Stripe** (Dashboard → Développeurs → Webhooks) : point de terminaison `https://<domaine>/api/webhooks/stripe`, événements :
+  `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled`, `charge.refunded`. Copier le secret `whsec_…` dans `STRIPE_WEBHOOK_SECRET`.
+  Activer les moyens de paiement voulus (CB, Apple Pay, Google Pay) dans Paramètres → Moyens de paiement ; pour Apple Pay, vérifier le domaine.
+  En local : `stripe listen --forward-to localhost:3000/api/webhooks/stripe`.
+- **Push** : `npm run vapid:generate`, renseigner les trois variables `VAPID_*`, redéployer.
+- Dans `/admin/settings` : vérifier coordonnées, temps de préparation, capacité par créneau, moyens de paiement, lien des avis Google ; ouvrir les commandes en ligne depuis le tableau de bord.
 
 ## 5. Commande et paiement — comment c’est sécurisé
 

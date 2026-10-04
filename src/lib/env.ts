@@ -30,7 +30,12 @@ export function env(): Env {
   if (cached) return cached;
   const parsed = schema.safeParse(process.env);
   if (!parsed.success) {
-    const issues = parsed.error.issues.map((i) => `  - ${i.path.join(".")} : ${i.message}`).join("\n");
+    const issues = parsed.error.issues
+      .map((i) => {
+        const key = i.path.join(".");
+        return `  - ${key} : ${process.env[key] === undefined ? "manquante" : i.message}`;
+      })
+      .join("\n");
     throw new Error(`Configuration invalide (voir .env.example) :\n${issues}`);
   }
   cached = parsed.data;

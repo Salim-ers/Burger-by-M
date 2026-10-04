@@ -10,8 +10,8 @@ let lastExpiry = 0;
 
 /** Créneaux de retrait disponibles maintenant (horaires, préparation, capacité restante). */
 export async function GET() {
-  const db = getDb();
   try {
+    const db = getDb();
     // Libère les créneaux des paiements abandonnés (au plus une fois par minute et par instance).
     if (Date.now() - lastExpiry > 60_000) {
       lastExpiry = Date.now();
