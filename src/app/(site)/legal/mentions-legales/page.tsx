@@ -47,7 +47,7 @@ export default async function MentionsLegalesPage() {
       <p>Données : {legal.database}</p>
 
       <h2>Paiement en ligne</h2>
-      <p>{legal.payment}. Les données de carte bancaire sont saisies et traitées exclusivement par Stripe : elles ne transitent pas par nos serveurs et ne sont jamais stockées par Burger By M.</p>
+      <p>{legal.payment}. Les données de carte bancaire sont saisies et traitées exclusivement par Mollie, sur sa page de paiement sécurisée : elles ne transitent pas par nos serveurs et ne sont jamais stockées par Burger By M.</p>
 
       <h2>Propriété intellectuelle</h2>
       <p>

@@ -1,0 +1,1 @@
+ALTER TABLE "restaurant_settings" DROP COLUMN "busy_extra_minutes";

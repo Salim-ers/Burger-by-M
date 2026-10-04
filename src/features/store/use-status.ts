@@ -17,10 +17,17 @@ export function useOpeningStatus(): (OpeningStatus & { ready: true }) | { ready:
   return { ready: true, ...getOpeningStatus(now, store.schedule) };
 }
 
-/** Message bloquant à afficher côté client, ou null si la commande en ligne est possible. */
+/** Libellé des boutons « Commander » quand la commande en ligne est fermée. */
+export const ORDERING_CLOSED_LABEL = "Commandes temporairement fermées";
+
+/**
+ * Message bloquant à afficher côté client, ou null si la commande en ligne est possible.
+ * Fermée si : interrupteur OFF, retrait désactivé, temps de préparation non configuré, aucun moyen de paiement.
+ */
 export function useOrderingNotice(): string | null {
   const { store } = useSite();
-  if (!store.onlineOrderingEnabled || !store.pickupEnabled) return "Les commandes en ligne sont momentanément indisponibles.";
-  if (store.paymentMethods.length === 0) return "Les commandes en ligne sont momentanément indisponibles.";
+  if (!store.onlineOrderingEnabled || !store.pickupEnabled || store.prepMinutes === null || store.paymentMethods.length === 0) {
+    return "Les commandes en ligne sont temporairement fermées. Le restaurant reste joignable par téléphone.";
+  }
   return null;
 }

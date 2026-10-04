@@ -3,132 +3,191 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { motion, useMotionValueEvent, useScroll, useSpring, type MotionValue } from "framer-motion";
-import { useReduce, useScrollMap } from "@/components/motion";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { gsap, useGSAP, reducedMotion } from "@/components/motion/gsap";
+import { cutout } from "@/data/media";
 import { cn } from "@/lib/utils";
 
-const SRC = "/images/cutouts/smash-double.webp";
-const RATIO = 764 / 1144;
+const SRC = cutout("le-special", "dark")!;
 
 /**
- * Le vrai Smash Double, découpé en bandes horizontales de la MÊME photo (aucun faux burger 3D) :
- * au défilement, chaque couche descend se poser sur la précédente jusqu'au burger assemblé.
- * Bandes en % de la hauteur, du bas vers le haut.
+ * Le VRAI Spécial, découpé en bandes horizontales de la même photo (aucun faux burger 3D).
+ * Bandes en % de la hauteur du visuel, du bas vers le haut — fidèles à ce que montre la photo :
+ * le « deuxième steak » n'étant pas distinct à l'image, il n'est pas annoncé.
  */
-const LAYERS = [
-  { name: "Le pain", detail: "Potatoes bun frais, toasté", top: 84, bottom: 100 },
-  { name: "Le steak smashé", detail: "Écrasé sur la plaque, saisi, croustillant", top: 73, bottom: 84 },
-  { name: "Le cheddar", detail: "Il fond sur la viande encore chaude", top: 64, bottom: 73 },
-  { name: "Le second steak", detail: "Parce qu’un seul ne suffit pas", top: 55, bottom: 64 },
-  { name: "Encore du cheddar", detail: "Généreux, jusqu’au bord", top: 46, bottom: 55 },
-  { name: "La sauce smash", detail: "La signature de la maison", top: 37, bottom: 46 },
-  { name: "Le pain du dessus", detail: "Et le burger est prêt", top: 0, bottom: 37 },
-] as const;
-
-const START = 0.06;
+type Fx = "drip" | "stagger" | "mask" | "close" | "plain";
+const PHASES: { name: string; detail: string; top: number; bottom: number; fx: Fx }[] = [
+  { name: "Le pain", detail: "Potatoes bun frais, doré", top: 86, bottom: 100, fx: "plain" },
+  { name: "La sauce", detail: "Sauce smash et salade croquante", top: 75, bottom: 86, fx: "mask" },
+  { name: "Le steak smash", detail: "Écrasé sur la plaque brûlante, saisi, croustillant", top: 64, bottom: 75, fx: "plain" },
+  { name: "Le cheddar", detail: "Il fond sur la viande encore chaude", top: 56, bottom: 64, fx: "drip" },
+  { name: "Les toppings", detail: "Cornichons croquants", top: 47, bottom: 56, fx: "plain" },
+  { name: "Le crispy", detail: "Oignons crispy, généreusement", top: 35, bottom: 47, fx: "stagger" },
+  { name: "Le pain du dessus", detail: "Un trait de sauce smash, on referme", top: 0, bottom: 35, fx: "close" },
+];
+const N = PHASES.length;
+const START = 0.08;
 const SPAN = 0.105;
+const pad = (n: number) => String(n).padStart(2, "0");
+/** Les bandes se chevauchent légèrement (OVERLAP %) : aucune ligne de raccord visible entre deux couches. */
+const OVERLAP = 0.4;
+const clip = (top: number, bottom: number, side = 0) => `inset(${Math.max(0, top - OVERLAP)}% ${side}% ${Math.max(0, 100 - bottom - OVERLAP)}% ${side}%)`;
 
 export function BurgerBuild() {
-  const ref = useRef<HTMLElement>(null);
-  const reduce = useReduce();
-  const wide = useMediaQuery("(min-width: 768px)", true);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
-  const p = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.35 });
-  const [scene, setScene] = useState(-1);
-  useMotionValueEvent(scrollYProgress, "change", (v) => setScene(v < START ? -1 : Math.min(LAYERS.length - 1, Math.floor((v - START) / SPAN))));
-  const outroOpacity = useScrollMap(p, [0.8, 0.9], [0, 1]);
-  const outroY = useScrollMap(p, [0.8, 0.9], [30, 0]);
-  const shadow = useScrollMap(p, [START, START + SPAN], [0, 1]);
+  const root = useRef<HTMLElement>(null);
+  const [phase, setPhase] = useState(-1);
+  const [stat, setStat] = useState(false);
 
-  if (reduce) return <StaticBuild />;
+  useGSAP(
+    () => {
+      if (!root.current) return;
+      if (reducedMotion()) {
+        setStat(true);
+        return;
+      }
+      const mobile = window.matchMedia("(max-width: 767px)").matches;
+      const drop = mobile ? -38 : -62; // vh
+      const tl = gsap.timeline({
+        defaults: { ease: "power3.out" },
+        scrollTrigger: {
+          trigger: root.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.7,
+          onUpdate: (st) => {
+            const p = st.progress;
+            const next = p < START ? -1 : Math.min(N - 1, Math.floor((p - START) / SPAN));
+            setPhase((cur) => (cur === next ? cur : next));
+          },
+        },
+      });
+
+      tl.to("[data-build-intro]", { autoAlpha: 0, yPercent: -40, duration: START, ease: "none" }, 0);
+      PHASES.forEach((ph, i) => {
+        const at = START + i * SPAN;
+        const sel = `[data-layer='${i}']`;
+        if (ph.fx === "stagger") {
+          tl.fromTo(`${sel} [data-slice]`, { yPercent: drop * 1.6, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: SPAN * 0.8, stagger: SPAN * 0.08 }, at);
+        } else {
+          tl.fromTo(sel, { y: `${drop}vh`, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: SPAN * 0.85 }, at);
+        }
+        if (ph.fx === "mask") tl.fromTo(`${sel} [data-img]`, { clipPath: clip(ph.top, ph.bottom, 50) }, { clipPath: clip(ph.top, ph.bottom, 0), duration: SPAN * 0.8, ease: "power2.inOut" }, at + SPAN * 0.1);
+        if (ph.fx === "drip") tl.fromTo(sel, { scaleY: 1.07 }, { scaleY: 1, transformOrigin: "50% 0%", duration: SPAN * 0.5, ease: "elastic.out(1, 0.6)" }, at + SPAN * 0.7);
+        if (ph.fx === "close") tl.fromTo("[data-stack]", { scaleY: 0.985 }, { scaleY: 1, transformOrigin: "50% 100%", duration: SPAN * 0.4, ease: "back.out(2)" }, at + SPAN * 0.8);
+      });
+      tl.fromTo("[data-shadow]", { scaleX: 0.35, autoAlpha: 0 }, { scaleX: 1, autoAlpha: 1, duration: START + SPAN * 2, ease: "none" }, START)
+        .fromTo("[data-progress]", { scaleY: 0 }, { scaleY: 1, duration: SPAN * N, ease: "none" }, START)
+        // Fin : le burger remonte légèrement pour laisser la place à la phrase de conclusion.
+        .to("[data-stage]", { y: "-4vh", scale: mobile ? 0.94 : 0.8, duration: 0.08, ease: "power2.inOut" }, START + SPAN * N)
+        .to("[data-phase-text]", { autoAlpha: 0, duration: 0.05, ease: "none" }, START + SPAN * N)
+        .fromTo("[data-build-outro]", { autoAlpha: 0, y: 40 }, { autoAlpha: 1, y: 0, duration: 0.08 }, START + SPAN * N + 0.02)
+        .to({}, { duration: 0.06 });
+    },
+    { scope: root },
+  );
+
+  if (stat) return <StaticBuild />;
+  const current = phase >= 0 ? PHASES[phase]! : null;
 
   return (
-    <section ref={ref} id="construction" aria-labelledby="build-title" className="on-light relative bg-ivory" style={{ height: wide ? "420vh" : "300vh" }}>
-      <div className="sticky top-0 flex h-[100svh] flex-col overflow-hidden">
-        <div className="shell flex items-center justify-between pt-24 md:pt-28">
-          <p className="kicker text-ink/55">La construction</p>
-          <p className="kicker text-ink/55 tabular-nums">
-            {String(Math.max(0, scene + 1)).padStart(2, "0")} / {String(LAYERS.length).padStart(2, "0")}
-          </p>
-        </div>
-
-        <div className="shell relative grid flex-1 items-center gap-6 md:grid-cols-12">
-          {/* Scènes */}
-          <ol className="relative z-10 order-2 md:order-1 md:col-span-4" aria-label="Les étapes">
-            {LAYERS.map((l, i) => (
-              <li key={l.name} className={cn("transition-all duration-500 ease-out-expo", i === scene ? "opacity-100" : "hidden opacity-30 md:block", i > scene && "md:opacity-15")}>
-                <p className={cn("flex items-baseline gap-4 py-1.5", i === scene ? "text-ink" : "text-ink/60")}>
-                  <span className="kicker w-7 shrink-0 tabular-nums text-brass-deep">{String(i + 1).padStart(2, "0")}</span>
-                  <span className={cn("font-serif leading-tight", i === scene ? "text-[1.9rem] md:text-[2.2rem]" : "text-[1.3rem]")}>{l.name}</span>
-                </p>
-                {i === scene && <p className="pl-11 text-sm text-ink/60">{l.detail}</p>}
-              </li>
-            ))}
-          </ol>
-
-          {/* Scène : bandes de la même photo */}
-          <div className="relative order-1 mx-auto w-full max-w-[720px] md:order-2 md:col-span-8">
-            <div className="relative w-full" style={{ aspectRatio: `${1 / RATIO}` }}>
-              <motion.div aria-hidden style={{ opacity: shadow }} className="absolute -bottom-[4%] left-1/2 h-[10%] w-[78%] -translate-x-1/2 rounded-[50%] bg-[radial-gradient(closest-side,rgba(60,35,20,0.35),transparent)]" />
-              {LAYERS.map((l, i) => (
-                <Layer key={l.name} index={i} top={l.top} bottom={l.bottom} progress={p} wide={wide} />
-              ))}
-              <span className="sr-only">Smash Double Burger By M assemblé couche par couche.</span>
+    <section ref={root} data-theme="dark" id="construction" aria-labelledby="build-title" className="on-dark relative h-[230vh] bg-ink md:h-[400vh]">
+      <div className="sticky top-0 flex h-svh flex-col overflow-hidden">
+        <div className="container-bm relative grid h-full grid-cols-12 items-center gap-4 pt-20 pb-10">
+          {/* Indicateur 01 / 07 */}
+          <div className="col-span-12 flex items-center gap-4 self-start pt-6 md:col-span-2 md:flex-col md:items-start md:self-center md:pt-0">
+            <p className="t-label tabular-nums text-cream/70" aria-hidden>
+              {pad(Math.max(1, phase + 1))} / {pad(N)}
+            </p>
+            <div className="relative h-px w-24 bg-white/12 md:h-[34vh] md:w-px">
+              <div data-progress className="absolute inset-0 origin-left bg-cheddar md:origin-top" />
             </div>
+          </div>
+
+          {/* Scène */}
+          <div className="relative col-span-12 md:col-span-7">
+            <div data-build-intro className="pointer-events-none absolute inset-x-0 top-1/2 z-20 -translate-y-1/2 text-center">
+              <h2 id="build-title" className="t-xl">
+                Un burger
+                <br />
+                <span className="s-xl normal-case">ça se construit.</span>
+              </h2>
+            </div>
+            <div data-stage className="relative mx-auto w-[min(92vw,640px)]" style={{ aspectRatio: `${SRC.width} / ${SRC.height}` }}>
+              <div data-stack className="absolute inset-0">
+                {PHASES.map((ph, i) => (
+                  <div key={ph.name} data-layer={i} className="absolute inset-0" style={{ zIndex: N - i, visibility: ph.fx === "stagger" ? undefined : "hidden" }}>
+                    {ph.fx === "stagger" ? (
+                      [0, 1, 2].map((s) => (
+                        <div key={s} data-slice className="absolute inset-0" style={{ visibility: "hidden", clipPath: `inset(${ph.top - OVERLAP}% ${Math.max(0, (2 - s) * 33.34 - OVERLAP)}% ${100 - ph.bottom - OVERLAP}% ${Math.max(0, s * 33.33 - OVERLAP)}%)` }}>
+                          <Image src={SRC.src} alt="" fill sizes="(min-width: 768px) 640px, 92vw" className="object-contain" />
+                        </div>
+                      ))
+                    ) : (
+                      <div data-img className="absolute inset-0" style={{ clipPath: clip(ph.top, ph.bottom) }}>
+                        <Image src={SRC.src} alt="" fill sizes="(min-width: 768px) 640px, 92vw" className="object-contain" />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <div data-shadow aria-hidden className="absolute -bottom-[7%] left-[12%] h-[12%] w-[76%] rounded-[50%] bg-black blur-2xl" style={{ visibility: "hidden" }} />
+            </div>
+            <p className="sr-only">Le Spécial, couche par couche : {PHASES.map((p) => p.name.toLowerCase()).join(", ")}.</p>
+          </div>
+
+          {/* Phase en cours */}
+          <div data-phase-text className="col-span-12 min-h-28 self-end md:col-span-3 md:self-center" aria-live="polite">
+            {current && (
+              <div key={phase} className="animate-[soft-in_0.6s_var(--ease-food)_both]">
+                <p className="t-label text-cheddar">Phase {pad(phase + 1)}</p>
+                <p className="t-l mt-2">{current.name}</p>
+                <p className="mt-3 max-w-[16rem] text-[0.95rem] leading-relaxed text-cream/70">{current.detail}</p>
+              </div>
+            )}
           </div>
         </div>
 
-        <motion.div style={{ opacity: outroOpacity, y: outroY }} className="shell pb-10 text-center md:pb-14">
-          <h2 id="build-title" className="display-3">
-            Tout est dans <span className="italic">les détails.</span>
-          </h2>
-          <Link href="/menu" className="kicker mt-5 inline-flex items-center gap-3 border-b border-ink/30 pb-1 transition-colors hover:border-ink">
-            Découvrir la carte →
+        <div data-build-outro className="absolute inset-x-0 bottom-10 z-30 text-center md:bottom-14" style={{ visibility: "hidden" }}>
+          <p className="t-l">
+            Tout est dans <span className="s-l normal-case text-pink">les détails.</span>
+          </p>
+          <Link href="/menu" className="t-label mt-6 inline-flex h-12 items-center border-b border-cheddar px-1 text-cream transition-colors hover:text-cheddar">
+            Voir la carte →
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
 }
 
-function Layer({ index, top, bottom, progress, wide }: { index: number; top: number; bottom: number; progress: MotionValue<number>; wide: boolean }) {
-  const s = START + index * SPAN;
-  const e = s + SPAN * 1.15;
-  const drop = wide ? -420 : -240;
-  const y = useScrollMap(progress, [s, e], [drop, 0]);
-  const opacity = useScrollMap(progress, [s, s + SPAN * 0.45], [0, 1]);
-  const rotate = useScrollMap(progress, [s, e], [index % 2 ? 2.5 : -2.5, 0]);
-  return (
-    <motion.div className="absolute inset-0 will-change-transform" style={{ y, opacity, rotate, clipPath: `inset(${top}% 0% ${100 - bottom}% 0%)` }}>
-      <Image src={SRC} alt="" fill sizes="(min-width: 768px) 60vw, 100vw" className="object-contain" preload={index === 0} />
-    </motion.div>
-  );
-}
-
-/** Mouvement réduit : le burger assemblé et la liste des étapes. */
+/** Mouvement réduit : le burger complet et ses couches, sans défilement narratif. */
 function StaticBuild() {
   return (
-    <section id="construction" aria-labelledby="build-title" className="on-light bg-ivory py-24">
-      <div className="shell grid items-center gap-10 md:grid-cols-12">
-        <ol className="md:col-span-4">
-          {LAYERS.map((l, i) => (
-            <li key={l.name} className="flex items-baseline gap-4 border-b border-rule py-3">
-              <span className="kicker w-7 text-brass-deep">{String(i + 1).padStart(2, "0")}</span>
-              <span className="font-serif text-xl">{l.name}</span>
-            </li>
-          ))}
-        </ol>
-        <div className="md:col-span-8">
-          <Image src={SRC} alt="Smash Double Burger By M" width={1144} height={764} sizes="(min-width: 768px) 60vw, 100vw" className="h-auto w-full" />
-          <h2 id="build-title" className="display-3 mt-8 text-center">
-            Tout est dans <span className="italic">les détails.</span>
+    <section data-theme="dark" id="construction" aria-labelledby="build-title" className="on-dark bg-ink py-24 md:py-36">
+      <div className="container-bm grid items-center gap-12 md:grid-cols-12">
+        <div className="md:col-span-5">
+          <h2 id="build-title" className="t-xl">
+            Un burger <span className="s-xl normal-case">ça se construit.</span>
           </h2>
-          <p className="mt-4 text-center">
-            <Link href="/menu" className="kicker border-b border-ink/30 pb-1">
-              Découvrir la carte →
-            </Link>
+          <ol className="mt-10 space-y-3">
+            {PHASES.map((p, i) => (
+              <li key={p.name} className="flex gap-4 border-t border-rule pt-3">
+                <span className="t-label w-8 text-cheddar tabular-nums">{pad(i + 1)}</span>
+                <span>
+                  <span className="t-s block">{p.name}</span>
+                  <span className="text-sm text-cream/70">{p.detail}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div className="md:col-span-7">
+          <Image src={SRC.src} alt="Le Spécial Burger By M : double steak smash, extra cheddar, oignons crispy, cornichons, salade et sauce smash" width={SRC.width} height={SRC.height} sizes="(min-width: 768px) 55vw, 100vw" className="h-auto w-full" />
+          <p className="t-l mt-10">
+            Tout est dans <span className="s-l normal-case text-pink">les détails.</span>
           </p>
+          <Link href="/menu" className="t-label mt-6 inline-flex h-12 items-center border-b border-cheddar text-cream">
+            Voir la carte →
+          </Link>
         </div>
       </div>
     </section>

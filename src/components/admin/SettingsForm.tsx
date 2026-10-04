@@ -9,8 +9,8 @@ import { cn } from "@/lib/utils";
 
 type Values = Omit<SettingsInput, "email" | "googleReviewsUrl" | "instagramUrl" | "facebookUrl"> & { email: string; googleReviewsUrl: string; instagramUrl: string; facebookUrl: string };
 
-/** Réglages du restaurant (gérant) : coordonnées, commande en ligne, créneaux, paiement, liens. */
-export function SettingsForm({ initial, stripeReady }: { initial: SettingsInput; stripeReady: boolean }) {
+/** Réglages du restaurant (gérant) : coordonnées, préparation, créneaux, paiement, liens. */
+export function SettingsForm({ initial, paymentsReady, cardCapture }: { initial: SettingsInput; paymentsReady: boolean; cardCapture: "manual" | "automatic" }) {
   const { exec, pending } = useAction();
   const [v, setV] = useState<Values>({
     ...initial,
@@ -23,12 +23,33 @@ export function SettingsForm({ initial, stripeReady }: { initial: SettingsInput;
   const [error, setError] = useState<string | null>(null);
   const set = <K extends keyof Values>(k: K, value: Values[K]) => setV((x) => ({ ...x, [k]: value }));
 
-  const num = (k: "prepMinutes" | "busyExtraMinutes" | "slotIntervalMinutes" | "maxOrdersPerSlot" | "scheduleDaysAhead", label: string, min: number, max: number, unit?: string) => (
+  const num = (k: "slotIntervalMinutes" | "maxOrdersPerSlot" | "scheduleDaysAhead", label: string, min: number, max: number, unit?: string) => (
     <label className="text-xs text-sub">
       {label}
       <span className="mt-1 flex items-center gap-2">
         <input type="number" min={min} max={max} required value={v[k]} onChange={(e) => set(k, Number(e.target.value))} className={cn(adminInput, "w-28 tabular-nums")} />
         {unit && <span className="text-sm text-sub">{unit}</span>}
+      </span>
+    </label>
+  );
+
+  /** Champ facultatif : vide = non configuré (null). */
+  const optionalMinutes = (k: "prepMinutes" | "rushPrepMinutes", label: string, min: number, max: number, placeholder: string) => (
+    <label className="text-xs text-sub">
+      {label}
+      <span className="mt-1 flex items-center gap-2">
+        <input
+          type="number"
+          inputMode="numeric"
+          min={min}
+          max={max}
+          value={v[k] ?? ""}
+          placeholder={placeholder}
+          aria-label={label}
+          onChange={(e) => set(k, e.target.value === "" ? null : Number(e.target.value))}
+          className={cn(adminInput, "w-28 tabular-nums", v[k] == null && "border-cheddar/60")}
+        />
+        <span className="text-sm text-sub">min</span>
       </span>
     </label>
   );
@@ -39,7 +60,8 @@ export function SettingsForm({ initial, stripeReady }: { initial: SettingsInput;
         {label}
         {help && <span className="block text-xs text-sub">{help}</span>}
       </span>
-      <Switch checked={v[k]} onChange={(x) => set(k, x)} label={label} disabled={disabled} />
+      {/* Indisponible (ex. Mollie non configuré) : affiché éteint, la valeur enregistrée est conservée. */}
+      <Switch checked={v[k] && !disabled} onChange={(x) => set(k, x)} label={label} disabled={disabled} />
     </label>
   );
 
@@ -93,10 +115,19 @@ export function SettingsForm({ initial, stripeReady }: { initial: SettingsInput;
         </div>
       </Panel>
 
-      <Panel title="Retrait et créneaux">
+      <Panel title="Préparation, retrait et créneaux">
+        <div id="preparation" className="mb-5 scroll-mt-24 border-b border-rule pb-5">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {optionalMinutes("prepMinutes", "Temps de préparation", 5, 120, "ex. 20")}
+            {optionalMinutes("rushPrepMinutes", "En mode coup de feu", 6, 180, "ex. 35")}
+          </div>
+          <p className="mt-3 text-xs leading-relaxed text-sub">
+            {v.prepMinutes == null
+              ? "Non configuré : aucune estimation n’est affichée et la commande en ligne reste fermée."
+              : `Le site annonce ≈ ${v.prepMinutes} min et propose des créneaux à partir de ce délai.${v.rushPrepMinutes != null ? ` En coup de feu : ${v.rushPrepMinutes} min.` : ""}`}
+          </p>
+        </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {num("prepMinutes", "Temps de préparation", 5, 120, "min")}
-          {num("busyExtraMinutes", "En plus en mode débordé", 0, 120, "min")}
           {num("slotIntervalMinutes", "Intervalle des créneaux", 5, 60, "min")}
           {num("maxOrdersPerSlot", "Commandes max. par créneau", 1, 100)}
           {num("scheduleDaysAhead", "Commande à l’avance", 0, 7, "jour(s)")}
@@ -123,7 +154,16 @@ export function SettingsForm({ initial, stripeReady }: { initial: SettingsInput;
 
       <Panel title="Paiement">
         <div className="divide-y divide-rule">
-          {toggle("cardPaymentEnabled", "Paiement en ligne (Stripe)", stripeReady ? "Carte bancaire, Apple Pay, Google Pay." : "Clés Stripe non configurées : indisponible.", !stripeReady)}
+          {toggle(
+            "cardPaymentEnabled",
+            "Paiement en ligne (Mollie)",
+            paymentsReady
+              ? cardCapture === "manual"
+                ? "Carte bancaire. Montant réservé à la commande, encaissé quand la cuisine accepte, annulé si elle refuse."
+                : "Carte bancaire, encaissée au paiement ; remboursée si la cuisine refuse."
+              : "Clé MOLLIE_API_KEY non configurée : indisponible.",
+            !paymentsReady,
+          )}
           {toggle("onSitePaymentEnabled", "Paiement au retrait", "Espèces ou carte au comptoir.")}
         </div>
         {!v.cardPaymentEnabled && !v.onSitePaymentEnabled && <p className="mt-3 text-sm text-[#f08a7e]">Aucun moyen de paiement actif : la commande en ligne sera indisponible.</p>}

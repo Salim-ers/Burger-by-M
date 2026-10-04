@@ -1,100 +1,121 @@
 "use client";
 
-import { useMemo, useRef } from "react";
-import { interpolate, motion, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
-import { useHydrated } from "@/hooks/use-hydrated";
+import { useRef } from "react";
+import { gsap, useGSAP, EASE_MASK, reducedMotion, finePointer } from "./gsap";
 import { cn } from "@/lib/utils";
 
-export const EASE = [0.16, 1, 0.3, 1] as const;
-
-/** prefers-reduced-motion sans écart d'hydratation (false au rendu serveur et au premier rendu client). */
-export function useReduce() {
-  const reduce = useReducedMotion();
-  const hydrated = useHydrated();
-  return hydrated && Boolean(reduce);
-}
-
 /**
- * Interpolation calculée en JS à chaque frame (évite les écarts du ViewTimeline natif
- * sur certaines propriétés, observés sur Chrome).
+ * Bibliothèque de mouvements Burger By M — chaque effet a une raison :
+ * le texte se révèle comme une recette qu'on lit, l'image se dévoile comme une assiette qu'on pose.
+ * En mouvement réduit, tout est affiché sans animation.
  */
-export function useScrollMap<T extends number | string>(value: MotionValue<number>, input: number[], output: T[]) {
-  const key = `${input.join(",")}|${output.join(",")}`;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const map = useMemo(() => interpolate(input, output), [key]);
-  return useTransform(value, (v) => map(v));
-}
 
-/** Apparition fondu + translation à l'entrée dans le viewport. */
-export function Reveal({ children, className, delay = 0, y = 24, as = "div" }: { children: React.ReactNode; className?: string; delay?: number; y?: number; as?: "div" | "li" | "p" | "section" }) {
-  const Comp = motion[as];
-  return (
-    <Comp className={className} initial={{ opacity: 0, y }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "0px 0px -10% 0px" }} transition={{ duration: 0.9, ease: EASE, delay }}>
-      {children}
-    </Comp>
+type Tag = "h1" | "h2" | "h3" | "p" | "div" | "span";
+
+/** Titre révélé ligne par ligne (masque vertical). */
+export function RevealText({ lines, as = "h2", className, delay = 0, stagger = 0.08, id, start = "top 85%" }: { lines: React.ReactNode[]; as?: Tag; className?: string; delay?: number; stagger?: number; id?: string; start?: string }) {
+  const ref = useRef<HTMLElement>(null);
+  useGSAP(
+    () => {
+      if (reducedMotion() || !ref.current) return;
+      gsap.from(ref.current.querySelectorAll(".mask-line > span"), { yPercent: 108, duration: 1.15, stagger, delay, scrollTrigger: { trigger: ref.current, start, once: true } });
+    },
+    { scope: ref },
   );
-}
-
-/** Titre révélé ligne par ligne (masque). */
-export function LineReveal({ lines, className, as = "h2", id, delay = 0 }: { lines: React.ReactNode[]; className?: string; as?: "h1" | "h2" | "h3" | "p"; id?: string; delay?: number }) {
-  const Comp = motion[as];
+  const Comp = as as "h2";
   return (
-    <Comp id={id} className={className} initial="hidden" whileInView="show" viewport={{ once: true, margin: "0px 0px -12% 0px" }}>
+    <Comp ref={ref as React.Ref<HTMLHeadingElement>} id={id} className={className}>
       {lines.map((l, i) => (
-        <span key={i} className="block overflow-hidden pb-[0.08em] -mb-[0.08em]">
-          <motion.span className="block" variants={{ hidden: { y: "108%" }, show: { y: "0%" } }} transition={{ duration: 1.1, ease: EASE, delay: delay + i * 0.1 }}>
-            {l}
-          </motion.span>
+        <span key={i} className="mask-line">
+          <span>{l}</span>
         </span>
       ))}
     </Comp>
   );
 }
 
-/** Image révélée par un masque vertical + parallaxe légère. */
-export function MaskReveal({ children, className, parallax = 6 }: { children: React.ReactNode; className?: string; parallax?: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduce = useReduce();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
-  const y = useScrollMap(scrollYProgress, [0, 1], [`-${parallax}%`, `${parallax}%`]);
+/** Apparition douce (fondu + légère montée). */
+export function FadeIn({ children, className, delay = 0, y = 24, as = "div" }: { children: React.ReactNode; className?: string; delay?: number; y?: number; as?: Tag | "li" | "section" }) {
+  const ref = useRef<HTMLElement>(null);
+  useGSAP(
+    () => {
+      if (reducedMotion() || !ref.current) return;
+      gsap.from(ref.current, { autoAlpha: 0, y, duration: 0.9, delay, scrollTrigger: { trigger: ref.current, start: "top 88%", once: true } });
+    },
+    { scope: ref },
+  );
+  const Comp = as as "div";
   return (
-    <motion.div
-      ref={ref}
-      className={cn("relative overflow-hidden", className)}
-      initial={{ clipPath: "inset(100% 0% 0% 0%)" }}
-      whileInView={{ clipPath: "inset(0% 0% 0% 0%)" }}
-      viewport={{ once: true, margin: "0px 0px -8% 0px" }}
-      transition={{ duration: 1.2, ease: [0.76, 0, 0.24, 1] }}
-    >
-      <motion.div className="absolute -inset-y-[8%] inset-x-0" style={reduce ? undefined : { y }}>
-        {children}
-      </motion.div>
-    </motion.div>
+    <Comp ref={ref as React.Ref<HTMLDivElement>} className={className}>
+      {children}
+    </Comp>
   );
 }
 
-/** Attraction légère vers le curseur (desktop). */
-export function Magnetic({ children, className, strength = 8 }: { children: React.ReactNode; className?: string; strength?: number }) {
+/**
+ * Image dévoilée : un volet de la couleur du fond traverse l'image, qui se pose (léger zoom → 1).
+ * `panel` : couleur du volet (crème, noir…).
+ */
+export function RevealImage({ children, className, style, panel = "var(--cream)", direction = "left", parallax = 0 }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; panel?: string; direction?: "left" | "up"; parallax?: number }) {
   const ref = useRef<HTMLDivElement>(null);
-  const x = useSpring(useMotionValue(0), { stiffness: 200, damping: 18, mass: 0.4 });
-  const y = useSpring(useMotionValue(0), { stiffness: 200, damping: 18, mass: 0.4 });
+  useGSAP(
+    () => {
+      const el = ref.current;
+      if (!el) return;
+      const cover = el.querySelector<HTMLElement>("[data-cover]");
+      const media = el.querySelector<HTMLElement>("[data-media]");
+      if (reducedMotion()) {
+        if (cover) cover.style.display = "none";
+        return;
+      }
+      const tl = gsap.timeline({ scrollTrigger: { trigger: el, start: "top 82%", once: true } });
+      tl.fromTo(cover, direction === "left" ? { scaleX: 1 } : { scaleY: 1 }, { ...(direction === "left" ? { scaleX: 0 } : { scaleY: 0 }), duration: 0.85, ease: EASE_MASK }).from(media, { scale: 1.12, duration: 1.4, ease: "expo.out" }, 0.05);
+      if (parallax && media) {
+        gsap.fromTo(media, { yPercent: -parallax }, { yPercent: parallax, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: true } });
+      }
+    },
+    { scope: ref },
+  );
   return (
-    <motion.div
-      ref={ref}
-      className={cn("inline-flex", className)}
-      style={{ x, y }}
-      onPointerMove={(e) => {
-        if (e.pointerType !== "mouse" || !ref.current) return;
-        const r = ref.current.getBoundingClientRect();
-        x.set(((e.clientX - r.left - r.width / 2) / (r.width / 2)) * strength);
-        y.set(((e.clientY - r.top - r.height / 2) / (r.height / 2)) * strength);
-      }}
-      onPointerLeave={() => {
-        x.set(0);
-        y.set(0);
-      }}
-    >
+    <div ref={ref} className={cn("relative overflow-hidden", className)} style={style}>
+      <div data-media className={cn("absolute inset-0", parallax && "-inset-y-[8%]")}>
+        {children}
+      </div>
+      <div data-cover aria-hidden className={cn("absolute inset-0 z-10", direction === "left" ? "origin-right" : "origin-top")} style={{ background: panel }} />
+    </div>
+  );
+}
+
+/** Attraction magnétique très légère (quelques pixels) — desktop. */
+export function Magnetic({ children, className, strength = 6 }: { children: React.ReactNode; className?: string; strength?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useGSAP(
+    () => {
+      const el = ref.current;
+      if (!el || reducedMotion() || !finePointer()) return;
+      const xTo = gsap.quickTo(el, "x", { duration: 0.5, ease: "power3.out" });
+      const yTo = gsap.quickTo(el, "y", { duration: 0.5, ease: "power3.out" });
+      const move = (e: PointerEvent) => {
+        const r = el.getBoundingClientRect();
+        xTo(((e.clientX - r.left - r.width / 2) / (r.width / 2)) * strength);
+        yTo(((e.clientY - r.top - r.height / 2) / (r.height / 2)) * strength);
+      };
+      const leave = () => {
+        xTo(0);
+        yTo(0);
+      };
+      el.addEventListener("pointermove", move);
+      el.addEventListener("pointerleave", leave);
+      return () => {
+        el.removeEventListener("pointermove", move);
+        el.removeEventListener("pointerleave", leave);
+      };
+    },
+    { scope: ref },
+  );
+  return (
+    <div ref={ref} className={cn("inline-flex", className)}>
       {children}
-    </motion.div>
+    </div>
   );
 }

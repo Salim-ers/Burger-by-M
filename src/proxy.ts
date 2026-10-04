@@ -36,13 +36,15 @@ function contentSecurityPolicy(nonce: string) {
   const dev = process.env.NODE_ENV === "development";
   return [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://js.stripe.com https://*.js.stripe.com${dev ? " 'unsafe-eval'" : ""}`,
+    // Paiement : redirection vers la page hébergée Mollie, aucun script tiers à autoriser.
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${dev ? " 'unsafe-eval'" : ""}`,
     // Attributs style (animations) : 'unsafe-inline' nécessaire, sans effet sur les scripts.
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' blob: data: https://*.stripe.com",
+    "img-src 'self' blob: data:",
     "font-src 'self' data:",
-    "connect-src 'self' https://api.stripe.com https://*.stripe.com",
-    "frame-src https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com https://www.google.com https://maps.google.com",
+    "connect-src 'self'",
+    // Plan Google Maps, chargé uniquement après accord du visiteur.
+    "frame-src https://www.google.com https://maps.google.com",
     "worker-src 'self'",
     "manifest-src 'self'",
     "media-src 'self'",

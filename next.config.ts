@@ -8,8 +8,8 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
-  // Apple Pay / Google Pay dans l'iframe Stripe : « payment » autorisé pour Stripe uniquement.
-  { key: "Permissions-Policy", value: 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(self "https://js.stripe.com")' },
+  // Le paiement se fait sur la page hébergée Mollie (redirection) : aucune API de paiement sur ce domaine.
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=()" },
   ...(production ? [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }] : []),
 ];
 
@@ -35,6 +35,7 @@ const nextConfig: NextConfig = {
       { source: "/panier", destination: "/checkout", permanent: false },
       { source: "/confirmation", destination: "/", permanent: false },
       { source: "/commande/confirmation", destination: "/", permanent: false },
+      { source: "/notre-histoire", destination: "/", permanent: true },
       // Anciennes adresses de l'administration
       { source: "/admin/dashboard", destination: "/admin", permanent: false },
       { source: "/admin/commandes/:path*", destination: "/admin/orders", permanent: false },
@@ -43,6 +44,7 @@ const nextConfig: NextConfig = {
       { source: "/admin/disponibilites", destination: "/admin/menu", permanent: false },
       { source: "/admin/horaires", destination: "/admin/hours", permanent: false },
       { source: "/admin/parametres", destination: "/admin/settings", permanent: false },
+      { source: "/admin/kitchen", destination: "/admin/cuisine", permanent: false },
     ];
   },
   async headers() {

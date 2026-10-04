@@ -10,7 +10,6 @@ const rows: [string, string, string, string][] = [
   ["bym-pending-order", "Stockage de session", "Suivre un paiement en cours dans l’onglet", "Fermeture de l’onglet"],
   ["bym-consent", "Stockage local", "Mémoriser votre choix pour la carte Google Maps", "Jusqu’au retrait du consentement"],
   ["bym.session_token", "Cookie (httpOnly, sécurisé)", "Connexion à l’administration (équipe du restaurant uniquement)", "14 jours"],
-  ["__stripe_mid, __stripe_sid", "Cookies Stripe", "Sécurité et prévention de la fraude lors d’un paiement en ligne", "1 an / 30 minutes"],
 ];
 
 export default function CookiesPage() {
@@ -40,6 +39,9 @@ export default function CookiesPage() {
           ))}
         </tbody>
       </table>
+
+      <h2>Paiement en ligne</h2>
+      <p>Le paiement par carte se fait sur la page sécurisée de Mollie (mollie.com), vers laquelle vous êtes redirigé. Les éventuels cookies nécessaires à la sécurité du paiement y sont déposés par Mollie, sur son propre domaine.</p>
 
       <h2>Contenus tiers soumis à votre accord</h2>
       <p>La carte Google Maps de la page « Le restaurant » n’est chargée que si vous cliquez sur « Afficher la carte ». Google peut alors déposer ses propres cookies. Vous pouvez retirer votre accord à tout moment :</p>

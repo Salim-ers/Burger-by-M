@@ -20,9 +20,9 @@ export const DEFAULT_SETTINGS: Omit<RestaurantSettings, "updatedAt"> = {
   deliveryEnabled: false,
   cardPaymentEnabled: true,
   onSitePaymentEnabled: false,
-  prepMinutes: 20,
+  prepMinutes: null,
   busyMode: false,
-  busyExtraMinutes: 15,
+  rushPrepMinutes: null,
   slotIntervalMinutes: 15,
   maxOrdersPerSlot: 6,
   scheduleDaysAhead: 0,
@@ -51,7 +51,11 @@ export async function loadSchedule(db: Db, now = new Date()): Promise<ScheduleIn
   };
 }
 
-/** Temps de préparation effectif (mode « débordé » inclus). */
-export function effectivePrepMinutes(s: Pick<RestaurantSettings, "prepMinutes" | "busyMode" | "busyExtraMinutes">) {
-  return s.prepMinutes + (s.busyMode ? s.busyExtraMinutes : 0);
+/**
+ * Temps de préparation annoncé : normal, ou « coup de feu » quand le mode est actif.
+ * null si le restaurant ne l'a pas encore configuré (aucune estimation inventée).
+ */
+export function effectivePrepMinutes(s: Pick<RestaurantSettings, "prepMinutes" | "busyMode" | "rushPrepMinutes">): number | null {
+  if (s.prepMinutes === null) return null;
+  return s.busyMode && s.rushPrepMinutes !== null ? Math.max(s.rushPrepMinutes, s.prepMinutes) : s.prepMinutes;
 }

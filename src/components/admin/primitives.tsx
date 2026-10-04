@@ -19,8 +19,11 @@ export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
 
 export const PAYMENT_STATUS_LABEL: Record<PaymentStatus, string> = {
   pending: "En attente",
+  authorized: "Autorisée",
   paid: "Payée",
   failed: "Échouée",
+  canceled: "Annulée",
+  expired: "Expirée",
   refunded: "Remboursée",
   partially_refunded: "Remb. partiel",
   on_site: "À régler au retrait",
@@ -28,8 +31,8 @@ export const PAYMENT_STATUS_LABEL: Record<PaymentStatus, string> = {
 
 const ORDER_TONE: Record<OrderStatus, string> = {
   payment_pending: "border-fg/20 text-sub",
-  new: "border-rose bg-rose text-ink",
-  preparing: "border-brass bg-brass text-ink",
+  new: "border-pink bg-pink text-ink",
+  preparing: "border-cheddar bg-cheddar text-ink",
   ready: "border-[#5fb98a] bg-[#5fb98a] text-ink",
   completed: "border-fg/25 text-fg/70",
   cancelled: "border-[#f08a7e]/60 text-[#f08a7e]",
@@ -37,11 +40,14 @@ const ORDER_TONE: Record<OrderStatus, string> = {
 
 const PAYMENT_TONE: Record<PaymentStatus, string> = {
   pending: "border-fg/20 text-sub",
+  authorized: "border-cheddar/70 text-cheddar",
   paid: "border-[#5fb98a]/70 text-[#7fd1a5]",
   failed: "border-[#f08a7e]/60 text-[#f08a7e]",
+  canceled: "border-fg/25 text-fg/60",
+  expired: "border-fg/25 text-fg/60",
   refunded: "border-fg/30 text-fg/70",
-  partially_refunded: "border-brass/60 text-brass",
-  on_site: "border-brass/60 text-brass",
+  partially_refunded: "border-cheddar/60 text-cheddar",
+  on_site: "border-cheddar/60 text-cheddar",
 };
 
 export function OrderStatusBadge({ status, className }: { status: OrderStatus; className?: string }) {
@@ -58,8 +64,8 @@ export function PageHeader({ kicker, title, children }: { kicker?: string; title
   return (
     <header className="flex flex-wrap items-end justify-between gap-4 border-b border-rule pb-6">
       <div>
-        {kicker && <p className="kicker text-brass">{kicker}</p>}
-        <h1 className="mt-2 font-serif text-[2.2rem] leading-none md:text-[2.8rem]">{title}</h1>
+        {kicker && <p className="t-label text-cheddar">{kicker}</p>}
+        <h1 className="t-l mt-3">{title}</h1>
       </div>
       {children && <div className="flex flex-wrap items-center gap-2">{children}</div>}
     </header>
@@ -71,7 +77,7 @@ export function Panel({ title, children, className, actions }: { title?: React.R
     <section className={cn("border border-rule bg-panel", className)}>
       {(title || actions) && (
         <div className="flex items-center justify-between gap-3 border-b border-rule px-5 py-3.5">
-          {title && <h2 className="kicker text-fg">{title}</h2>}
+          {title && <h2 className="t-label text-fg">{title}</h2>}
           {actions}
         </div>
       )}
@@ -80,14 +86,14 @@ export function Panel({ title, children, className, actions }: { title?: React.R
   );
 }
 
-export const adminButton = (variant: "primary" | "ghost" | "danger" | "brass" = "primary", size: "sm" | "md" | "lg" = "md") =>
+export const adminButton = (variant: "primary" | "ghost" | "danger" | "cheddar" = "primary", size: "sm" | "md" | "lg" = "md") =>
   cn(
     "inline-flex select-none items-center justify-center gap-2 whitespace-nowrap font-bold uppercase tracking-[0.16em] transition-colors disabled:pointer-events-none disabled:opacity-40",
     size === "sm" && "h-9 px-3 text-[0.62rem]",
     size === "md" && "h-11 px-4 text-[0.68rem]",
     size === "lg" && "h-14 px-6 text-[0.74rem]",
-    variant === "primary" && "bg-ivory text-ink hover:bg-paper",
-    variant === "brass" && "bg-brass text-ink hover:bg-[#d4b67e]",
+    variant === "primary" && "bg-cream text-ink hover:bg-cheddar",
+    variant === "cheddar" && "bg-cheddar text-ink hover:bg-cream",
     variant === "ghost" && "border border-rule text-fg hover:border-fg/60",
     variant === "danger" && "border border-[#f08a7e]/50 text-[#f08a7e] hover:bg-[#f08a7e]/10",
   );

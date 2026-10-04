@@ -44,10 +44,10 @@ export function orderConfirmationEmail(order: OrderView, trackingUrl: string, ad
     const opts = [...i.modifiers.map((m) => m.name), ...i.removedIngredients.map((r) => `sans ${r.toLowerCase()}`)].join(", ");
     return { label: `${i.quantity} × ${i.productName}${opts ? ` (${opts})` : ""}`, price: formatPrice(i.lineTotalCents) };
   });
-  const paid = order.paymentStatus === "paid" ? "Payée en ligne" : "À régler au retrait";
+  const paid = order.paymentStatus === "paid" ? "Payée en ligne" : order.paymentStatus === "authorized" ? "Montant réservé sur votre carte, débité à l’acceptation" : "À régler au retrait";
   const text = [
     `Merci ${order.customerFirstName} !`,
-    `Votre commande ${order.orderNumber} est confirmée.`,
+    `Votre commande ${order.orderNumber} est bien reçue. La cuisine la valide dans un instant : suivez son avancement en direct.`,
     `Retrait : ${when}`,
     `Adresse : ${address}`,
     "",
@@ -56,21 +56,22 @@ export function orderConfirmationEmail(order: OrderView, trackingUrl: string, ad
     `Total : ${formatPrice(order.totalCents)} (${paid})`,
     `Suivi : ${trackingUrl}`,
   ].join("\n");
-  const html = `<!doctype html><html lang="fr"><body style="margin:0;background:#F4EFE6;font-family:Arial,Helvetica,sans-serif;color:#0D0D0D">
+  const html = `<!doctype html><html lang="fr"><body style="margin:0;background:#F1EADF;font-family:Arial,Helvetica,sans-serif;color:#0A0A0A">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="padding:32px 16px">
-<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#FAF8F4;border:1px solid #E4DCCD">
-<tr><td style="background:#0D0D0D;color:#F4EFE6;padding:24px 28px;font-family:Georgia,serif;font-size:24px;letter-spacing:2px">BURGER BY M</td></tr>
+<table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px;background:#F8F4EC;border:1px solid #DDD2C1">
+<tr><td style="background:#0A0A0A;color:#F1EADF;padding:24px 28px;font-family:Impact,'Arial Narrow',Arial,sans-serif;font-size:26px;letter-spacing:1px">BURGER <span style="font-family:Georgia,serif;font-style:italic;letter-spacing:0">by M</span></td></tr>
 <tr><td style="padding:28px">
-<p style="margin:0 0 6px;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#8A7550">Commande confirmée</p>
-<h1 style="margin:0 0 18px;font-family:Georgia,serif;font-size:30px;font-weight:normal">C’est parti, ${esc(order.customerFirstName)}.</h1>
-<p style="margin:0 0 4px">Commande <strong>${esc(order.orderNumber)}</strong></p>
+<p style="margin:0 0 6px;font-size:13px;letter-spacing:1px;text-transform:uppercase;color:#A9620E">Commande reçue</p>
+<h1 style="margin:0 0 10px;font-family:Georgia,serif;font-size:30px;font-weight:normal;font-style:italic">Merci, ${esc(order.customerFirstName)}.</h1>
+<p style="margin:0 0 18px;color:#6B6155">La cuisine valide votre commande dans un instant. Suivez son avancement en direct et présentez votre numéro au comptoir.</p>
+<p style="margin:0 0 4px;font-size:22px">Commande <strong>${esc(order.orderNumber)}</strong></p>
 <p style="margin:0 0 4px">Retrait : <strong>${esc(when)}</strong></p>
 <p style="margin:0 0 20px">${esc(address)}</p>
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #E4DCCD">
-${lines.map((l) => `<tr><td style="padding:10px 0;border-bottom:1px solid #E4DCCD">${esc(l.label)}</td><td align="right" style="padding:10px 0;border-bottom:1px solid #E4DCCD;white-space:nowrap">${esc(l.price)}</td></tr>`).join("")}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid #DDD2C1">
+${lines.map((l) => `<tr><td style="padding:10px 0;border-bottom:1px solid #DDD2C1">${esc(l.label)}</td><td align="right" style="padding:10px 0;border-bottom:1px solid #DDD2C1;white-space:nowrap">${esc(l.price)}</td></tr>`).join("")}
 <tr><td style="padding:14px 0;font-weight:bold">Total — ${esc(paid)}</td><td align="right" style="padding:14px 0;font-weight:bold">${esc(formatPrice(order.totalCents))}</td></tr>
 </table>
-<p style="margin:24px 0 0"><a href="${esc(trackingUrl)}" style="display:inline-block;background:#0D0D0D;color:#F4EFE6;padding:14px 22px;text-decoration:none;font-size:13px;letter-spacing:1px;text-transform:uppercase">Suivre ma commande</a></p>
+<p style="margin:24px 0 0"><a href="${esc(trackingUrl)}" style="display:inline-block;background:#0A0A0A;color:#F1EADF;padding:14px 22px;text-decoration:none;font-size:13px;letter-spacing:1px;text-transform:uppercase">Suivre ma commande</a></p>
 </td></tr></table></td></tr></table></body></html>`;
-  return { to: order.customerEmail ?? "", subject: `Burger By M — commande ${order.orderNumber} confirmée`, text, html };
+  return { to: order.customerEmail ?? "", subject: `Burger By M — commande ${order.orderNumber} reçue`, text, html };
 }

@@ -9,7 +9,7 @@ import { clientIp, requireStaff } from "@/lib/auth/guard";
 import { audit } from "@/lib/security/audit";
 import { isValidHHMM, toMinutes } from "@/lib/schedule";
 import { CACHE_TAGS } from "@/features/public-data";
-import { DEFAULT_SETTINGS } from "@/features/store/load";
+import { DEFAULT_SETTINGS, loadSettings } from "@/features/store/load";
 import { FR_PHONE } from "@/features/checkout/schema";
 import { run, UserFacingError, type ActionResult } from "./result";
 
@@ -22,13 +22,34 @@ async function ensureSettingsRow() {
   await getDb().insert(t.restaurantSettings).values(DEFAULT_SETTINGS).onConflictDoNothing();
 }
 
-/** Gros interrupteur « commandes en ligne » et mode débordé : accessibles à l'équipe en service. */
-export async function setOperationalAction(patch: { onlineOrderingEnabled?: boolean; busyMode?: boolean }): Promise<ActionResult> {
+const operationalSchema = z
+  .object({
+    onlineOrderingEnabled: z.boolean().optional(),
+    busyMode: z.boolean().optional(),
+    rushPrepMinutes: z.number().int().min(5).max(180).optional(),
+  })
+  .strict();
+
+/**
+ * Pilotage du service, accessible à l'équipe : COMMANDES ONLINE ON/OFF et MODE COUP DE FEU
+ * (temps de préparation renforcé, ex. 20 → 35 min). Jamais d'ouverture sans temps de préparation configuré.
+ */
+export async function setOperationalAction(patch: z.input<typeof operationalSchema>): Promise<ActionResult> {
   return run(async () => {
-    const p = z.object({ onlineOrderingEnabled: z.boolean().optional(), busyMode: z.boolean().optional() }).strict().parse(patch);
+    const p = operationalSchema.parse(patch);
     const a = await actor();
     await ensureSettingsRow();
     const db = getDb();
+    const current = await loadSettings(db);
+    if (p.onlineOrderingEnabled && current.prepMinutes === null) {
+      throw new UserFacingError("Indiquez d’abord le temps de préparation dans les réglages : sans lui, aucune heure de retrait ne peut être annoncée.");
+    }
+    if (p.rushPrepMinutes !== undefined && current.prepMinutes !== null && p.rushPrepMinutes <= current.prepMinutes) {
+      throw new UserFacingError(`En coup de feu, le temps de préparation doit dépasser le temps normal (${current.prepMinutes} min).`);
+    }
+    if (p.busyMode && (p.rushPrepMinutes ?? current.rushPrepMinutes) === null) {
+      throw new UserFacingError("Indiquez le temps de préparation en coup de feu avant d’activer le mode.");
+    }
     await db.update(t.restaurantSettings).set({ ...p, updatedAt: new Date() }).where(eq(t.restaurantSettings.id, 1));
     await audit(db, a, "settings.operational", "settings", "1", p);
     updateTag(CACHE_TAGS.store);
@@ -60,8 +81,10 @@ const settingsSchema = z.object({
   deliveryEnabled: z.boolean(),
   cardPaymentEnabled: z.boolean(),
   onSitePaymentEnabled: z.boolean(),
-  prepMinutes: z.number().int().min(5).max(120),
-  busyExtraMinutes: z.number().int().min(0).max(120),
+  /** null = non configuré : la commande en ligne reste fermée. */
+  prepMinutes: z.number().int().min(5).max(120).nullable(),
+  /** Temps de préparation en MODE COUP DE FEU (null = non configuré). */
+  rushPrepMinutes: z.number().int().min(5).max(180).nullable(),
   slotIntervalMinutes: z.number().int().min(5).max(60),
   maxOrdersPerSlot: z.number().int().min(1).max(100),
   scheduleDaysAhead: z.number().int().min(0).max(7),
@@ -72,18 +95,24 @@ const settingsSchema = z.object({
   instagramUrl: url,
   facebookUrl: url,
 });
-/** « Commandes en ligne » et « mode débordé » se règlent à part (setOperationalAction), en un geste. */
+/** « Commandes en ligne » et « coup de feu » se règlent à part (setOperationalAction), en un geste. */
 export type SettingsInput = z.input<typeof settingsSchema>;
 
 export async function saveSettingsAction(raw: SettingsInput): Promise<ActionResult> {
   return run(async () => {
     const parsed = settingsSchema.safeParse(raw);
     if (!parsed.success) throw new UserFacingError(parsed.error.issues[0]?.message ?? "Données invalides.");
-    if (parsed.data.deliveryEnabled) throw new UserFacingError("La livraison n’est pas encore disponible en ligne.");
+    const d = parsed.data;
+    if (d.deliveryEnabled) throw new UserFacingError("La livraison n’est pas encore disponible en ligne.");
+    if (d.prepMinutes !== null && d.rushPrepMinutes !== null && d.rushPrepMinutes <= d.prepMinutes) {
+      throw new UserFacingError(`En coup de feu, le temps de préparation doit dépasser le temps normal (${d.prepMinutes} min).`);
+    }
     const a = await actor("owner");
     await ensureSettingsRow();
     const db = getDb();
-    await db.update(t.restaurantSettings).set({ ...parsed.data, updatedAt: new Date() }).where(eq(t.restaurantSettings.id, 1));
+    // Sans temps de préparation, aucune heure de retrait n'est annoncée : la commande en ligne est fermée.
+    const closing = d.prepMinutes === null ? { onlineOrderingEnabled: false } : {};
+    await db.update(t.restaurantSettings).set({ ...d, ...closing, updatedAt: new Date() }).where(eq(t.restaurantSettings.id, 1));
     await audit(db, a, "settings.updated", "settings", "1", parsed.data as Record<string, unknown>);
     updateTag(CACHE_TAGS.store);
   });

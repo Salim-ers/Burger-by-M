@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { MenuCategory } from "@/features/menu/types";
 import { cn } from "@/lib/utils";
 
-/** Catégories collantes sous l'en-tête, avec suivi de la section visible (scroll spy). */
+/** Catégories collantes sous le header (défilement horizontal sur mobile), section visible suivie. */
 export function CategoryNav({ categories }: { categories: Pick<MenuCategory, "id" | "slug" | "name">[] }) {
   const [active, setActive] = useState(categories[0]?.slug ?? "");
   const navRef = useRef<HTMLDivElement>(null);
@@ -30,27 +30,24 @@ export function CategoryNav({ categories }: { categories: Pick<MenuCategory, "id
     const nav = navRef.current;
     const el = nav?.querySelector<HTMLElement>(`[data-slug="${active}"]`);
     if (!nav || !el) return;
-    const left = el.offsetLeft - nav.clientWidth / 2 + el.clientWidth / 2;
-    nav.scrollTo({ left, behavior: "smooth" });
+    nav.scrollTo({ left: el.offsetLeft - nav.clientWidth / 2 + el.clientWidth / 2, behavior: "smooth" });
   }, [active]);
 
   return (
-    <nav aria-label="Catégories de la carte" className="sticky top-16 z-30 border-y border-rule bg-ivory/92 backdrop-blur-md md:top-20">
-      <div ref={navRef} className="no-scrollbar shell flex gap-1 overflow-x-auto">
+    <nav aria-label="Catégories de la carte" className="sticky top-16 z-30 border-b border-rule bg-ivory/90 backdrop-blur-md">
+      <div ref={navRef} className="no-scrollbar container-bm flex gap-1 overflow-x-auto">
         {categories.map((c) => (
           <a
             key={c.id}
             href={`#cat-${c.slug}`}
             data-slug={c.slug}
+            data-no-transition
             aria-current={active === c.slug ? "true" : undefined}
             onClick={() => setActive(c.slug)}
-            className={cn(
-              "relative shrink-0 px-3.5 py-4 text-[0.7rem] font-bold tracking-[0.22em] whitespace-nowrap uppercase transition-colors md:px-5",
-              active === c.slug ? "text-ink" : "text-ink/45 hover:text-ink",
-            )}
+            className={cn("t-label relative shrink-0 px-4 py-4 whitespace-nowrap transition-colors md:px-5", active === c.slug ? "text-ink" : "text-ink/40 hover:text-ink")}
           >
             {c.name}
-            <span className={cn("absolute inset-x-3.5 bottom-0 h-[2px] origin-left bg-ink transition-transform duration-500 ease-out-expo md:inset-x-5", active === c.slug ? "scale-x-100" : "scale-x-0")} />
+            <span className={cn("absolute inset-x-4 bottom-0 h-[2px] origin-left bg-cheddar transition-transform duration-500 ease-[var(--ease-food)] md:inset-x-5", active === c.slug ? "scale-x-100" : "scale-x-0")} />
           </a>
         ))}
       </div>

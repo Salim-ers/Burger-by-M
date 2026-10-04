@@ -5,13 +5,13 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ChefHat, Clock, ExternalLink, LayoutDashboard, LogOut, Menu as MenuIcon, ReceiptText, Settings, UtensilsCrossed, X } from "lucide-react";
 import { authClient } from "@/lib/auth/client";
-import { Logo } from "@/components/brand/Logo";
+import { Logo, Wordmark } from "@/components/brand/Logo";
 import { AdminNotices } from "./ui";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/admin", label: "Tableau de bord", icon: LayoutDashboard, exact: true },
-  { href: "/admin/kitchen", label: "Cuisine", icon: ChefHat },
+  { href: "/admin/cuisine", label: "Cuisine", icon: ChefHat },
   { href: "/admin/orders", label: "Commandes", icon: ReceiptText },
   { href: "/admin/menu", label: "Carte", icon: UtensilsCrossed },
   { href: "/admin/hours", label: "Horaires", icon: Clock, owner: true },
@@ -42,7 +42,7 @@ export function AdminShell({ user, children }: { user: { name: string; email: st
             aria-current={active ? "page" : undefined}
             className={cn("flex h-12 items-center gap-3 px-3 text-[0.8rem] font-semibold tracking-[0.06em] transition-colors", active ? "bg-fg/[0.08] text-fg" : "text-fg/60 hover:bg-fg/[0.04] hover:text-fg")}
           >
-            <Icon className={cn("size-[18px]", active && "text-brass")} strokeWidth={1.6} aria-hidden />
+            <Icon className={cn("size-[18px]", active && "text-cheddar")} strokeWidth={1.6} aria-hidden />
             {n.label}
           </Link>
         );
@@ -73,9 +73,7 @@ export function AdminShell({ user, children }: { user: { name: string; email: st
         <div>
           <Link href="/admin" className="mb-8 flex items-center gap-3 px-2">
             <Logo size={40} />
-            <span className="font-serif text-[0.95rem] tracking-[0.14em]">
-              BURGER <span className="italic">by</span> M
-            </span>
+            <Wordmark className="text-[1rem]" />
           </Link>
           {nav}
         </div>
@@ -85,7 +83,7 @@ export function AdminShell({ user, children }: { user: { name: string; email: st
       <header className="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-rule bg-ink/95 px-4 backdrop-blur lg:hidden">
         <Link href="/admin" className="flex items-center gap-2.5">
           <Logo size={32} />
-          <span className="font-serif text-sm tracking-[0.14em]">Admin</span>
+          <span className="t-label">Admin</span>
         </Link>
         <button type="button" onClick={() => setOpen(true)} aria-label="Ouvrir le menu" aria-expanded={open} className="grid size-11 place-items-center">
           <MenuIcon className="size-5" aria-hidden />

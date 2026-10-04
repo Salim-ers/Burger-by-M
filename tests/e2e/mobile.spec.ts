@@ -1,14 +1,14 @@
 import { expect, test } from "@playwright/test";
 import { openProduct } from "./helpers";
 
-test("mobile : fiche en bottom sheet, barre « Voir le panier » avec le total", async ({ page }) => {
+test("mobile : fiche en bottom sheet, barre « Panier · 2 » avec le total", async ({ page }) => {
   await page.goto("/menu");
   // Pas de défilement horizontal parasite.
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
   expect(overflow).toBeLessThanOrEqual(0);
 
   const sheet = await openProduct(page, "Le Hot");
-  const add = sheet.getByRole("button", { name: /^Ajouter — / });
+  const add = sheet.getByRole("button", { name: /^Ajouter · / });
   await expect(add).toContainText("9,90");
   await sheet.getByRole("button", { name: "Ajouter un" }).click();
   await expect(add).toContainText("19,80");

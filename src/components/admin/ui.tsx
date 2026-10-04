@@ -37,7 +37,7 @@ export function AdminNotices() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className={cn("pointer-events-auto border px-4 py-3 text-left text-sm font-semibold shadow-lift", n.tone === "ok" ? "border-[#5fb98a]/50 bg-ink-soft text-fg" : "border-[#f08a7e]/60 bg-ink-soft text-[#f08a7e]")}
+            className={cn("pointer-events-auto border px-4 py-3 text-left text-sm font-semibold shadow-lift", n.tone === "ok" ? "border-[#5fb98a]/50 bg-charcoal text-fg" : "border-[#f08a7e]/60 bg-charcoal text-[#f08a7e]")}
           >
             {n.text}
           </motion.button>

@@ -6,7 +6,7 @@ self.addEventListener("install", () => self.skipWaiting());
 self.addEventListener("activate", (event) => event.waitUntil(self.clients.claim()));
 
 self.addEventListener("push", (event) => {
-  let data = { title: "Burger By M", body: "Nouvelle activité", url: "/admin/kitchen", tag: undefined };
+  let data = { title: "Burger By M", body: "Nouvelle activité", url: "/admin/cuisine", tag: undefined };
   try {
     if (event.data) data = { ...data, ...event.data.json() };
   } catch {
@@ -33,7 +33,7 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const target = new URL(event.notification.data?.url || "/admin/kitchen", self.location.origin).href;
+  const target = new URL(event.notification.data?.url || "/admin/cuisine", self.location.origin).href;
   event.waitUntil(
     (async () => {
       const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });

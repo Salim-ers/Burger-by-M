@@ -1,6 +1,6 @@
 import { getDb } from "@/db/client";
-import { stripeConfigured } from "@/lib/env";
-import { getPaymentProvider } from "@/lib/payments/stripe";
+import { paymentsConfigured } from "@/lib/env";
+import { paymentsOrNull } from "@/lib/payments";
 import { expireStalePendingOrders, orderingContext } from "@/features/orders/service";
 import { json } from "@/lib/security/http";
 
@@ -15,12 +15,13 @@ export async function GET() {
     // Libère les créneaux des paiements abandonnés (au plus une fois par minute et par instance).
     if (Date.now() - lastExpiry > 60_000) {
       lastExpiry = Date.now();
-      await expireStalePendingOrders(db, stripeConfigured() ? getPaymentProvider() : null).catch((e) => console.error("[expiration]", e));
+      await expireStalePendingOrders(db, paymentsOrNull()).catch((e) => console.error("[expiration]", e));
     }
-    const ctx = await orderingContext(db, new Date(), stripeConfigured());
+    const ctx = await orderingContext(db, new Date(), paymentsConfigured());
     return json({
       canOrder: ctx.canOrder,
       onlineOrderingEnabled: ctx.settings.onlineOrderingEnabled,
+      open: ctx.open,
       isOpen: ctx.status.isOpen,
       nextOpening: ctx.status.nextOpeningLabel,
       prepMinutes: ctx.prepMinutes,

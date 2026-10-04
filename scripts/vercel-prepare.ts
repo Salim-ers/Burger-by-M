@@ -28,7 +28,7 @@ async function main() {
   for (const key of ["BETTER_AUTH_URL", "NEXT_PUBLIC_APP_URL"] as const) {
     if (!e[key].startsWith("https://")) throw new Error(`${key} doit être l’URL publique en https:// (reçu : ${e[key]}).`);
   }
-  if (!e.STRIPE_SECRET_KEY) console.warn("[vercel-prepare] Stripe non configuré : seul le paiement au retrait sera proposé.");
+  if (!e.MOLLIE_API_KEY) console.warn("[vercel-prepare] Mollie non configuré : seul le paiement au retrait sera proposé.");
   if (!e.VAPID_PUBLIC_KEY) console.warn("[vercel-prepare] VAPID non configuré : pas de notifications push (rafraîchissement automatique de l’écran cuisine).");
 
   // 2. Migrations : connexion directe (non « pooled ») recommandée par Neon pour le DDL.

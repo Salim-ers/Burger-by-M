@@ -18,6 +18,6 @@ export const legal = {
   /** Base de données (Neon). */
   database: "Neon Inc. (PostgreSQL), hébergement des données dans l’Union européenne (région à confirmer lors de la création du projet).",
   /** Prestataire de paiement. */
-  payment: "Stripe Payments Europe Ltd., 1 Grand Canal Street Lower, Dublin 2, Irlande — stripe.com",
+  payment: "Mollie B.V., Keizersgracht 126, 1015 CW Amsterdam, Pays-Bas — mollie.com",
   lastUpdate: "4 octobre 2026",
 } as const;

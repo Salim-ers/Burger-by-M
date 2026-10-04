@@ -36,10 +36,10 @@ export function Toast() {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-xs bg-ink px-4 py-3.5 text-ivory shadow-lift"
+            transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1] }}
+            className="pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-xs bg-ink px-4 py-3.5 text-cream shadow-lift"
           >
-            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-brass text-ink">
+            <span className="grid size-7 shrink-0 place-items-center rounded-full bg-cheddar text-ink">
               <Check className="size-4" strokeWidth={3} aria-hidden />
             </span>
             <p className="min-w-0 flex-1 text-sm">{msg.text}</p>
@@ -49,7 +49,7 @@ export function Toast() {
                 hide();
                 setCartOpen(true);
               }}
-              className="shrink-0 text-[0.68rem] font-bold tracking-[0.2em] uppercase underline underline-offset-4"
+              className="shrink-0 text-[0.68rem] font-bold tracking-[0.2em] text-cheddar uppercase underline underline-offset-4"
             >
               Panier
             </button>

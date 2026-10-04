@@ -12,9 +12,14 @@ const schema = z.object({
   BETTER_AUTH_SECRET: z.string().min(32, "BETTER_AUTH_SECRET : 32 caractères minimum"),
   BETTER_AUTH_URL: z.url(),
   NEXT_PUBLIC_APP_URL: z.url(),
-  STRIPE_SECRET_KEY: z.string().startsWith("sk_").optional().or(z.literal("")),
-  STRIPE_WEBHOOK_SECRET: z.string().startsWith("whsec_").optional().or(z.literal("")),
-  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().startsWith("pk_").optional().or(z.literal("")),
+  /** Clé API Mollie (test_… ou live_…), côté serveur uniquement. */
+  MOLLIE_API_KEY: z
+    .string()
+    .regex(/^(test|live)_[A-Za-z0-9]{20,}$/, "MOLLIE_API_KEY : clé test_… ou live_… attendue")
+    .optional()
+    .or(z.literal("")),
+  /** Carte : « manual » (autorisation puis capture à l'acceptation, défaut) ou « automatic » (encaissement immédiat). */
+  MOLLIE_CARD_CAPTURE: z.enum(["manual", "automatic"]).default("manual"),
   VAPID_PUBLIC_KEY: z.string().optional().or(z.literal("")),
   VAPID_PRIVATE_KEY: z.string().optional().or(z.literal("")),
   VAPID_SUBJECT: z.string().optional().or(z.literal("")),
@@ -44,10 +49,9 @@ export function env(): Env {
 
 export const isProduction = () => process.env.NODE_ENV === "production";
 
-/** Stripe est utilisable seulement si les trois clés sont présentes. */
-export function stripeConfigured() {
-  const e = env();
-  return Boolean(e.STRIPE_SECRET_KEY && e.STRIPE_WEBHOOK_SECRET && e.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+/** Paiement en ligne utilisable (clé Mollie présente). */
+export function paymentsConfigured() {
+  return Boolean(env().MOLLIE_API_KEY);
 }
 
 export function pushConfigured() {

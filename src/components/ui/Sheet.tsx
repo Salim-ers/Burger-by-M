@@ -2,7 +2,6 @@
 
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { X } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useModal } from "@/hooks/use-modal";
 import { cn } from "@/lib/utils";
@@ -31,7 +30,7 @@ export function Sheet({ open, onClose, labelledBy, desktop = "center", className
     <AnimatePresence>
       {open && (
         <div className={cn("fixed inset-0 z-[80]", tone === "dark" ? "on-dark" : "on-light", center && "flex items-center justify-center p-6")}>
-          <motion.div className="absolute inset-0 bg-ink/55 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} onClick={onClose} aria-hidden />
+          <motion.div className="absolute inset-0 bg-ink/70" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} onClick={onClose} aria-hidden />
           <motion.div
             ref={ref}
             role="dialog"
@@ -40,17 +39,17 @@ export function Sheet({ open, onClose, labelledBy, desktop = "center", className
             initial={from}
             animate={to}
             exit={from}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
             className={cn(
               "flex flex-col overflow-hidden bg-bg text-fg shadow-sheet",
-              side && "absolute inset-y-0 right-0 w-full max-w-[480px]",
-              center && "relative max-h-[90dvh] w-full max-w-[1040px] rounded-sm",
-              !wide && "absolute inset-x-0 bottom-0 max-h-[92dvh] rounded-t-lg",
+              side && "absolute inset-y-0 right-0 w-full max-w-[500px]",
+              center && "relative max-h-[90dvh] w-full max-w-[1040px] rounded-[4px]",
+              !wide && "absolute inset-x-0 top-[4dvh] bottom-0 rounded-t-[8px]",
               className,
             )}
           >
-            <button type="button" onClick={onClose} aria-label="Fermer" className="absolute top-3 right-3 z-20 grid size-11 place-items-center rounded-full bg-bg/85 text-fg backdrop-blur transition-colors hover:bg-fg hover:text-bg">
-              <X className="size-5" aria-hidden strokeWidth={1.5} />
+            <button type="button" onClick={onClose} className="t-label absolute top-3 right-3 z-20 h-11 px-4 text-fg transition-colors hover:text-cheddar-deep">
+              Fermer ✕
             </button>
             {children}
           </motion.div>

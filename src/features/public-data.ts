@@ -3,7 +3,7 @@ import { unstable_cache } from "next/cache";
 import { getDb } from "@/db/client";
 import { loadMenu } from "@/features/menu/load";
 import { loadSchedule, loadSettings, effectivePrepMinutes, type RestaurantSettings } from "@/features/store/load";
-import { stripeConfigured } from "@/lib/env";
+import { env, paymentsConfigured } from "@/lib/env";
 import { availablePaymentMethods } from "@/features/orders/service";
 import type { ScheduleInput } from "@/lib/schedule";
 
@@ -36,11 +36,15 @@ export interface PublicStore {
   email: string | null;
   onlineOrderingEnabled: boolean;
   pickupEnabled: boolean;
-  prepMinutes: number;
+  /** null : non configuré par le restaurant (aucune estimation affichée, commande fermée). */
+  prepMinutes: number | null;
+  /** Mode « coup de feu » actif. */
   busyMode: boolean;
   minOrderCents: number;
   orderNotesEnabled: boolean;
   paymentMethods: ("card" | "on_site")[];
+  /** Carte : « manual » = montant réservé, encaissé à l'acceptation par la cuisine. */
+  cardCapture: "manual" | "automatic";
   googleReviewsUrl: string | null;
   instagramUrl: string | null;
   facebookUrl: string | null;
@@ -62,7 +66,8 @@ function toPublic(settings: RestaurantSettings, schedule: ScheduleInput): Public
     busyMode: settings.busyMode,
     minOrderCents: settings.minOrderCents,
     orderNotesEnabled: settings.orderNotesEnabled,
-    paymentMethods: availablePaymentMethods(settings, stripeConfigured()),
+    paymentMethods: availablePaymentMethods(settings, paymentsConfigured()),
+    cardCapture: env().MOLLIE_CARD_CAPTURE,
     googleReviewsUrl: settings.googleReviewsUrl,
     instagramUrl: settings.instagramUrl,
     facebookUrl: settings.facebookUrl,

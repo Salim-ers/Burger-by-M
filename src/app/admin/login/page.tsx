@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getStaffSession } from "@/lib/auth/guard";
 import { LoginForm } from "@/components/admin/LoginForm";
-import { Logo } from "@/components/brand/Logo";
+import { Logo, Wordmark } from "@/components/brand/Logo";
 
 export const metadata: Metadata = { title: "Connexion" };
 
@@ -22,13 +22,11 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
         <div className="flex items-center gap-4">
           <Logo size={56} priority />
           <div>
-            <p className="font-serif text-xl tracking-[0.12em]">
-              BURGER <span className="italic">by</span> M
-            </p>
-            <p className="kicker mt-1 text-sub">Administration</p>
+            <Wordmark className="text-xl" />
+            <p className="t-label mt-1 text-sub">Administration</p>
           </div>
         </div>
-        <h1 className="display-4 mt-12">Connexion</h1>
+        <h1 className="t-m mt-12">Connexion</h1>
         <p className="mt-2 text-sm text-sub">Accès réservé à l’équipe du restaurant.</p>
         <LoginForm next={target} />
       </div>

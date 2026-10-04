@@ -12,7 +12,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/menu", priority: 0.9, freq: "weekly" },
     { path: "/restaurant", priority: 0.8, freq: "monthly" },
     { path: "/galerie", priority: 0.5, freq: "monthly" },
-    { path: "/notre-histoire", priority: 0.5, freq: "yearly" },
     { path: "/legal/mentions-legales", priority: 0.1, freq: "yearly" },
     { path: "/legal/cgv", priority: 0.1, freq: "yearly" },
     { path: "/legal/confidentialite", priority: 0.1, freq: "yearly" },

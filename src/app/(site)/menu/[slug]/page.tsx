@@ -64,9 +64,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(productLd)} />
-      <article className="on-light bg-ivory pt-24 pb-20 md:pt-32 md:pb-28">
-        <div className="shell">
-          <nav aria-label="Fil d’Ariane" className="kicker flex flex-wrap gap-2 text-sub">
+      <article data-theme="light" className="on-light bg-ivory pt-24 pb-[var(--space-lg)] md:pt-32">
+        <div className="container-bm">
+          <nav aria-label="Fil d’Ariane" className="t-label flex flex-wrap gap-2 text-sub">
             <Link href="/menu" className="hover:text-fg">
               La carte
             </Link>
@@ -77,17 +77,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </nav>
           <div className="mt-8 grid gap-10 md:grid-cols-12 md:gap-14">
             <div className="md:col-span-7">
-              <ProductImage image={product.image} name={product.name} sizes="(min-width: 768px) 58vw, 100vw" priority className="aspect-[4/3] w-full" />
+              <ProductImage image={product.image} name={product.name} sizes="(min-width: 768px) 58vw, 100vw" priority className="aspect-[16/10] w-full" />
               {product.image && product.needsFinalProductPhoto && <p className="mt-3 text-xs text-sub">Photo d’illustration : la présentation peut varier.</p>}
             </div>
-            <div className="flex flex-col md:col-span-5 md:pt-6">
+            <div className="flex flex-col md:col-span-5 md:pt-4">
               <ProductBadges product={product} />
-              <h1 className="display-2 mt-5">{product.name}</h1>
-              <p className="mt-5 font-serif text-3xl">
+              <h1 className="t-xl mt-5 break-words">{product.name}</h1>
+              <p className="t-l mt-4 text-cheddar-deep">
                 <Price cents={product.priceCents} />
               </p>
               <p className="mt-6 text-[1.05rem] leading-relaxed text-sub">{compositionText(product)}</p>
-              {category.note && <p className="mt-3 font-serif text-lg italic">{category.note}.</p>}
+              {category.note && <p className="s-m mt-4">{category.note}.</p>}
               <p className="mt-4 text-sm text-sub">Allergènes : {product.allergens ?? "liste disponible au restaurant, sur simple demande."}</p>
               <div className="mt-10">
                 <OpenProductButton productId={product.id} />
@@ -97,12 +97,13 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         </div>
       </article>
       {related.length > 0 && (
-        <section aria-labelledby="related-title" className="on-light border-t border-rule bg-paper py-20 md:py-28">
-          <div className="shell">
-            <h2 id="related-title" className="display-4">
-              Aussi en <span className="italic">{category.name}</span>
+        <section data-theme="light" aria-labelledby="related-title" className="on-cream bg-cream py-[var(--space-lg)]">
+          <div className="container-bm">
+            <h2 id="related-title" className="flex flex-wrap items-baseline gap-x-4">
+              <span className="t-l">Aussi en</span>
+              <span className="s-l">{category.name}</span>
             </h2>
-            <div className="mt-10 grid gap-x-6 gap-y-14 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="-mx-[var(--gutter)] mt-10 grid gap-y-10 sm:mx-0 sm:grid-cols-2 sm:gap-x-6 xl:grid-cols-3">
               {related.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}

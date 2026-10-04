@@ -2,11 +2,11 @@
 
 Site officiel de **Burger By M** (SAS, SIRET 937 935 609 00027), 19 avenue de la Gare, 60290 Rantigny — 03 44 24 89 18.
 
-- **Site public** « luxury street food » : accueil éditorial (burger qui se construit au défilement), carte avec fiche produit personnalisable, restaurant, galerie, notre histoire, pages légales.
-- **Commande invitée** (aucun compte client) : panier, créneau de retrait, coordonnées, paiement en ligne **Stripe** ou au retrait, suivi en direct.
-- **Back-office** `/admin` : tableau de bord, **écran cuisine installable (PWA)** avec notifications push, commandes et remboursements, carte (prix, photos, options, ruptures), horaires, réglages.
+- **Site public V3** « luxury street food » : intro, hero monumental, burger qui se construit au défilement, signatures, Frenchy’s, milkshakes, restaurant, galerie, carte avec fiche produit personnalisable, pages légales.
+- **Commande invitée** (aucun compte client) : panier, créneau de retrait, coordonnées, paiement en ligne **Mollie** (montant réservé, encaissé à l’acceptation) ou au retrait, suivi en direct `/commande/M1042`.
+- **Back-office** `/admin` : tableau de bord, **écran cuisine installable (PWA)** `/admin/cuisine` (ACCEPTER / REFUSER, son, notifications, écran maintenu allumé), commandes et remboursements, carte (prix, photos, options, ruptures), horaires, réglages, **mode coup de feu**, **commandes online ON/OFF**.
 
-Stack : Next.js 16 (App Router), React 19, TypeScript strict, Tailwind CSS 4, **Neon (PostgreSQL) + Drizzle ORM**, **Better Auth**, **Stripe**, Web Push (VAPID), Resend (email, optionnel), Vitest, Playwright.
+Stack : Next.js 16 (App Router), React 19, TypeScript strict, Tailwind CSS 4, GSAP + ScrollTrigger, Lenis, **Neon (PostgreSQL) + Drizzle ORM**, **Better Auth**, **Mollie**, Web Push (VAPID), Resend (email, optionnel), Vitest, Playwright.
 
 ---
 
@@ -30,7 +30,9 @@ DATABASE_URL=postgres://postgres:postgres@127.0.0.1:54329/postgres
 DATABASE_POOL_MAX=1
 ```
 
-Sans clés Stripe, seul le paiement au retrait est proposé ; sans clés VAPID, l’écran cuisine se met à jour par rafraîchissement automatique (toutes les 5 s).
+Sans `MOLLIE_API_KEY`, seul le paiement au retrait est proposé ; sans clés VAPID, l’écran cuisine se met à jour par rafraîchissement automatique (toutes les 5 s).
+
+**Avant la première commande** : dans `/admin/settings`, renseigner le **temps de préparation** (aucune valeur n’est inventée par défaut : tant qu’il n’est pas réglé, la commande en ligne reste fermée), puis ouvrir les **commandes online** depuis le tableau de bord.
 
 ## 2. Commandes
 
@@ -46,7 +48,7 @@ Sans clés Stripe, seul le paiement au retrait est proposé ; sans clés VAPID, 
 | `npm run db:migrate` / `db:seed` / `db:setup` | Applique les migrations / insère la carte initiale / les deux |
 | `npm run admin:create -- --email … --name … --role owner\|staff` | Crée ou réinitialise un compte de l’équipe (mot de passe demandé, ou `ADMIN_PASSWORD`) |
 | `npm run vapid:generate` | Génère la paire de clés Web Push |
-| `npm run media:products` / `media:cutouts` / `media:icons` | Régénère les visuels produits, les détourages, les icônes PWA |
+| `npm run media:products` / `media:cutouts` / `media:cutouts-dark` / `media:lineups` / `media:icons` | Régénère les visuels produits, les détourages (fonds clairs / fonds sombres), les compositions éditoriales, les icônes PWA |
 
 Tests E2E : `PW_CHANNEL=chrome E2E_OWNER_EMAIL=… E2E_OWNER_PASSWORD=… npm run test:e2e` (créer d’abord le compte avec `admin:create`).
 
@@ -59,13 +61,14 @@ Liste complète et commentée : [.env.example](.env.example) (noms uniquement, *
 | `DATABASE_URL` | oui | Chaîne Neon « pooled » (`…-pooler….neon.tech/…?sslmode=require`) |
 | `BETTER_AUTH_SECRET` | oui | 32 caractères aléatoires minimum (`openssl rand -base64 32`). Sert aussi à dériver les jetons de suivi de commande |
 | `BETTER_AUTH_URL`, `NEXT_PUBLIC_APP_URL` | oui | URL publique du site (`https://…`) |
-| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | pour la CB | Les trois sont requises pour activer le paiement en ligne |
+| `MOLLIE_API_KEY` | pour la CB | Clé API Mollie (`test_…` pour les essais, `live_…` en production) — serveur uniquement |
+| `MOLLIE_CARD_CAPTURE` | non | `manual` (défaut) : autorisation à la commande, encaissement à l’acceptation · `automatic` : débit immédiat, remboursement en cas de refus |
 | `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` | pour le push | Notifications « 🔔 Nouvelle commande » sur la tablette |
 | `RESEND_API_KEY`, `EMAIL_FROM` | non | Email de confirmation client (non bloquant) |
 
-Seule `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` est exposée au navigateur ; aucun secret n’est préfixé `NEXT_PUBLIC_`.
+Seule `NEXT_PUBLIC_APP_URL` est exposée au navigateur ; aucun secret n’est préfixé `NEXT_PUBLIC_`.
 
-## 4. Mise en production (Vercel + Neon + Stripe)
+## 4. Mise en production (Vercel + Neon + Mollie)
 
 1. **Neon** : dans le projet Vercel → onglet **Storage** → *Create Database* → **Neon** (région UE, ex. Francfort) → connecter au projet. Vercel ajoute `DATABASE_URL` (et `DATABASE_URL_UNPOOLED`) automatiquement.
    *(Ou créer le projet sur neon.tech et copier la chaîne « pooled » dans `DATABASE_URL`.)*
@@ -78,36 +81,34 @@ Seule `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` est exposée au navigateur ; aucun se
 En cas de déploiement défectueux : Vercel → Deployments → déploiement précédent → *Instant Rollback*. Après un rollback, Vercel ne publie plus automatiquement les nouveaux déploiements : utiliser *Promote* (ou *Undo Rollback*) une fois le correctif déployé.
 
 Puis, quand les comptes sont prêts :
-- **Stripe** (Dashboard → Développeurs → Webhooks) : point de terminaison `https://<domaine>/api/webhooks/stripe`, événements :
-  `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.canceled`, `charge.refunded`. Copier le secret `whsec_…` dans `STRIPE_WEBHOOK_SECRET`.
-  Activer les moyens de paiement voulus (CB, Apple Pay, Google Pay) dans Paramètres → Moyens de paiement ; pour Apple Pay, vérifier le domaine.
-  En local : `stripe listen --forward-to localhost:3000/api/webhooks/stripe`.
+- **Mollie** (Dashboard → Développeurs → Clés API) : copier la clé du profil dans `MOLLIE_API_KEY`, activer **Cartes** dans les moyens de paiement du profil. Aucun webhook à déclarer : chaque paiement est créé avec `webhookUrl = https://<domaine>/api/webhooks/mollie` (uniquement si `NEXT_PUBLIC_APP_URL` est une adresse `https` publique ; en local, le paiement est relu au retour du client et par la page de suivi).
 - **Push** : `npm run vapid:generate`, renseigner les trois variables `VAPID_*`, redéployer.
-- Dans `/admin/settings` : vérifier coordonnées, temps de préparation, capacité par créneau, moyens de paiement, lien des avis Google ; ouvrir les commandes en ligne depuis le tableau de bord.
+- Dans `/admin/settings` : vérifier coordonnées, **temps de préparation** (et temps en coup de feu), capacité par créneau, moyens de paiement, lien des avis Google ; ouvrir les commandes online depuis le tableau de bord.
 
 ## 5. Commande et paiement — comment c’est sécurisé
 
 - Le navigateur n’envoie **que des identifiants** (produit, options, quantité). Le serveur relit la carte dans Neon et **recalcule tous les prix** ; le total affiché par le navigateur ne sert que de garde-fou (refus si la carte a changé), jamais de référence.
-- Création : commande `payment_pending` + réservation **atomique** du créneau (capacité maximale par créneau) dans une transaction → PaymentIntent Stripe → Payment Element (la carte n’est jamais vue par nos serveurs).
-- **Seul le webhook signé** (ou une relecture serveur chez Stripe) valide le paiement ; chaque événement est enregistré dans la même transaction que son effet : un webhook répété ne crée ni ne paie jamais deux fois.
+- Création : commande `payment_pending` + réservation **atomique** du créneau (capacité maximale par créneau) dans une transaction → paiement Mollie (`captureMode: manual`, clé d’idempotence) → redirection vers la **page de paiement hébergée Mollie** (la carte n’est jamais vue par nos serveurs).
+- **Le navigateur n’est jamais la source de vérité** : le webhook Mollie ne transmet qu’un identifiant `tr_…` ; le serveur **relit le paiement chez Mollie** et applique son état réel (`authorized`, `paid`, `failed`, `canceled`, `expired`, remboursements) sous verrou de ligne. Rejouer un webhook ne crée ni ne paie jamais deux fois.
+- **ACCEPTER** (cuisine) : encaissement (*capture*) du montant autorisé. **REFUSER** : l’autorisation est annulée (rien n’est débité) — ou remboursement intégral si le montant avait déjà été encaissé (`MOLLIE_CARD_CAPTURE=automatic`). Le client voit « Votre commande n’a pas pu être acceptée. » sur sa page de suivi.
 - Double clic / réseau coupé : clé d’idempotence par contenu de commande → la même commande est renvoyée.
 - Paiement abandonné : annulé et créneau libéré après 30 min ; paiement arrivé tardivement : la commande repart en cuisine.
-- Suivi client `/commande/M-1042?t=…` : jeton personnel (seul son empreinte est stockée), pages non indexées.
-- Annulation d’une commande payée et remboursements (total ou partiel) : **gérant uniquement**, via Stripe, tracés dans `audit_logs`.
-- Abstraction `PaymentProvider` (`src/lib/payments`) : Mollie pourra remplacer Stripe sans toucher au reste.
+- Suivi client `/commande/M1042?t=…` : jeton personnel (seule son empreinte est stockée), pages non indexées.
+- Annulation d’une commande payée et remboursements (total ou partiel) : **gérant uniquement**, via Mollie, tracés dans `audit_logs`.
+- Abstraction `PaymentProvider` (`src/lib/payments`) : un autre prestataire peut remplacer Mollie sans toucher au reste.
 
 ### Statuts
 
 | Commande (`order_status`) | Signification | Écran cuisine |
 | --- | --- | --- |
 | `payment_pending` | En attente du paiement en ligne | invisible |
-| `new` | Payée, ou à régler au retrait | NOUVELLES |
-| `preparing` | En préparation | EN PRÉPARATION |
+| `new` | Reçue (paiement autorisé, payé, ou à régler au retrait) — en attente d’ACCEPTER / REFUSER | NOUVELLES |
+| `preparing` | Acceptée, en préparation | EN PRÉPARATION |
 | `ready` | Prête au comptoir | PRÊTES |
-| `completed` | Récupérée | TERMINÉES (du jour) |
-| `cancelled` | Annulée / expirée | — |
+| `completed` | Récupérée | « Récupérées » (du jour) |
+| `cancelled` | Refusée / annulée / paiement non abouti | — |
 
-Paiement (`payment_status`) : `pending`, `paid`, `failed`, `refunded`, `partially_refunded`, `on_site` (à régler au retrait).
+Paiement (`payment_status`) : `pending`, `authorized` (montant réservé), `paid`, `failed`, `canceled`, `expired`, `refunded`, `partially_refunded`, `on_site` (à régler au retrait).
 
 ## 6. Administration
 
@@ -115,14 +116,16 @@ Paiement (`payment_status`) : `pending`, `paid`, `failed`, `refunded`, `partiall
 - Rôles : `owner` (gérant : tout) et `staff` (équipe : cuisine, commandes, disponibilités, interrupteur des commandes en ligne).
 - Double authentification : activable plus tard avec le plugin `twoFactor` de Better Auth (TOTP), sans changer le schéma des comptes existants (une table s’ajoute par migration).
 - `/admin` jamais indexé (en-têtes `X-Robots-Tag`, métadonnées, `robots.txt`).
-- Écran cuisine `/admin/kitchen` sur tablette : ouvrir la page dans Chrome/Safari → « Installer l’application » / « Sur l’écran d’accueil », toucher **Notifications** pour autoriser le push, **Activer le son** au début du service (les navigateurs exigent un geste), plein écran, écran maintenu allumé.
+- Écran cuisine `/admin/cuisine` sur tablette (optimisé 1024×768, 1180×820, 1366×1024) : ouvrir la page dans Chrome/Safari → « Installer l’application » / « Sur l’écran d’accueil », puis **DÉMARRER LE SERVICE** à chaque prise de poste : ce geste autorise le son (jamais joué avant), demande l’autorisation des notifications et maintient l’écran allumé (« ÉCRAN ACTIF », ou consigne de secours si l’appareil ne le permet pas). Nouvelle commande : flash, son (SON ON/OFF), notification, compteur ; rappel sonore tant qu’une commande attend. Le rafraîchissement continu (5 s) complète le push : une coupure réseau ne fait perdre aucune commande.
+- **Commandes online ON/OFF** et **mode coup de feu** (ex. 20 → 35 min) : tableau de bord, accessibles à toute l’équipe.
 
 ## 7. Médias
 
 Toutes les images passent par [src/data/media.ts](src/data/media.ts) (banque unique). Sources originales des visuels fournis : `assets/sources/` (WebP sans perte).
 
 - `public/images/products/` : visuels de la carte extraits des planches (`npm run media:products`), texte incrusté retiré — le texte est en HTML.
-- `public/images/cutouts/` : versions détourées (hero, construction du burger, incontournables).
+- `public/images/cutouts/` : versions détourées pour fonds clairs ; `cutouts/dark/` : versions décontaminées pour fonds sombres (hero, construction du burger).
+- `public/images/editorial/` : compositions réalisées à partir des vrais visuels produits (alignements 2400×1350). Aucune source 3840×2160 n’existe dans le projet (les plus grandes font ~1800 px) : pour des plans larges en très haute définition, fournir de nouvelles photos.
 - `public/images/food/`, `restaurant/` : photos réelles.
 - Un produit dont la photo n’est pas exactement le produit porte `needsFinalProductPhoto` → mention « Photo d’illustration » sur le site (frites, milkshake à composer). À remplacer par de vraies photos depuis `/admin/menu` (import → WebP stocké en base, servi par `/media/…`).
 
@@ -132,7 +135,7 @@ Toutes les images passent par [src/data/media.ts](src/data/media.ts) (banque uni
 - **Allergènes** : non communiqués → le site indique « liste disponible au restaurant ». Les renseigner produit par produit dans `/admin/menu`.
 - **Mentions légales** ([src/data/legal.ts](src/data/legal.ts)) : capital social, ville du RCS, n° de TVA, directeur·rice de la publication, **médiateur de la consommation** (obligatoire pour la vente en ligne aux consommateurs). Les lignes vides ne sont pas affichées.
 - **Lien des avis Google** et réseaux sociaux : `/admin/settings`.
-- **Notre histoire** : la page ne contient que des faits vérifiables (adresse, méthode, carte) ; elle peut être enrichie avec le vrai récit de la maison.
+- **Photos haute définition** : pour les grandes sections plein écran, de vraies photos paysage (idéalement 3840×2160) remplaceraient avantageusement les compositions actuelles.
 
 ## 9. Structure
 
@@ -140,7 +143,7 @@ Toutes les images passent par [src/data/media.ts](src/data/media.ts) (banque uni
 src/
   app/(site)/        pages publiques (accueil, carte, produit, checkout, suivi, restaurant, galerie, légal)
   app/admin/         back-office (login, tableau de bord, cuisine, commandes, carte, horaires, réglages)
-  app/api/           checkout, créneaux, suivi, webhook Stripe, cuisine, push, auth
+  app/api/           checkout, créneaux, suivi, webhook Mollie, cuisine, push, auth
   components/        interface (home, menu, cart, checkout, admin, site, ui, motion)
   db/                schéma Drizzle, migrations SQL, seed de la carte
   features/          logique métier (orders/service.ts, menu/pricing.ts, admin/actions…)

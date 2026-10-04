@@ -17,7 +17,7 @@ export function ProductImage({ image, name, sizes, className, priority, zoom }: 
         sizes={sizes}
         preload={priority}
         quality={80}
-        className={cn("object-cover transition-transform duration-[1.2s] ease-out-expo", zoom && "group-hover:scale-[1.045]")}
+        className={cn("object-cover transition-transform duration-[600ms] ease-[var(--ease-food)]", zoom && "group-hover:scale-[1.03]")}
         style={image.position ? { objectPosition: image.position } : undefined}
       />
     </div>
@@ -28,9 +28,9 @@ export function PhotoPlaceholder({ name, className }: { name: string; className?
   return (
     <div className={cn("@container relative overflow-hidden bg-sand", className)} aria-hidden>
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-[3cqw] p-[6cqw] text-center">
-        <span className="h-px w-[18cqw] bg-brass" />
-        <span className="font-serif text-[clamp(0.9rem,9cqw,2.6rem)] leading-[1.05] text-ink/80 italic">{name}</span>
-        <span className="kicker text-[max(0.5rem,2.6cqw)] text-ink/40">Burger By M</span>
+        <span className="h-px w-[18cqw] bg-cheddar" />
+        <span className="font-display text-[clamp(1rem,10cqw,3rem)] leading-[0.95] text-ink/80 uppercase">{name}</span>
+        <span className="t-label text-[max(0.5rem,2.6cqw)] text-ink/40">Burger By M</span>
       </div>
     </div>
   );

@@ -3,104 +3,113 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
-import { motion, useMotionValue, useScroll, useSpring } from "framer-motion";
-import { ArrowDown } from "lucide-react";
-import { buttonClasses } from "@/components/ui/Button";
-import { Magnetic, useReduce, useScrollMap } from "@/components/motion";
+import { gsap, useGSAP, reducedMotion } from "@/components/motion/gsap";
+import { Magnetic } from "@/components/motion";
 import { useSite } from "@/features/site-context";
-import { useOpeningStatus } from "@/features/store/use-status";
+import { useOpeningStatus, useOrderingNotice, ORDERING_CLOSED_LABEL } from "@/features/store/use-status";
+import { cutout } from "@/data/media";
+import { formatHour } from "@/lib/schedule";
+import { cn } from "@/lib/utils";
 
-const BURGER = { src: "/images/cutouts/smash-double.webp", width: 1144, height: 764, alt: "Smash Double Burger By M : double steak smash, cheddar fondu, salade et sauce smash" };
+const BURGER = cutout("smash-double", "dark")!;
 
 /**
- * Hero : couverture de magazine. Le titre XXL est derrière, le vrai burger (détouré) passe devant.
- * Profondeur au défilement et légère attraction vers le curseur.
+ * HERO — le produit est le héros. Le vrai Smash Double, monumental, se pose sur SMASHED. MELTED. ;
+ * au défilement la scène reste un instant, le burger avance (≤ 1,06), les mots s'écartent, l'image se referme.
  */
 export function Hero() {
-  const ref = useRef<HTMLElement>(null);
-  const reduce = useReduce();
+  const root = useRef<HTMLElement>(null);
   const { store } = useSite();
   const status = useOpeningStatus();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const titleY = useScrollMap(scrollYProgress, [0, 1], ["0%", "-30%"]);
-  const burgerY = useScrollMap(scrollYProgress, [0, 1], ["0%", "12%"]);
-  const burgerScale = useScrollMap(scrollYProgress, [0, 1], [1, 1.08]);
-  const mx = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 });
-  const my = useSpring(useMotionValue(0), { stiffness: 60, damping: 20 });
+  const notice = useOrderingNotice();
+
+  useGSAP(
+    () => {
+      if (reducedMotion() || !root.current) return;
+      const tl = gsap.timeline({ scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: 0.6 } });
+      tl.to("[data-burger]", { scale: 1.06, yPercent: 3, ease: "none" }, 0)
+        .to("[data-word='smashed']", { xPercent: -10, ease: "none" }, 0)
+        .to("[data-word='melted']", { xPercent: 10, ease: "none" }, 0)
+        .to("[data-hero-copy]", { autoAlpha: 0, y: -40, ease: "none" }, 0)
+        .to("[data-stage]", { clipPath: "inset(8% 4% 8% 4% round 6px)", ease: "none" }, 0.3);
+    },
+    { scope: root },
+  );
+
+  const ctaLabel = notice ? ORDERING_CLOSED_LABEL : "Commander";
+  const statusText = status.ready ? (status.isOpen ? `Ouvert${status.closesAt ? ` · jusqu’à ${formatHour(status.closesAt)}` : ""}` : `Fermé${status.nextOpeningLabel ? ` · ouvre ${status.nextOpeningLabel}` : ""}`) : " ";
 
   return (
-    <section
-      ref={ref}
-      aria-labelledby="hero-title"
-      className="on-light relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-[radial-gradient(120%_80%_at_50%_42%,#f1e9dc_0%,#e9e0d1_55%,#e0d4c1_100%)] pt-24 md:pt-28"
-      onPointerMove={(e) => {
-        if (reduce || e.pointerType !== "mouse") return;
-        mx.set((e.clientX / window.innerWidth - 0.5) * 18);
-        my.set((e.clientY / window.innerHeight - 0.5) * 12);
-      }}
-    >
-      <div className="shell flex items-center justify-between">
-        <p className="kicker soft-in text-ink/60" style={{ "--d": "0.2s" } as React.CSSProperties}>
-          Smashed to order
-        </p>
-        <p className="kicker soft-in hidden text-ink/60 sm:block" style={{ "--d": "0.3s" } as React.CSSProperties}>
-          Rantigny — Oise
-        </p>
-      </div>
+    <section ref={root} data-theme="dark" aria-labelledby="hero-title" className="on-dark relative h-[150svh] bg-ink motion-reduce:h-svh" data-intro-delay>
+      <div data-stage className="sticky top-0 h-svh overflow-hidden" style={{ clipPath: "inset(0% 0% 0% 0% round 0px)" }}>
+        {/* Lumière chaude de studio derrière le burger, très discrète */}
+        <div aria-hidden className="absolute inset-0 bg-[radial-gradient(55%_50%_at_50%_64%,rgba(91,51,34,0.6)_0%,rgba(91,51,34,0.16)_56%,transparent_80%)]" />
 
-      <div className="relative mt-4 flex flex-1 flex-col items-center justify-center md:mt-0">
-        <motion.h1 id="hero-title" style={reduce ? undefined : { y: titleY }} className="relative z-0 text-center font-serif leading-[0.8] tracking-[-0.045em] text-ink">
-          <span className="reveal-line text-[25vw] md:hidden" style={{ "--i": 0 } as React.CSSProperties}>
-            <span>Burger</span>
-          </span>
-          <span className="reveal-line text-[25vw] md:hidden" style={{ "--i": 1 } as React.CSSProperties}>
-            <span>
-              <span className="italic">by</span> M
-            </span>
-          </span>
-          <span className="reveal-line hidden text-[13.2vw] md:block" style={{ "--i": 0 } as React.CSSProperties}>
-            <span>
-              Burger <span className="italic">by</span> M
-            </span>
-          </span>
-        </motion.h1>
-
-        <motion.div style={reduce ? undefined : { y: burgerY, scale: burgerScale }} className="relative z-10 -mt-[2vw] w-[94vw] max-w-[820px] md:-mt-[4.6vw] md:w-[50vw]">
-          <motion.div style={reduce ? undefined : { x: mx, y: my }} className="lift-in">
-            <Image src={BURGER.src} alt={BURGER.alt} width={BURGER.width} height={BURGER.height} preload sizes="(min-width: 768px) 50vw, 94vw" className="h-auto w-full drop-shadow-[0_40px_40px_rgba(60,35,20,0.28)]" />
-          </motion.div>
-        </motion.div>
-      </div>
-
-      <div className="shell relative z-20 grid gap-8 pt-6 pb-28 md:grid-cols-12 md:items-end md:pb-12">
-        <div className="soft-in md:col-span-6" style={{ "--d": "0.7s" } as React.CSSProperties}>
-          <p className="font-serif text-[2rem] leading-[1.02] md:text-[2.6rem]">
-            Brut. Généreux. <span className="text-crust italic">Signé M.</span>
-          </p>
-          <p className="mt-3 max-w-md text-[0.98rem] leading-relaxed text-ink/70">Smash burgers, créations généreuses et recettes maison à Rantigny.</p>
-        </div>
-        <div className="soft-in flex flex-col gap-4 md:col-span-6 md:items-end" style={{ "--d": "0.85s" } as React.CSSProperties}>
-          <div className="flex flex-wrap gap-2">
-            <Magnetic>
-              <Link href="/menu" className={buttonClasses("ink", "lg")}>
-                Commander
-              </Link>
-            </Magnetic>
-            <Magnetic>
-              <Link href="/menu" className={buttonClasses("line", "lg")}>
-                Voir la carte
-              </Link>
-            </Magnetic>
+        <div className="container-bm relative flex h-full flex-col pt-24 pb-6 md:pt-28 md:pb-9">
+          <div className="hero-fade flex items-center justify-between" style={{ "--d": "0.1s" } as React.CSSProperties}>
+            <p className="t-label text-cream/70">Rantigny · Burger by M</p>
+            <p className="t-label hidden border border-dashed border-cream/25 px-3 py-1.5 text-cream/55 md:block">Smashed to order · Retrait sur place</p>
           </div>
-          <p className="kicker text-ink/60">
-            {store.street} — {store.city} · Sur place · À emporter
-            {status.ready && <span className={status.isOpen ? "text-open" : "text-closed"}> · {status.isOpen ? "Ouvert" : "Fermé"}</span>}
-          </p>
+
+          <h1 id="hero-title" className="relative z-0 mt-4 md:mt-5">
+            <span className="sr-only">Burger By M, smash burgers à Rantigny — </span>
+            <span className="flex flex-col md:flex-row md:items-baseline md:justify-between">
+              <span data-word="smashed" className="mask-line hero-line t-xxl block md:text-[12.6vw]" style={{ "--i": 0 } as React.CSSProperties}>
+                <span>Smashed.</span>
+              </span>
+              <span data-word="melted" className="mask-line hero-line t-xxl -mt-[0.18em] block text-right md:-mt-[0.14em] md:text-[12.6vw]" style={{ "--i": 1 } as React.CSSProperties}>
+                <span>Melted.</span>
+              </span>
+            </span>
+          </h1>
+
+          {/* Le burger se pose sur les mots (premier plan) */}
+          <div className="pointer-events-none relative z-10 -mt-[3vw] flex justify-center md:-mt-[5.2vw]">
+            <div data-burger className="w-[min(100vw,46svh)] max-w-none shrink-0 md:w-[min(54vw,104svh)]">
+              <div className="hero-photo">
+                <Image src={BURGER.src} alt="Smash Double Burger By M : double steak smash, cheddar fondu, salade et sauce smash" width={BURGER.width} height={BURGER.height} preload fetchPriority="high" sizes="(min-width: 768px) 54vw, 104vw" className="h-auto w-full drop-shadow-[0_45px_40px_rgba(0,0,0,0.65)]" />
+              </div>
+              <div aria-hidden className="mx-auto -mt-[5%] h-10 w-[64%] rounded-[50%] bg-black/80 blur-2xl md:h-16" />
+            </div>
+          </div>
+
+          <div data-hero-copy className="relative z-20 mt-auto grid gap-5 md:grid-cols-12 md:items-end">
+            <div className="md:col-span-5">
+              <p className="mask-line hero-line" style={{ "--i": 3 } as React.CSSProperties}>
+                <span className="s-l text-cream">
+                  signed <span className="font-display not-italic text-pink">M.</span>
+                </span>
+              </p>
+              <p className="hero-fade mt-3 max-w-sm text-[0.98rem] leading-relaxed text-cream/75" style={{ "--d": "0.55s" } as React.CSSProperties}>
+                Smash burgers, Frenchy’s et créations généreuses préparées à la commande.
+              </p>
+            </div>
+            <div className="hero-fade flex flex-col gap-4 md:col-span-7 md:items-end" style={{ "--d": "0.7s" } as React.CSSProperties}>
+              <div className="flex flex-wrap gap-2 max-md:order-2">
+                <Magnetic>
+                  <Link href="/menu" className={cn("t-label inline-flex h-12 items-center px-5 transition-colors duration-300 md:h-14 md:px-8", notice ? "border border-cream/30 text-cream/70" : "bg-cream text-ink hover:bg-cheddar")}>
+                    {ctaLabel}
+                  </Link>
+                </Magnetic>
+                <Magnetic>
+                  <Link href="/menu" className="t-label inline-flex h-12 items-center border border-cream/30 px-5 text-cream transition-colors hover:border-cream md:h-14 md:px-8">
+                    <span className="md:hidden">La carte</span>
+                    <span className="hidden md:inline">Découvrir la carte</span>
+                  </Link>
+                </Magnetic>
+              </div>
+              <p className="t-label flex flex-wrap items-center gap-x-4 gap-y-1 text-cream/70 max-md:order-1" aria-live="polite">
+                <span className="inline-flex items-center gap-2">
+                  {status.ready && <span aria-hidden className={cn("size-1.5 rounded-full", status.isOpen ? "bg-open" : "bg-closed")} />}
+                  {statusText}
+                </span>
+                {store.prepMinutes !== null && !notice && <span>≈ {store.prepMinutes} min</span>}
+                {store.pickupEnabled && <span>Retrait sur place</span>}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-      <a href="#construction" className="absolute bottom-6 left-1/2 hidden -translate-x-1/2 text-ink/50 transition-colors hover:text-ink md:block" aria-label="Découvrir">
-        <ArrowDown className="size-5 animate-bounce" strokeWidth={1.25} />
-      </a>
     </section>
   );
 }

@@ -1,7 +1,6 @@
 import { after } from "next/server";
 import { getDb } from "@/db/client";
-import { env, stripeConfigured } from "@/lib/env";
-import { getPaymentProvider } from "@/lib/payments/stripe";
+import { orderDeps } from "@/lib/payments";
 import { checkoutInputSchema, fieldErrors } from "@/features/checkout/schema";
 import { CheckoutError, createOrder, expireStalePendingOrders } from "@/features/orders/service";
 import { onNewKitchenOrder } from "@/features/orders/notify";
@@ -31,18 +30,18 @@ export async function POST(req: Request) {
   ]);
   if (!byIp.ok || !byPhone.ok) return json({ error: "Trop de tentatives. Patientez quelques minutes ou appelez le restaurant." }, 429);
 
-  const payments = stripeConfigured() ? getPaymentProvider() : null;
+  const deps = orderDeps();
   try {
-    const order = await createOrder({ db, payments, tokenSecret: env().BETTER_AUTH_SECRET }, parsed.data, { ip });
+    const order = await createOrder(deps, parsed.data, { ip });
     if (order.status === "new" && !order.replayed) after(() => onNewKitchenOrder(db, order.orderId));
-    after(() => expireStalePendingOrders(db, payments).catch((e) => console.error("[expiration]", e)));
+    after(() => expireStalePendingOrders(db, deps.payments).catch((e) => console.error("[expiration]", e)));
     return json({
       orderNumber: order.orderNumber,
       accessToken: order.accessToken,
       totalCents: order.totalCents,
       paymentMethod: order.paymentMethod,
       status: order.status,
-      clientSecret: order.clientSecret,
+      checkoutUrl: order.checkoutUrl,
       requestedTime: order.requestedTime,
     });
   } catch (err) {

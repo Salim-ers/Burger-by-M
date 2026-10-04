@@ -2,6 +2,7 @@ import { connection } from "next/server";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteChrome } from "@/components/site/SiteChrome";
+import { MotionProvider } from "@/components/motion/MotionProvider";
 import { SiteProvider } from "@/features/site-context";
 import { getPublicMenu, getPublicStore } from "@/features/public-data";
 
@@ -14,15 +15,17 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
   const [menu, store] = await Promise.all([getPublicMenu(), getPublicStore()]);
   return (
     <SiteProvider menu={menu} store={store}>
-      <div className="grain">
-        <a href="#contenu" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-ink focus:px-5 focus:py-3 focus:text-ivory">
-          Aller au contenu
-        </a>
-        <SiteHeader />
-        <main id="contenu">{children}</main>
-        <SiteFooter store={store} />
-        <SiteChrome />
-      </div>
+      <MotionProvider>
+        <div className="grain">
+          <a href="#contenu" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:bg-ink focus:px-5 focus:py-3 focus:text-cream">
+            Aller au contenu
+          </a>
+          <SiteHeader />
+          <main id="contenu">{children}</main>
+          <SiteFooter store={store} menu={menu.map((c) => ({ slug: c.slug, name: c.name }))} />
+          <SiteChrome />
+        </div>
+      </MotionProvider>
     </SiteProvider>
   );
 }

@@ -19,7 +19,7 @@ export async function onNewKitchenOrder(db: Db, orderId: string) {
   await notifyStaff(db, {
     title: "🔔 Nouvelle commande Burger By M",
     body: `Commande ${row.orderNumber} — ${formatPrice(row.totalCents)}`,
-    url: "/admin/kitchen",
+    url: "/admin/cuisine",
     tag: row.orderNumber,
   }).catch((err) => console.error("[push] envoi impossible", err));
 

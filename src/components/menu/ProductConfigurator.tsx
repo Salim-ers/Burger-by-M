@@ -18,7 +18,8 @@ import { cn } from "@/lib/utils";
 interface Props {
   product: MenuProduct;
   editing?: CartLine;
-  onDone: () => void;
+  /** added = true quand un produit vient d'être ajouté (la fiche anime la photo vers le panier). */
+  onDone: (added: boolean) => void;
   /** Visuel placé en tête de la zone défilante (bottom sheet mobile). */
   media?: React.ReactNode;
 }
@@ -75,7 +76,7 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
     };
     if (editing) replace(editing.key, line);
     else add(line);
-    onDone();
+    onDone(!editing);
   };
 
   const visibleGroups = product.modifierGroups.filter((g) => isGroupVisible(g, selected));
@@ -86,18 +87,19 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
     <div className="flex h-full min-h-0 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {media}
-        <div className="px-5 pt-6 pb-10 md:px-10 md:pt-12">
+        <div className="px-5 pt-7 pb-10 md:px-12 md:pt-16">
           <ProductBadges product={product} />
-          <h2 id="product-title" className="display-3 mt-4">
+          <h2 id="product-title" className="t-l mt-4">
             {product.name}
           </h2>
-          <p className="mt-3 font-serif text-2xl">
+          <p className="t-m mt-3 text-cheddar-deep">
             <Price cents={product.priceCents} />
           </p>
           <p className="mt-5 max-w-prose text-[1rem] leading-relaxed text-sub">{compositionText(product)}</p>
+          {product.image && product.needsFinalProductPhoto && <p className="mt-2 text-xs text-sub">Photo d’illustration : la présentation peut varier.</p>}
           {product.allergens && <p className="mt-3 text-sm text-sub">Allergènes : {product.allergens}</p>}
 
-          <div className="mt-8 space-y-8">
+          <div className="mt-10 space-y-9">
             {before.map((g) => (
               <OptionGroup key={g.id} group={g} selected={selected} onToggle={(id) => toggle(g, id)} invalid={showErrors && missing.some((m) => m.id === g.id)} />
             ))}
@@ -105,7 +107,7 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
             {removable.length > 0 && (
               <fieldset>
                 <legend className="flex w-full items-baseline justify-between gap-4 border-b border-rule pb-3">
-                  <span className="kicker text-fg">Retirer</span>
+                  <span className="t-label text-fg">Retirer</span>
                   <span className="text-xs text-sub">Facultatif</span>
                 </legend>
                 <div className="divide-y divide-rule">
@@ -129,7 +131,7 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
 
             {product.allowNotes && store.orderNotesEnabled && (
               <div>
-                <label htmlFor="item-note" className="kicker block border-b border-rule pb-3">
+                <label htmlFor="item-note" className="t-label block border-b border-rule pb-3">
                   Une précision ?
                 </label>
                 <textarea
@@ -138,7 +140,7 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Ex. : sauce à part"
-                  className="mt-3 min-h-20 w-full resize-none rounded-xs border border-rule bg-panel px-4 py-3 text-[0.95rem] outline-none placeholder:text-sub/70 focus:border-fg"
+                  className="mt-3 min-h-20 w-full resize-none border border-rule bg-panel px-4 py-3 text-[0.95rem] outline-none placeholder:text-sub/70 focus:border-fg"
                 />
               </div>
             )}
@@ -151,7 +153,7 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
         {orderable && notice ? (
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm font-semibold">{notice}</p>
-            <a href={store.phoneHref} className="inline-flex h-12 items-center justify-center gap-2 rounded-xs border border-rule px-5 text-[0.72rem] font-bold tracking-[0.2em] uppercase hover:border-fg">
+            <a href={store.phoneHref} className="t-label inline-flex h-12 items-center justify-center gap-2 border border-rule px-5 hover:border-fg">
               <Phone className="size-4" aria-hidden /> {store.phone}
             </a>
           </div>
@@ -161,17 +163,18 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
             <button
               type="button"
               onClick={submit}
-              className="group/btn flex h-12 min-w-0 flex-1 items-center justify-center gap-2 rounded-xs bg-ink px-5 text-[0.74rem] font-bold tracking-[0.2em] text-ivory uppercase transition-colors hover:bg-ink-soft active:scale-[0.99] md:h-14 md:text-[0.78rem]"
+              data-cursor="add"
+              className="t-label flex h-14 min-w-0 flex-1 items-center justify-center gap-2 bg-ink px-5 text-[0.76rem] text-cream transition-colors duration-300 hover:bg-cheddar hover:text-ink active:scale-[0.99]"
             >
               <span className="truncate">
-                {editing ? "Mettre à jour" : "Ajouter"} — <span className="tabular-nums">{formatPrice(total)}</span>
+                {editing ? "Mettre à jour" : "Ajouter"} · <span className="tabular-nums">{formatPrice(total)}</span>
               </span>
             </button>
           </div>
         ) : product.priceCents === null ? (
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-sub">Prix à confirmer : à commander au comptoir ou par téléphone.</p>
-            <a href={store.phoneHref} className="inline-flex h-12 items-center justify-center gap-2 rounded-xs border border-rule px-5 text-[0.72rem] font-bold tracking-[0.2em] uppercase hover:border-fg">
+            <a href={store.phoneHref} className="t-label inline-flex h-12 items-center justify-center gap-2 border border-rule px-5 hover:border-fg">
               <Phone className="size-4" aria-hidden /> {store.phone}
             </a>
           </div>
@@ -190,11 +193,11 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
 
 function OptionGroup({ group, selected, onToggle, invalid }: { group: MenuModifierGroup; selected: Set<string>; onToggle: (id: string) => void; invalid: boolean }) {
   const single = group.selectionType === "single";
-  const label = group.key === "supplements" ? "Ajouter" : group.name;
+  const label = group.key === "supplements" ? "Suppléments" : group.name;
   return (
     <fieldset id={`grp-${group.id}`} className="scroll-mt-24">
       <legend className="flex w-full items-baseline justify-between gap-4 border-b border-rule pb-3">
-        <span className="kicker text-fg">{label}</span>
+        <span className="t-label text-fg">{label}</span>
         <span className={cn("text-xs", invalid ? "font-bold text-danger" : "text-sub")}>{group.minSelect > 0 ? "Obligatoire" : "Facultatif"}</span>
       </legend>
       {group.helper && <p className="pt-2 text-xs text-sub">{group.helper}</p>}
@@ -215,16 +218,16 @@ function Choice({ type, name, label, checked, onChange, extra }: { type: "radio"
         <span
           aria-hidden
           className={cn(
-            "grid size-5 shrink-0 place-items-center border transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-brass",
-            type === "radio" ? "rounded-full" : "rounded-[3px]",
-            checked ? "border-fg bg-fg text-bg" : "border-fg/35",
+            "grid size-5 shrink-0 place-items-center border transition-colors peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-cheddar",
+            type === "radio" ? "rounded-full" : "rounded-[2px]",
+            checked ? "border-cheddar bg-cheddar text-ink" : "border-fg/35",
           )}
         >
-          {checked && (type === "radio" ? <span className="size-2 rounded-full bg-bg" /> : <Check className="size-3.5" strokeWidth={3} />)}
+          {checked && (type === "radio" ? <span className="size-2 rounded-full bg-ink" /> : <Check className="size-3.5" strokeWidth={3} />)}
         </span>
         <span className="text-[0.95rem]">{label}</span>
       </span>
-      {extra && <span className="shrink-0 text-sm text-sub tabular-nums">{extra}</span>}
+      {extra && <span className={cn("shrink-0 text-sm tabular-nums", checked ? "font-semibold text-cheddar-deep" : "text-sub")}>{extra}</span>}
     </label>
   );
 }

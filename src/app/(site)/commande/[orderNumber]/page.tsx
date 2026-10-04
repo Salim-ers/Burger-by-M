@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getDb } from "@/db/client";
-import { getOrderByNumber } from "@/features/orders/service";
+import { getOrderByNumber, ORDER_NUMBER_RE } from "@/features/orders/service";
 import { toPublicOrder } from "@/features/orders/public";
 import { tokenMatches } from "@/lib/security/tokens";
 import { OrderTracking } from "@/components/checkout/OrderTracking";
@@ -12,24 +12,25 @@ export const metadata: Metadata = {
   referrer: "no-referrer",
 };
 
-type Props = { params: Promise<{ orderNumber: string }>; searchParams: Promise<{ t?: string | string[]; redirect_status?: string | string[] }> };
+type Props = { params: Promise<{ orderNumber: string }>; searchParams: Promise<{ t?: string | string[] }> };
 
 /** Suivi d'une commande : accessible uniquement avec le jeton personnel transmis à la création. */
 export default async function OrderPage({ params, searchParams }: Props) {
   const [{ orderNumber }, query] = await Promise.all([params, searchParams]);
   const token = typeof query.t === "string" ? query.t : null;
-  const found = /^M-\d{3,9}$/.test(orderNumber) && token ? await getOrderByNumber(getDb(), orderNumber) : null;
+  const found = ORDER_NUMBER_RE.test(orderNumber) && token ? await getOrderByNumber(getDb(), orderNumber) : null;
 
   if (!found || !tokenMatches(token, found.accessTokenHash)) {
     return (
-      <section className="on-light bg-ivory pt-36 pb-28 md:pt-48">
-        <div className="shell">
-          <p className="kicker text-brass-deep">Suivi de commande</p>
-          <h1 className="display-2 mt-6">
-            Lien de suivi <span className="italic">invalide.</span>
+      <section data-theme="dark" className="on-dark flex min-h-[80svh] items-end bg-ink pt-36 pb-20 md:pb-28">
+        <div className="container-bm">
+          <p className="t-label text-cheddar">Suivi de commande</p>
+          <h1 className="mt-6">
+            <span className="t-xl block">Lien de suivi</span>
+            <span className="s-xl block">invalide.</span>
           </h1>
-          <p className="mt-6 max-w-md text-sub">Utilisez le lien reçu après votre commande, ou appelez le restaurant avec votre numéro de commande.</p>
-          <ButtonLink href="/menu" variant="ink" size="lg" arrow className="mt-10">
+          <p className="mt-6 max-w-md text-cream/75">Utilisez le lien obtenu après votre commande, ou appelez le restaurant avec votre numéro de commande.</p>
+          <ButtonLink href="/menu" variant="ivory" size="lg" arrow className="mt-10">
             Voir la carte
           </ButtonLink>
         </div>
@@ -37,9 +38,5 @@ export default async function OrderPage({ params, searchParams }: Props) {
     );
   }
 
-  return (
-    <div className="on-light min-h-[80vh] bg-ivory">
-      <OrderTracking orderNumber={orderNumber} token={token!} initial={toPublicOrder(found.view)} paymentFailed={query.redirect_status === "failed"} />
-    </div>
-  );
+  return <OrderTracking orderNumber={orderNumber} token={token!} initial={toPublicOrder(found.view, found.payment)} />;
 }

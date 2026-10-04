@@ -1,6 +1,6 @@
 import { getDb } from "@/db/client";
 import { requireStaffPage } from "@/lib/auth/guard";
-import { stripeConfigured } from "@/lib/env";
+import { env, paymentsConfigured } from "@/lib/env";
 import { loadSettings } from "@/features/store/load";
 import { OperationalControls } from "@/components/admin/OperationalControls";
 import { SettingsForm } from "@/components/admin/SettingsForm";
@@ -9,14 +9,15 @@ import { PageHeader } from "@/components/admin/primitives";
 export const metadata = { title: "Réglages" };
 
 export default async function SettingsPage() {
-  await requireStaffPage("owner");
+  const user = await requireStaffPage("owner");
   const s = await loadSettings(getDb());
   return (
     <div className="space-y-8">
       <PageHeader kicker="Restaurant" title="Réglages" />
-      <OperationalControls onlineOrderingEnabled={s.onlineOrderingEnabled} busyMode={s.busyMode} busyExtraMinutes={s.busyExtraMinutes} />
+      <OperationalControls onlineOrderingEnabled={s.onlineOrderingEnabled} busyMode={s.busyMode} prepMinutes={s.prepMinutes} rushPrepMinutes={s.rushPrepMinutes} canConfigure={user.role === "owner"} />
       <SettingsForm
-        stripeReady={stripeConfigured()}
+        paymentsReady={paymentsConfigured()}
+        cardCapture={env().MOLLIE_CARD_CAPTURE}
         initial={{
           name: s.name,
           street: s.street,
@@ -29,7 +30,7 @@ export default async function SettingsPage() {
           cardPaymentEnabled: s.cardPaymentEnabled,
           onSitePaymentEnabled: s.onSitePaymentEnabled,
           prepMinutes: s.prepMinutes,
-          busyExtraMinutes: s.busyExtraMinutes,
+          rushPrepMinutes: s.rushPrepMinutes,
           slotIntervalMinutes: s.slotIntervalMinutes,
           maxOrdersPerSlot: s.maxOrdersPerSlot,
           scheduleDaysAhead: s.scheduleDaysAhead,

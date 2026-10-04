@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { ButtonLink } from "@/components/ui/Button";
+import { Button, ButtonLink } from "@/components/ui/Button";
 
 /** Erreur dans une page du site (l'en-tête et le pied de page restent affichés). */
 export default function SiteError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
@@ -9,22 +9,23 @@ export default function SiteError({ error, reset }: { error: Error & { digest?: 
     console.error(error);
   }, [error]);
   return (
-    <section className="on-light bg-ivory pt-36 pb-28 md:pt-48">
-      <div className="shell">
-        <p className="kicker text-brass-deep">Incident</p>
-        <h1 className="display-2 mt-6">
-          La plaque a <span className="italic">un souci.</span>
+    <section data-theme="dark" className="on-dark flex min-h-[80svh] items-end bg-ink pt-36 pb-20 md:pb-28">
+      <div className="container-bm">
+        <p className="t-label text-cheddar">Incident</p>
+        <h1 className="mt-6">
+          <span className="t-xl block">La plaque</span>
+          <span className="s-xl block">a un souci.</span>
         </h1>
-        <p className="mt-6 max-w-md text-sub">Cette page n’a pas pu s’afficher. Réessayez ; si le problème continue, appelez-nous.</p>
+        <p className="mt-6 max-w-md leading-relaxed text-cream/70">Cette page n’a pas pu s’afficher. Réessayez ; si le problème continue, appelez-nous.</p>
         <div className="mt-10 flex flex-wrap gap-2">
-          <button type="button" onClick={reset} className="inline-flex h-14 items-center bg-ink px-8 text-[0.75rem] font-bold tracking-[0.2em] text-ivory uppercase hover:bg-ink-soft">
+          <Button variant="cheddar" size="lg" onClick={reset}>
             Réessayer
-          </button>
+          </Button>
           <ButtonLink href="/menu" variant="line" size="lg">
             Voir la carte
           </ButtonLink>
         </div>
-        {error.digest && <p className="mt-10 text-xs text-sub">Référence : {error.digest}</p>}
+        {error.digest && <p className="mt-10 text-xs text-cream/50">Référence : {error.digest}</p>}
       </div>
     </section>
   );

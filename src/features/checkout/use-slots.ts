@@ -7,9 +7,12 @@ import type { PickupSlot } from "@/lib/schedule";
 export interface SlotsResponse {
   canOrder: boolean;
   onlineOrderingEnabled: boolean;
+  /** Commandes en ligne ouvertes (activées, retrait actif, temps de préparation configuré). */
+  open: boolean;
   isOpen: boolean;
   nextOpening: string | null;
-  prepMinutes: number;
+  /** null tant que le temps de préparation n'est pas configuré dans l'administration. */
+  prepMinutes: number | null;
   asap: PickupSlot | null;
   slots: PickupSlot[];
   paymentMethods: ("card" | "on_site")[];

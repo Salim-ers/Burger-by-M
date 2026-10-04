@@ -58,6 +58,10 @@ export const media = {
 
   // ---------------- Éditorial ----------------
   heroSmashDouble: img("/images/editorial/hero-smash-double.webp", 1436, 808, "Smash Double Burger By M : double steak smash et cheddar fondant", "editorial", "50% 50%"),
+  /** Compositions 16:9 sans texte : vrais burgers détourés alignés sur fond studio (scripts/media/lineups.mjs). */
+  lineupSignatures: img("/images/editorial/lineup-signatures.webp", 2400, 1350, "Le Montagnard, Smash Tower, Le Spécial et Bacon Crispy alignés", "editorial", "50% 70%"),
+  lineupSmash: img("/images/editorial/lineup-smash.webp", 2400, 1350, "La gamme smash : Barbeuc’, Smash Double et Smash Tower", "editorial", "50% 70%"),
+  lineupDark: img("/images/editorial/lineup-dark.webp", 2400, 1350, "Spicy Chicken, Le Spécial et Jalathai sur fond noir", "editorial", "50% 70%"),
 
   // ---------------- Documents ----------------
   carteBurgers: img("/images/menu/carte-burgers.webp", 720, 582, "Carte imprimée Burger By M : burgers, Frenchy’s, suppléments et boissons", "document"),
@@ -123,3 +127,52 @@ export const gallery: MediaImage[] = [
   media.fritesClassiques,
   media.realForestier,
 ];
+
+/**
+ * Détourages (fond transparent) : `cutouts/` pour fonds clairs, `cutouts/dark/` décontaminés pour fonds sombres.
+ * Dimensions réelles des fichiers (next/image).
+ */
+const CUTOUT_DIMS: Record<string, [number, number]> = {
+  "bacon-crispy": [1324, 793],
+  "barbeuc": [1226, 761],
+  "chicken": [1169, 774],
+  "jalathai": [1174, 781],
+  "le-chevre-miel": [1651, 600],
+  "le-forestier": [1685, 666],
+  "le-hot": [1673, 622],
+  "le-montagnard": [1205, 993],
+  "le-special": [1273, 801],
+  "roquefort": [1284, 773],
+  "smash-double": [1144, 764],
+  "smash-tower": [1195, 855],
+  "smashy": [1703, 673],
+  "spicy-chicken": [1178, 1029],
+  "vegg": [1115, 930],
+  "dark/bacon-crispy": [1322, 790],
+  "dark/barbeuc": [1222, 753],
+  "dark/chicken": [1165, 769],
+  "dark/jalathai": [1171, 776],
+  "dark/le-chevre-miel": [1649, 596],
+  "dark/le-forestier": [1683, 662],
+  "dark/le-hot": [1671, 618],
+  "dark/le-montagnard": [1195, 991],
+  "dark/le-special": [1251, 781],
+  "dark/roquefort": [1281, 768],
+  "dark/smash-double": [1141, 757],
+  "dark/smash-tower": [1190, 848],
+  "dark/smashy": [1700, 669],
+  "dark/spicy-chicken": [1174, 1027],
+  "dark/vegg": [1112, 928],
+};
+
+export function cutout(slug: string, tone: "light" | "dark" = "light"): { src: string; width: number; height: number } | null {
+  const key = tone === "dark" ? `dark/${slug}` : slug;
+  const d = CUTOUT_DIMS[key];
+  return d ? { src: `/images/cutouts/${key}.webp`, width: d[0], height: d[1] } : null;
+}
+
+/** Détourage correspondant à un visuel produit de la carte (/images/products/<slug>.webp), s'il existe. */
+export function cutoutForImage(src: string | null | undefined, tone: "light" | "dark" = "light") {
+  const m = src?.match(/^\/images\/products\/([a-z0-9-]+)\.webp$/);
+  return m ? cutout(m[1]!, tone) : null;
+}

@@ -10,12 +10,16 @@ const ts = (name: string) => timestamp(name, { withTimezone: true });
  * preparing → ready → completed ; cancelled
  */
 export const orderStatus = pgEnum("order_status", ["payment_pending", "new", "preparing", "ready", "completed", "cancelled"]);
-/** on_site : à régler au retrait. */
-export const paymentStatus = pgEnum("payment_status", ["pending", "paid", "failed", "refunded", "partially_refunded", "on_site"]);
+/**
+ * Statut du paiement — reflet exact de l'état chez le prestataire (Mollie), jamais simulé :
+ * authorized : montant réservé (capture manuelle), encaissé quand la cuisine accepte ;
+ * on_site : à régler au retrait.
+ */
+export const paymentStatus = pgEnum("payment_status", ["pending", "authorized", "paid", "failed", "canceled", "expired", "refunded", "partially_refunded", "on_site"]);
 export const fulfillmentType = pgEnum("fulfillment_type", ["pickup", "delivery"]);
 export const paymentMethod = pgEnum("payment_method", ["card", "on_site"]);
 
-/** Numéros humains : M-1001, M-1002… */
+/** Numéros humains : M1001, M1002… */
 export const orderNumberSeq = pgSequence("order_number_seq", { startWith: 1001 });
 
 export type OrderStatus = (typeof orderStatus.enumValues)[number];
@@ -29,7 +33,7 @@ export const orders = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     number: integer("number").notNull().unique(),
     orderNumber: text("order_number").notNull().unique(),
-    /** SHA-256 du jeton d'accès client (le suivi /commande/M-1042 exige ?t=<jeton>). */
+    /** SHA-256 du jeton d'accès client (le suivi /commande/M1042 exige ?t=<jeton>). */
     accessTokenHash: text("access_token_hash").notNull(),
     /** Clé fournie par le navigateur : une double soumission ne crée pas deux commandes. */
     idempotencyKey: text("idempotency_key").unique(),
@@ -56,6 +60,8 @@ export const orders = pgTable(
     slotReleasedAt: ts("slot_released_at"),
     paidAt: ts("paid_at"),
     acceptedAt: ts("accepted_at"),
+    /** Refusée par la cuisine (message dédié au client). */
+    refusedAt: ts("refused_at"),
     readyAt: ts("ready_at"),
     completedAt: ts("completed_at"),
     cancelledAt: ts("cancelled_at"),
@@ -115,10 +121,18 @@ export const payments = pgTable(
     orderId: uuid("order_id")
       .notNull()
       .references(() => orders.id, { onDelete: "cascade" }),
-    /** "stripe" | "on_site" (abstraction PaymentProvider : Mollie possible plus tard). */
+    /** "mollie" | "on_site" (abstraction PaymentProvider). */
     provider: text("provider").notNull(),
-    /** Identifiant chez le prestataire (PaymentIntent Stripe). */
+    /** Identifiant chez le prestataire (paiement Mollie « tr_… »). */
     providerPaymentId: text("provider_payment_id").unique(),
+    /** Moyen choisi chez le prestataire (creditcard…), connu après paiement. */
+    method: text("method"),
+    /** manual : autorisation puis capture à l'acceptation ; automatic : encaissement immédiat. */
+    captureMode: text("capture_mode"),
+    /** Page de paiement du prestataire (reprise d'un paiement interrompu). */
+    checkoutUrl: text("checkout_url"),
+    captureRequestedAt: ts("capture_requested_at"),
+    capturedAt: ts("captured_at"),
     status: paymentStatus("status").notNull(),
     amountCents: integer("amount_cents").notNull(),
     amountRefundedCents: integer("amount_refunded_cents").notNull().default(0),
@@ -137,7 +151,7 @@ export const orderSlots = pgTable("order_slots", {
   updatedAt: ts("updated_at").notNull().defaultNow(),
 });
 
-/** Événements de webhook déjà traités (idempotence : Stripe peut renvoyer le même événement). */
+/** Événements de webhook déjà traités (idempotence : un prestataire peut renvoyer le même événement). */
 export const webhookEvents = pgTable("webhook_events", {
   id: text("id").primaryKey(),
   provider: text("provider").notNull(),

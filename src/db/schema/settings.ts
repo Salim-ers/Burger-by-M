@@ -23,10 +23,11 @@ export const restaurantSettings = pgTable(
     cardPaymentEnabled: boolean("card_payment_enabled").notNull().default(true),
     /** Paiement au retrait (optionnel). */
     onSitePaymentEnabled: boolean("on_site_payment_enabled").notNull().default(false),
-    prepMinutes: integer("prep_minutes").notNull().default(20),
-    /** « Restaurant débordé » : ajoute busyExtraMinutes au temps de préparation. */
+    /** Temps de préparation normal. null = non configuré : aucune estimation affichée, commande en ligne fermée. */
+    prepMinutes: integer("prep_minutes"),
+    /** Mode « coup de feu » : le temps de préparation passe à rushPrepMinutes. */
     busyMode: boolean("busy_mode").notNull().default(false),
-    busyExtraMinutes: integer("busy_extra_minutes").notNull().default(15),
+    rushPrepMinutes: integer("rush_prep_minutes"),
     slotIntervalMinutes: integer("slot_interval_minutes").notNull().default(15),
     maxOrdersPerSlot: integer("max_orders_per_slot").notNull().default(6),
     /** 0 = commandes pour le jour même uniquement. */

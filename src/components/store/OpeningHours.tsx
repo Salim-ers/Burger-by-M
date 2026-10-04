@@ -42,10 +42,10 @@ export function OpeningHours({ className, tone = "light" }: { className?: string
         const ranges = store.schedule.weekly.filter((r) => r.dayOfWeek === d).sort((a, b) => a.opensAt.localeCompare(b.opensAt));
         const isToday = d === today;
         return (
-          <div key={d} className={cn("flex items-baseline justify-between gap-6 border-b border-rule py-3 text-[0.95rem]", isToday && (tone === "dark" ? "text-brass" : "font-semibold"))}>
+          <div key={d} className={cn("flex items-baseline justify-between gap-6 border-b border-rule py-3 text-[0.95rem]", isToday && (tone === "dark" ? "text-cheddar" : "font-semibold"))}>
             <dt className={cn(!isToday && "text-sub")}>
               {DAY_NAMES[d]}
-              {isToday && <span className="kicker ml-3 text-[0.6rem] text-brass-deep">Aujourd’hui</span>}
+              {isToday && <span className="t-label ml-3 text-[0.6rem] text-cheddar-deep">Aujourd’hui</span>}
             </dt>
             <dd className="text-right tabular-nums">{formatRanges(ranges)}</dd>
           </div>
@@ -67,8 +67,8 @@ export function UpcomingSpecials({ className }: { className?: string }) {
   const days = [...new Set(store.schedule.specials.map((s) => s.date))].filter((d) => d >= todayYmd && d <= limit).slice(0, 4);
   if (days.length === 0) return null;
   return (
-    <div className={cn("border border-brass/50 bg-brass/[0.06] px-5 py-4", className)}>
-      <p className="kicker text-brass-deep">Horaires exceptionnels</p>
+    <div className={cn("border border-cheddar/50 bg-cheddar/[0.06] px-5 py-4", className)}>
+      <p className="t-label text-cheddar-deep">Horaires exceptionnels</p>
       <ul className="mt-3 space-y-1.5 text-[0.92rem]">
         {days.map((d) => {
           const note = store.schedule.specials.find((s) => s.date === d && s.note)?.note;

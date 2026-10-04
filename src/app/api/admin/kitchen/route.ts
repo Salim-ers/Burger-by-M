@@ -1,6 +1,6 @@
 import { getDb } from "@/db/client";
-import { stripeConfigured } from "@/lib/env";
-import { getPaymentProvider } from "@/lib/payments/stripe";
+import { paymentsConfigured } from "@/lib/env";
+import { paymentsOrNull } from "@/lib/payments";
 import { AuthError, requireStaff } from "@/lib/auth/guard";
 import { expireStalePendingOrders, kitchenOrders } from "@/features/orders/service";
 import { json } from "@/lib/security/http";
@@ -19,7 +19,7 @@ export async function GET() {
   const db = getDb();
   if (Date.now() - lastExpiry > 60_000) {
     lastExpiry = Date.now();
-    await expireStalePendingOrders(db, stripeConfigured() ? getPaymentProvider() : null).catch((e) => console.error("[expiration]", e));
+    await expireStalePendingOrders(db, paymentsOrNull()).catch((e) => console.error("[expiration]", e));
   }
   const orders = await kitchenOrders(db);
   return json({ orders, serverTime: new Date().toISOString() });

@@ -37,7 +37,7 @@ export function LoginForm({ next }: { next: string }) {
           {error}
         </p>
       )}
-      <button type="submit" disabled={pending} className="flex h-14 w-full items-center justify-center bg-ivory text-[0.75rem] font-bold tracking-[0.2em] text-ink uppercase transition-colors hover:bg-paper disabled:opacity-50">
+      <button type="submit" disabled={pending} className="flex h-14 w-full items-center justify-center bg-ivory text-[0.75rem] font-bold tracking-[0.2em] text-ink uppercase transition-colors hover:bg-ivory disabled:opacity-50">
         {pending ? "Connexion…" : "Se connecter"}
       </button>
       <p className="pt-2 text-xs leading-relaxed text-sub">Les comptes sont créés par le gérant (commande « npm run admin:create »). Mot de passe oublié : contactez le gérant.</p>

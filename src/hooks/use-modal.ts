@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { lockSmoothScroll } from "@/components/motion/MotionProvider";
 
 const FOCUSABLE = 'a[href],button:not([disabled]),textarea,input:not([disabled]),select,[tabindex]:not([tabindex="-1"])';
 
@@ -14,6 +15,7 @@ export function useModal(open: boolean, onClose: () => void) {
     const html = document.documentElement;
     const prevOverflow = html.style.overflow;
     html.style.overflow = "hidden";
+    lockSmoothScroll(true);
     const t = window.setTimeout(() => {
       const first = panelRef.current?.querySelector<HTMLElement>("[data-autofocus]") ?? panelRef.current?.querySelector<HTMLElement>(FOCUSABLE);
       first?.focus({ preventScroll: true });
@@ -42,6 +44,7 @@ export function useModal(open: boolean, onClose: () => void) {
       window.clearTimeout(t);
       document.removeEventListener("keydown", onKey);
       html.style.overflow = prevOverflow;
+      lockSmoothScroll(false);
       restore?.focus?.({ preventScroll: true });
     };
   }, [open, onClose]);

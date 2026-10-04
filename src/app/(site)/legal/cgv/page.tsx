@@ -20,7 +20,7 @@ export default async function CgvPage() {
       <h2>2. Commande</h2>
       <p>La commande se fait sans création de compte. Le client choisit ses produits, une heure de retrait parmi les créneaux proposés, renseigne ses coordonnées, accepte les présentes conditions puis valide.</p>
       <p>
-        La commande est confirmée à l’écran (numéro de commande « M-… ») et, si une adresse email est fournie, par email. Une commande payée en ligne n’est transmise à la cuisine qu’après confirmation du paiement par le prestataire de paiement.
+        La commande est enregistrée à l’écran (numéro de commande « M… ») et, si une adresse email est fournie, par email. Une commande payée en ligne n’est transmise à la cuisine qu’après confirmation du paiement par le prestataire de paiement. Le restaurant accepte ensuite la commande, ou la refuse s’il ne peut pas l’honorer (rupture d’un produit, affluence, fermeture) : le client en est informé sur sa page de suivi.
       </p>
       <p>Le restaurant peut suspendre la commande en ligne à tout moment (forte affluence, fermeture, incident). Les créneaux de retrait dépendent des horaires d’ouverture, du temps de préparation et du nombre de commandes déjà prévues.</p>
 
@@ -32,13 +32,13 @@ export default async function CgvPage() {
       <h2>4. Paiement</h2>
       <ul>
         <li>
-          <strong>En ligne</strong> : par carte bancaire (et Apple Pay / Google Pay selon l’appareil) via Stripe. Le paiement est débité à la validation. Les données bancaires sont traitées exclusivement par Stripe.
+          <strong>En ligne</strong> : par carte bancaire, sur la page de paiement sécurisée de Mollie. Le montant est réservé sur la carte au moment de la commande et débité lorsque le restaurant accepte la commande ; si la commande ne peut pas être acceptée, la réservation est annulée et rien n’est débité (si un montant a déjà été débité, il est intégralement remboursé). Les données bancaires sont traitées exclusivement par Mollie.
         </li>
         <li>
           <strong>Au retrait</strong> (lorsque cette option est proposée) : en espèces ou par carte, au comptoir.
         </li>
       </ul>
-      <p>Si le paiement en ligne n’aboutit pas, la commande n’est pas préparée et aucune somme n’est débitée ; elle est automatiquement annulée après 30 minutes sans paiement.</p>
+      <p>Si le paiement en ligne n’aboutit pas, la commande n’est pas envoyée en cuisine et aucune somme n’est débitée ; elle est automatiquement annulée après 30 minutes sans paiement.</p>
 
       <h2>5. Retrait</h2>
       <p>
@@ -51,7 +51,7 @@ export default async function CgvPage() {
         Conformément à l’article L221-28 du Code de la consommation, le droit de rétractation ne s’applique pas aux denrées alimentaires susceptibles de se détériorer rapidement, ni aux prestations de restauration fournies à une date déterminée. Pour toute
         demande d’annulation, contactez le restaurant au plus vite par téléphone.
       </p>
-      <p>Si le restaurant ne peut pas honorer une commande (rupture d’un produit, incident), il prend contact avec le client ; une commande payée en ligne et annulée par le restaurant est intégralement remboursée sur le moyen de paiement utilisé.</p>
+      <p>Si le restaurant ne peut pas honorer une commande (rupture d’un produit, incident), il la refuse ou l’annule et prévient le client ; la réservation du montant sur la carte est alors levée, ou, si le montant a déjà été débité, il est intégralement remboursé sur le moyen de paiement utilisé.</p>
 
       <h2>7. Allergènes</h2>
       <p>

@@ -15,8 +15,9 @@ export async function seedDatabase(db: Db, { log = console.log }: { log?: (m: st
   }
 
   await db.transaction(async (tx) => {
-    // Réglages (ligne unique)
-    await tx.insert(t.restaurantSettings).values({ id: 1, ...SETTINGS, onSitePaymentEnabled: true, cardPaymentEnabled: true }).onConflictDoNothing();
+    // Réglages (ligne unique). Commandes en ligne FERMÉES et temps de préparation non renseigné :
+    // le restaurant les configure dans /admin avant d'ouvrir (aucune valeur inventée).
+    await tx.insert(t.restaurantSettings).values({ id: 1, ...SETTINGS, onlineOrderingEnabled: false, prepMinutes: null, onSitePaymentEnabled: true, cardPaymentEnabled: true }).onConflictDoNothing();
 
     // Horaires
     await tx.insert(t.openingHours).values(OPENING_HOURS.map((h, i) => ({ dayOfWeek: h.day, opensAt: h.opensAt, closesAt: h.closesAt, sortOrder: i })));

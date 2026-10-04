@@ -4,7 +4,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { getDb } from "@/db/client";
 import * as t from "@/db/schema";
 import { getStaffSession } from "@/lib/auth/guard";
-import { getOrderByNumber } from "@/features/orders/service";
+import { getOrderByNumber, ORDER_NUMBER_RE } from "@/features/orders/service";
 import { OrderActions } from "@/components/admin/OrderActions";
 import { ORDER_STATUS_LABEL, OrderStatusBadge, PageHeader, Panel, PaymentBadge } from "@/components/admin/primitives";
 import type { OrderStatus } from "@/db/schema";
@@ -15,18 +15,30 @@ export const metadata = { title: "Commande" };
 
 const ACTION_LABEL: Record<string, string> = {
   "order.created": "Commande créée",
-  "order.paid": "Paiement confirmé",
+  "payment.authorized": "Paiement autorisé (montant réservé)",
+  "payment.paid": "Paiement encaissé",
+  "payment.failed": "Paiement échoué",
+  "payment.canceled": "Paiement annulé",
+  "payment.expired": "Paiement expiré",
+  "payment.refunded": "Remboursement confirmé",
+  "payment.partially_refunded": "Remboursement partiel confirmé",
+  "payment.amount_mismatch": "Montant reçu différent du total",
+  "order.accepted": "Acceptée en cuisine",
+  "order.refused": "Refusée",
+  "order.capture_failed": "Encaissement impossible",
   "order.status": "Statut modifié",
   "order.cancelled": "Commande annulée",
   "order.refund": "Remboursement",
   "order.revived_after_payment": "Relancée après paiement tardif",
 };
 
+const CAPTURE_LABEL = { manual: "Réservé, encaissé à l’acceptation", automatic: "Encaissé au paiement" } as const;
+
 const statusLabel = (v: unknown) => ORDER_STATUS_LABEL[v as OrderStatus] ?? String(v ?? "?");
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ orderNumber: string }> }) {
   const { orderNumber } = await params;
-  if (!/^M-\d{3,9}$/.test(orderNumber)) notFound();
+  if (!ORDER_NUMBER_RE.test(orderNumber)) notFound();
   const db = getDb();
   const [found, user] = await Promise.all([getOrderByNumber(db, orderNumber), getStaffSession()]);
   if (!found || !user) notFound();
@@ -63,7 +75,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
                       </p>
                       {options.length > 0 && <p className="mt-0.5 text-sm text-fg/75">{options.map((m) => `${m.groupName} : ${m.name}${m.priceDeltaCents ? ` (+${formatPrice(m.priceDeltaCents)})` : ""}`).join(" · ")}</p>}
                       {it.removedIngredients.length > 0 && <p className="mt-0.5 text-sm font-semibold text-[#f08a7e]">Sans : {it.removedIngredients.join(", ")}</p>}
-                      {it.note && <p className="mt-0.5 text-sm text-brass">« {it.note} »</p>}
+                      {it.note && <p className="mt-0.5 text-sm text-cheddar">« {it.note} »</p>}
                     </div>
                     <p className="shrink-0 tabular-nums">{formatPrice(it.lineTotalCents)}</p>
                   </li>
@@ -71,10 +83,10 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
               })}
             </ul>
             <div className="mt-3 flex items-baseline justify-between border-t border-rule pt-3">
-              <span className="kicker text-sub">Total TTC</span>
-              <span className="font-serif text-3xl tabular-nums">{formatPrice(o.totalCents)}</span>
+              <span className="t-label text-sub">Total TTC</span>
+              <span className="t-m tabular-nums">{formatPrice(o.totalCents)}</span>
             </div>
-            {o.notes && <p className="mt-4 border-l-2 border-brass pl-3 text-sm text-brass">Note du client : {o.notes}</p>}
+            {o.notes && <p className="mt-4 border-l-2 border-cheddar pl-3 text-sm text-cheddar">Note du client : {o.notes}</p>}
           </Panel>
 
           <Panel title="Historique">
@@ -85,13 +97,19 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
                 {logs.map((l) => {
                   const data = (l.data ?? {}) as Record<string, unknown>;
                   const detail =
-                    l.action === "order.status" ? `${statusLabel(data.from)} → ${statusLabel(data.to)}` : l.action === "order.refund" ? formatPrice(Number(data.amountCents ?? 0)) : l.action === "order.cancelled" ? String(data.reason ?? "") : "";
+                    l.action === "order.status"
+                      ? `${statusLabel(data.from)} → ${statusLabel(data.to)}`
+                      : l.action === "order.refund"
+                        ? formatPrice(Number(data.amountCents ?? 0))
+                        : l.action === "order.cancelled" || l.action === "order.refused"
+                          ? String(data.reason ?? "")
+                          : "";
                   return (
                     <li key={l.id} className="flex flex-wrap gap-x-3">
                       <span className="w-44 shrink-0 text-sub tabular-nums">{formatParisDateTime(l.createdAt)}</span>
                       <span className="font-semibold">{ACTION_LABEL[l.action] ?? l.action}</span>
                       {detail && <span className="text-fg/75">{detail}</span>}
-                      <span className="text-sub">{l.actorEmail ?? (l.action === "order.created" ? "client (site)" : l.action === "order.paid" ? "Stripe" : "système")}</span>
+                      <span className="text-sub">{l.actorEmail ?? (l.action === "order.created" ? "client (site)" : l.action.startsWith("payment.") ? "Mollie" : "système")}</span>
                     </li>
                   );
                 })}
@@ -129,9 +147,15 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
                   {formatParisDateTime(o.requestedTime)} {o.isAsap && <span className="font-normal text-sub">(dès que possible)</span>}
                 </dd>
               </div>
+              {o.refusedAt && (
+                <div>
+                  <dt className="text-sub">Refusée le</dt>
+                  <dd>{formatParisDateTime(o.refusedAt)}</dd>
+                </div>
+              )}
               {o.cancelReason && (
                 <div>
-                  <dt className="text-sub">Motif d’annulation</dt>
+                  <dt className="text-sub">{o.refusedAt ? "Motif du refus" : "Motif d’annulation"}</dt>
                   <dd>{o.cancelReason}</dd>
                 </div>
               )}
@@ -142,7 +166,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
             <dl className="space-y-2 text-sm">
               <div className="flex justify-between gap-4">
                 <dt className="text-sub">Moyen</dt>
-                <dd>{o.paymentMethod === "card" ? "En ligne (Stripe)" : "Au retrait"}</dd>
+                <dd>{o.paymentMethod === "card" ? `En ligne (Mollie${payment?.method ? ` · ${payment.method === "creditcard" ? "carte" : payment.method}` : ""})` : "Au retrait"}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt className="text-sub">Statut</dt>
@@ -156,6 +180,18 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
                     <dt className="text-sub">Montant</dt>
                     <dd className="tabular-nums">{formatPrice(payment.amountCents)}</dd>
                   </div>
+                  {payment.captureMode && (
+                    <div className="flex justify-between gap-4">
+                      <dt className="text-sub">Encaissement</dt>
+                      <dd className="text-right">{payment.captureMode === "manual" ? CAPTURE_LABEL.manual : CAPTURE_LABEL.automatic}</dd>
+                    </div>
+                  )}
+                  {payment.capturedAt && (
+                    <div className="flex justify-between gap-4">
+                      <dt className="text-sub">Encaissé le</dt>
+                      <dd>{formatParisDateTime(payment.capturedAt)}</dd>
+                    </div>
+                  )}
                   <div className="flex justify-between gap-4">
                     <dt className="text-sub">Remboursé</dt>
                     <dd className="tabular-nums">{formatPrice(payment.amountRefundedCents)}</dd>

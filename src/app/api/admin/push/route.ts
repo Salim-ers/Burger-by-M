@@ -43,7 +43,7 @@ export async function POST(req: Request) {
   }
   const db = getDb();
   if (new URL(req.url).searchParams.get("test") === "1") {
-    const r = await notifyStaff(db, { title: "Burger By M", body: "Notifications actives sur cet appareil.", url: "/admin/kitchen", tag: "test" });
+    const r = await notifyStaff(db, { title: "Burger By M", body: "Notifications actives sur cet appareil.", url: "/admin/cuisine", tag: "test" });
     return json(r);
   }
   const parsed = subscriptionSchema.safeParse(await readJson(req, 4_000).catch(() => null));

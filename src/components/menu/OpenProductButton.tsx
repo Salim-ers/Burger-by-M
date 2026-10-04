@@ -26,8 +26,8 @@ export function OpenProductButton({ productId }: { productId: string }) {
   }
   return (
     <div className="space-y-3">
-      <Button variant="ink" size="xl" arrow onClick={() => open(product.id)} className="w-full sm:w-auto">
-        Composer et ajouter — {formatPrice(product.priceCents ?? 0)}
+      <Button variant="ink" size="xl" data-cursor="add" onClick={() => open(product.id)} className="w-full sm:w-auto">
+        Ajouter · {formatPrice(product.priceCents ?? 0)}
       </Button>
       {notice && <p className="text-sm font-semibold text-sub">{notice}</p>}
     </div>

@@ -276,7 +276,7 @@ export function ProductForm({ product, categories, groups, bank, defaultCategory
 
       <div className="space-y-6">
         <Panel title="Photo">
-          <div className="relative aspect-[3/2] overflow-hidden bg-ink-soft">
+          <div className="relative aspect-[3/2] overflow-hidden bg-charcoal">
             {d.imageSrc ? <Image src={d.imageSrc} alt={d.imageAlt || d.name} fill sizes="400px" className="object-cover" /> : <p className="absolute inset-0 grid place-items-center text-sm text-sub">Aucune photo (visuel neutre affiché)</p>}
           </div>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -304,7 +304,7 @@ export function ProductForm({ product, categories, groups, bank, defaultCategory
                     if (!d.imageAlt) set("imageAlt", b.alt);
                     setShowBank(false);
                   }}
-                  className={cn("relative aspect-square overflow-hidden border", d.imageSrc === b.src ? "border-brass" : "border-transparent")}
+                  className={cn("relative aspect-square overflow-hidden border", d.imageSrc === b.src ? "border-cheddar" : "border-transparent")}
                   title={b.alt}
                 >
                   <Image src={b.src} alt="" fill sizes="120px" className="object-cover" />

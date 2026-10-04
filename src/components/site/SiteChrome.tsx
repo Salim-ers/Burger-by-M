@@ -3,6 +3,8 @@
 import dynamic from "next/dynamic";
 import { MobileCartBar } from "@/components/cart/MobileCartBar";
 import { Toast } from "./Toast";
+import { ScrollProgress } from "./ScrollProgress";
+import { PageTransition } from "./PageTransition";
 
 // Chargés à la demande : ils ne pèsent pas sur le premier rendu.
 const ProductSheet = dynamic(() => import("@/components/menu/ProductSheet").then((m) => m.ProductSheet), { ssr: false });
@@ -16,6 +18,8 @@ export function SiteChrome() {
       <CartDrawer />
       <MobileCartBar />
       <Toast />
+      <ScrollProgress />
+      <PageTransition />
       <Cursor />
     </>
   );

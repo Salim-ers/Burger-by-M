@@ -1,42 +1,52 @@
 /**
- * Abstraction du prestataire de paiement : Stripe aujourd'hui, Mollie possible demain
- * sans toucher au reste de l'application (commande, webhook, remboursement).
+ * Abstraction du prestataire de paiement : Mollie aujourd'hui, un autre demain
+ * sans toucher au reste de l'application (commande, webhook, cuisine, remboursement).
+ *
+ * Le statut d'un paiement est TOUJOURS relu chez le prestataire côté serveur :
+ * aucune donnée reçue du navigateur ou d'un webhook n'est crue sur parole.
  */
+export type CaptureMode = "manual" | "automatic";
+
 export interface CreatePaymentInput {
   orderId: string;
   orderNumber: string;
   amountCents: number;
-  currency: "eur";
-  customerEmail: string | null;
   description: string;
+  /** Retour du client après paiement (page de suivi). */
+  redirectUrl: string;
+  /** Notification serveur à serveur ; null en local (URL non joignable par le prestataire). */
+  webhookUrl: string | null;
+  customerEmail: string | null;
+  /** Capture souhaitée : manuelle (autorisation, encaissement à l'acceptation) si le moyen le permet. */
+  captureMode: CaptureMode;
   /** Clé d'idempotence côté prestataire (une commande = un paiement). */
   idempotencyKey: string;
 }
 
 export interface CreatedPayment {
   providerPaymentId: string;
-  /** Secret transmis au navigateur pour afficher le formulaire de paiement (Payment Element). */
-  clientSecret: string;
+  /** Page de paiement hébergée par le prestataire. */
+  checkoutUrl: string;
+  captureMode: CaptureMode;
+  method: string | null;
 }
 
-export type ProviderPaymentStatus = "pending" | "succeeded" | "failed" | "canceled";
+/** Statuts réels du prestataire (Mollie). */
+export type ProviderPaymentStatus = "open" | "pending" | "authorized" | "paid" | "canceled" | "expired" | "failed";
 
 export interface ProviderPayment {
   id: string;
   status: ProviderPaymentStatus;
   amountCents: number;
+  amountCapturedCents: number;
+  amountRefundedCents: number;
+  method: string | null;
+  captureMode: CaptureMode;
+  checkoutUrl: string | null;
+  /** L'autorisation ou le paiement ouvert peuvent encore être annulés. */
+  isCancelable: boolean;
   metadataOrderId: string | null;
-  /** Secret client (pour reprendre un paiement interrompu). */
-  clientSecret: string | null;
 }
-
-/** Événement normalisé, après vérification de signature. */
-export type PaymentEvent =
-  | { id: string; type: "payment.succeeded"; providerPaymentId: string; orderId: string | null; amountCents: number }
-  | { id: string; type: "payment.failed"; providerPaymentId: string; orderId: string | null; error: string | null }
-  | { id: string; type: "payment.canceled"; providerPaymentId: string; orderId: string | null }
-  | { id: string; type: "payment.refunded"; providerPaymentId: string; amountRefundedCents: number; amountCents: number }
-  | { id: string; type: "ignored"; rawType: string };
 
 export interface RefundResult {
   refundId: string;
@@ -46,11 +56,14 @@ export interface RefundResult {
 export interface PaymentProvider {
   readonly name: string;
   createPayment(input: CreatePaymentInput): Promise<CreatedPayment>;
-  retrievePayment(providerPaymentId: string): Promise<ProviderPayment>;
-  cancelPayment(providerPaymentId: string): Promise<void>;
+  getPayment(providerPaymentId: string): Promise<ProviderPayment>;
+  /** Encaisse un paiement autorisé (capture manuelle). */
+  capture(providerPaymentId: string, idempotencyKey: string): Promise<void>;
+  /** Annule un paiement ouvert ou libère une autorisation. */
+  cancel(providerPaymentId: string): Promise<void>;
   refund(providerPaymentId: string, amountCents: number, idempotencyKey: string): Promise<RefundResult>;
-  /** Vérifie la signature et normalise l'événement. Lève une erreur si la signature est invalide. */
-  parseWebhook(rawBody: string, signature: string | null): PaymentEvent;
+  /** Extrait l'identifiant de paiement d'un webhook (aucune autre donnée n'est utilisée). */
+  webhookPaymentId(rawBody: string): string | null;
 }
 
 export class PaymentConfigurationError extends Error {}

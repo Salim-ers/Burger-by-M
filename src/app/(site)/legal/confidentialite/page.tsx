@@ -24,7 +24,7 @@ export default async function ConfidentialitePage() {
 
       <h2>Données collectées</h2>
       <p>Lors d’une commande : prénom, nom, téléphone, email, contenu de la commande, heure de retrait, précisions éventuelles et statut du paiement. Le site ne demande ni compte client, ni date de naissance, ni adresse postale.</p>
-      <p>Les données de carte bancaire sont saisies directement chez Stripe : Burger By M n’y a jamais accès et ne les stocke pas.</p>
+      <p>Les données de carte bancaire sont saisies directement sur la page de paiement de Mollie : Burger By M n’y a jamais accès et ne les stocke pas.</p>
       <p>Pour la sécurité du service, l’adresse IP est utilisée temporairement pour limiter les abus (nombre de tentatives) et figure dans les journaux techniques de l’hébergeur.</p>
 
       <h2>Finalités et bases légales</h2>
@@ -40,7 +40,7 @@ export default async function ConfidentialitePage() {
         <li>L’équipe du restaurant (préparation et suivi des commandes).</li>
         <li>Vercel Inc. (hébergement du site) — transferts encadrés par les clauses contractuelles types de la Commission européenne.</li>
         <li>Neon Inc. (base de données PostgreSQL).</li>
-        <li>Stripe Payments Europe Ltd. (paiement en ligne).</li>
+        <li>Mollie B.V. (paiement en ligne).</li>
         <li>Resend (envoi de l’email de confirmation, lorsqu’il est activé).</li>
         <li>Google (carte Google Maps, uniquement si vous choisissez de l’afficher).</li>
       </ul>

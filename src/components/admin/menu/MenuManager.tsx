@@ -33,7 +33,7 @@ function CategoryBlock({ category: c, owner, first, last }: { category: Category
   return (
     <section aria-labelledby={`cat-${c.id}`} className={cn("border border-rule", !c.isActive && "opacity-60")}>
       <header className="flex flex-wrap items-center gap-3 border-b border-rule bg-panel px-4 py-3">
-        <h2 id={`cat-${c.id}`} className="font-serif text-2xl">
+        <h2 id={`cat-${c.id}`} className="t-m">
           {c.title}
         </h2>
         <span className="text-xs text-sub">
@@ -101,14 +101,14 @@ function ProductRow({ product: p, owner, first, last }: { product: Category["pro
   const { exec, pending } = useAction();
   return (
     <li className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-      <div className="relative size-14 shrink-0 overflow-hidden bg-ink-soft">{p.image && <Image src={p.image.src} alt="" fill sizes="56px" className="object-cover" />}</div>
+      <div className="relative size-14 shrink-0 overflow-hidden bg-charcoal">{p.image && <Image src={p.image.src} alt="" fill sizes="56px" className="object-cover" />}</div>
       <div className="min-w-0 flex-1">
         <p className="font-semibold">{p.name}</p>
         <p className="mt-0.5 flex flex-wrap gap-x-3 gap-y-1 text-xs text-sub">
           <span className="tabular-nums">{p.priceCents === null ? "Prix non confirmé" : formatPrice(p.priceCents)}</span>
           {!p.isVisible && <span className="text-[#f08a7e]">Masqué</span>}
-          {p.isBestSeller && <span className="text-rose">Best-seller</span>}
-          {p.needsFinalProductPhoto && <span className="text-brass">Photo d’illustration</span>}
+          {p.isBestSeller && <span className="text-pink">Best-seller</span>}
+          {p.needsFinalProductPhoto && <span className="text-cheddar">Photo d’illustration</span>}
           {!p.image && <span>Sans photo</span>}
         </p>
       </div>

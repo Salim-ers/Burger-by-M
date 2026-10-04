@@ -3,17 +3,17 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Boutons rectangulaires, capitales espacées.
- * ink : noir plein · ivory : ivoire plein · line : contour · brass : laiton · ghost : texte souligné.
+ * Boutons rectangulaires, capitales espacées. Le cheddar signale l'interaction (survol, action principale).
+ * ink : noir plein · ivory : crème plein · line : contour · cheddar : action principale · ghost : texte souligné.
  */
-export type ButtonVariant = "ink" | "ivory" | "line" | "brass" | "ghost";
+export type ButtonVariant = "ink" | "ivory" | "line" | "cheddar" | "ghost";
 export type ButtonSize = "sm" | "md" | "lg" | "xl";
 
 const variants: Record<ButtonVariant, string> = {
-  ink: "bg-ink text-ivory hover:bg-ink-soft",
-  ivory: "bg-ivory text-ink hover:bg-paper",
+  ink: "bg-ink text-cream hover:bg-cheddar hover:text-ink",
+  ivory: "bg-cream text-ink hover:bg-cheddar",
   line: "border border-current/30 text-current hover:border-current",
-  brass: "bg-brass text-ink hover:bg-[#d4b67e]",
+  cheddar: "bg-cheddar text-ink hover:bg-cream",
   ghost: "px-0! text-current underline decoration-current/30 underline-offset-[6px] hover:decoration-current",
 };
 
@@ -27,7 +27,7 @@ const sizes: Record<ButtonSize, string> = {
 export function buttonClasses(variant: ButtonVariant = "ink", size: ButtonSize = "md", className?: string) {
   return cn(
     "group/btn relative inline-flex select-none items-center justify-center gap-3 whitespace-nowrap rounded-xs font-sans font-bold uppercase tracking-[0.2em]",
-    "transition-[background-color,color,border-color,opacity,transform] duration-300 ease-out-expo active:scale-[0.985]",
+    "transition-[background-color,color,border-color,opacity,transform] duration-300 ease-food active:scale-[0.985]",
     "disabled:pointer-events-none disabled:opacity-40 aria-disabled:pointer-events-none aria-disabled:opacity-40",
     variants[variant],
     sizes[size],
@@ -36,7 +36,7 @@ export function buttonClasses(variant: ButtonVariant = "ink", size: ButtonSize =
 }
 
 export function Arrow({ className }: { className?: string }) {
-  return <ArrowRight aria-hidden className={cn("size-4 shrink-0 transition-transform duration-300 ease-out-expo group-hover/btn:translate-x-1", className)} strokeWidth={1.75} />;
+  return <ArrowRight aria-hidden className={cn("size-4 shrink-0 transition-transform duration-300 ease-food group-hover/btn:translate-x-1", className)} strokeWidth={1.75} />;
 }
 
 type Common = { variant?: ButtonVariant; size?: ButtonSize; arrow?: boolean; className?: string; children: React.ReactNode };
