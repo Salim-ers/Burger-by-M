@@ -77,7 +77,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </nav>
           <div className="mt-8 grid gap-10 md:grid-cols-12 md:gap-14">
             <div className="md:col-span-7">
-              <ProductImage image={product.image} name={product.name} sizes="(min-width: 768px) 58vw, 100vw" priority className="aspect-[16/10] w-full" />
+              <ProductImage image={product.image} name={product.name} sizes="(min-width: 768px) 58vw, 100vw" priority className="aspect-[3/2] w-full md:rounded-2xl" />
               {product.image && product.needsFinalProductPhoto && <p className="mt-3 text-xs text-sub">Photo d’illustration : la présentation peut varier.</p>}
             </div>
             <div className="flex flex-col md:col-span-5 md:pt-4">
@@ -87,7 +87,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 <Price cents={product.priceCents} />
               </p>
               <p className="mt-6 text-[1.05rem] leading-relaxed text-sub">{compositionText(product)}</p>
-              {category.note && <p className="s-m mt-4">{category.note}.</p>}
+              {category.note && <p className="t-note mt-4">{category.note}.</p>}
               <p className="mt-4 text-sm text-sub">Allergènes : {product.allergens ?? "liste disponible au restaurant, sur simple demande."}</p>
               <div className="mt-10">
                 <OpenProductButton productId={product.id} />
@@ -101,7 +101,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <div className="container-bm">
             <h2 id="related-title" className="flex flex-wrap items-baseline gap-x-4">
               <span className="t-l">Aussi en</span>
-              <span className="s-l">{category.name}</span>
+              <span className="t-l">{category.name}</span>
             </h2>
             <div className="-mx-[var(--gutter)] mt-10 grid gap-y-10 sm:mx-0 sm:grid-cols-2 sm:gap-x-6 xl:grid-cols-3">
               {related.map((p) => (

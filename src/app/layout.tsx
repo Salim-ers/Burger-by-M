@@ -1,16 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
-import { Anton, Instrument_Serif } from "next/font/google";
+import { Archivo } from "next/font/google";
 import { brand } from "@/data/brand";
 import { defaultOgImage, siteUrl } from "@/lib/seo";
 import "./globals.css";
 
-/** Brut : SMASHED. MELTED. CRISPY. */
-const anton = Anton({ weight: "400", subsets: ["latin"], variable: "--font-anton", display: "swap" });
-/** Éditorial : « by M », « Généreux par nature ». */
-const instrument = Instrument_Serif({ weight: "400", style: ["normal", "italic"], subsets: ["latin"], variable: "--font-instrument", display: "swap" });
-/** Interface : navigation, labels, formulaires. */
-const manrope = localFont({ src: [{ path: "./fonts/manrope.woff2", style: "normal", weight: "200 800" }], variable: "--font-manrope", display: "swap" });
+/** Une seule police sur tout le site. Titres : étroite et très grasse. Texte : largeur normale. */
+const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
 
 const title = "Burger By M — Smash burgers à Rantigny (Oise)";
 const description =
@@ -36,7 +31,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // suppressHydrationWarning : la classe « intro-seen » est posée avant l'hydratation (script de l'intro).
-    <html lang="fr" data-scroll-behavior="smooth" className={`${anton.variable} ${instrument.variable} ${manrope.variable}`} suppressHydrationWarning>
+    <html lang="fr" data-scroll-behavior="smooth" className={archivo.variable} suppressHydrationWarning>
       <body className="min-h-dvh">{children}</body>
     </html>
   );

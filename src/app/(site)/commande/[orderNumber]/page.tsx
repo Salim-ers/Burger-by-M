@@ -27,7 +27,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
           <p className="t-label text-cheddar">Suivi de commande</p>
           <h1 className="mt-6">
             <span className="t-xl block">Lien de suivi</span>
-            <span className="s-xl block">invalide.</span>
+            <span className="t-xl block">invalide.</span>
           </h1>
           <p className="mt-6 max-w-md text-cream/75">Utilisez le lien obtenu après votre commande, ou appelez le restaurant avec votre numéro de commande.</p>
           <ButtonLink href="/menu" variant="ivory" size="lg" arrow className="mt-10">

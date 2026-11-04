@@ -40,8 +40,8 @@ export function CartDrawer() {
       {lines.length === 0 ? (
         <div className="flex flex-1 flex-col items-start justify-center px-6 py-16">
           <p className="t-m">Encore vide.</p>
-          <p className="s-m mt-1 text-sub">La carte, elle, est bien remplie.</p>
-          <Link href="/menu" onClick={onClose} className="t-label mt-8 inline-flex h-14 items-center bg-ink px-8 text-cream transition-colors hover:bg-cheddar hover:text-ink">
+          <p className="t-note mt-1 text-sub">La carte, elle, est bien remplie.</p>
+          <Link href="/menu" onClick={onClose} className="t-btn rounded-full mt-8 inline-flex h-14 items-center bg-ink px-8 text-cream transition-colors hover:bg-cheddar hover:text-ink">
             Voir la carte
           </Link>
         </div>
@@ -63,11 +63,11 @@ export function CartDrawer() {
                   <div className="mt-3 flex flex-wrap items-center gap-1">
                     <Quantity size="sm" value={line.quantity} onChange={(q) => useCart.getState().setQuantity(line.key, q)} label={`Quantité de ${line.name}`} />
                     {products.get(line.productId) && (
-                      <button type="button" onClick={() => useUi.getState().openProduct(line.productId, line.key)} className="t-label h-10 px-3 text-[0.62rem] text-sub hover:text-fg">
+                      <button type="button" onClick={() => useUi.getState().openProduct(line.productId, line.key)} className="t-btn rounded-full h-10 px-3 text-sub hover:text-fg">
                         Modifier
                       </button>
                     )}
-                    <button type="button" onClick={() => useCart.getState().remove(line.key)} className="t-label h-10 px-3 text-[0.62rem] text-sub hover:text-danger" aria-label={`Supprimer ${line.name}`}>
+                    <button type="button" onClick={() => useCart.getState().remove(line.key)} className="t-btn rounded-full h-10 px-3 text-sub hover:text-danger" aria-label={`Supprimer ${line.name}`}>
                       Supprimer
                     </button>
                   </div>
@@ -97,7 +97,7 @@ export function CartDrawer() {
               href="/checkout"
               onClick={(e) => (blocked ? e.preventDefault() : onClose())}
               aria-disabled={blocked || undefined}
-              className={cn("t-label mt-5 flex h-16 w-full items-center justify-center text-[0.78rem] transition-colors", blocked ? "pointer-events-none bg-ink/30 text-cream" : "bg-ink text-cream hover:bg-cheddar hover:text-ink")}
+              className={cn("t-btn rounded-full mt-5 flex h-16 w-full items-center justify-center transition-colors", blocked ? "pointer-events-none bg-ink/30 text-cream" : "bg-ink text-cream hover:bg-cheddar hover:text-ink")}
             >
               {notice ? ORDERING_CLOSED_LABEL : `Commander · ${formatPrice(checked.subtotalCents)}`}
             </Link>

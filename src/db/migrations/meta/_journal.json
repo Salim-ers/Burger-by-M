@@ -29,6 +29,13 @@
       "when": 1793797793534,
       "tag": "0003_visuels_frites",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793803051555,
+      "tag": "0004_visuels_milkshakes",
+      "breakpoints": true
     }
   ]
 }

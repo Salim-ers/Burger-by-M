@@ -7,11 +7,11 @@ export function Logo({ size = 48, className, priority }: { size?: number; classN
   return <Image src={brand.logo.src} alt="Burger By M" width={size} height={size} preload={priority} sizes={`${size}px`} className={cn("rounded-full", className)} />;
 }
 
-/** Logotype : « BURGER » brut (Anton), « by M » éditorial (Instrument Serif italique). */
-export function Wordmark({ className }: { className?: string }) {
+/** Logotype en toutes lettres, dans la police du site. */
+export function Wordmark({ className, accent }: { className?: string; accent?: boolean }) {
   return (
-    <span className={cn("leading-none", className)}>
-      <span className="font-display tracking-[0.06em]">BURGER</span> <span className="font-serif text-[1.15em] italic">by M</span>
+    <span className={cn("font-display leading-none uppercase", className)}>
+      Burger <span className={accent ? "text-pink" : undefined}>by M</span>
     </span>
   );
 }

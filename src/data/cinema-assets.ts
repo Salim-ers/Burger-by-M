@@ -9,7 +9,7 @@ export const cinemaAssets = {
       2560,
       3840
     ],
-    "lqip": "data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAABwBACdASoYAA4APu1iqU2ppaQiMAgBMB2JZgCdMoADg/IZkm+AKvxsGVPEAAD+zKFD91z/d8Ybgs0jshk+peX3Nc0+uh/Tc3sU9sWMwzLCqDC88BCq/wdGPa1VXrYQe0/VOXA3zts0e2c4/iGfnQDysfZDcuVS1W1Vjoi6Rv9sMjr8J6TTwsFzx+5EBXvZnsAAAA=="
+    "lqip": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAABwBACdASoYAA4APu1iqU2ppaQiMAgBMB2JZACdMoMYAEskuDFbwKE9yv/S4AD+ylYw87siMRSJOBmYPKAHT4rpswjfRj1vqRPF9yl6miHyJN/BJWDsr3LcCsN4LTOe+oSqY1ke8V6QniaI1y9hg9682p60gOObUKrrYLjPCMrXihR9hFn4M6ICDjfAl3sHmRommpQCXfx4A82zx/6DWcvX3oiO73W1wAA="
   },
   "hero-mobile": {
     "width": 2160,
@@ -18,9 +18,10 @@ export const cinemaAssets = {
       640,
       828,
       1170,
-      1620
+      1620,
+      2160
     ],
-    "lqip": "data:image/webp;base64,UklGRjoBAABXRUJQVlA4IC4BAACQBwCdASoYACsAPu1oqFEppaOiqrgMATAdiWQAnTK+JwIApV0N5KI6z7boGZ3plL6/qsCcmNbeEyqMZfu66BUAEH9AIwAA/uM1zxncyayWG46mCiuDMOuljz7htofGgA7MDqLJKNbrmYI9vyF/RRGxeJusYVxPhvWP4mbw22FPW9n1riFlM0KbTlbD1geyzllMGgwCetSgo1klzkQJ30/lhqoBL5C/WMNfiLRt7hyNAHAiCdlA2mbebtkvKLEe7QIJBMcofkrU1fgFqarFDyy6G0B/QTnajhI4Kt6xsmmk/YvggUJmygQgt+qv7q+Pa+UVmQcT4OhOX5GANOsHIk3baEtp5L2h463QhunGinVZTtxCXwcpNEQ57xrCJ9LFxqrj8sYwErACsScCrTQAAA=="
+    "lqip": "data:image/webp;base64,UklGRiABAABXRUJQVlA4IBQBAADwBwCdASoYACsAPu1oqlCppaOiqrgMATAdiWIArDNF9Xv/lP8B+qyu3KFeb8Tuchr0NpuPbszzcUf0JW6/sfC2OBgyBytMKAAA/rI3qg8VBcl4vZWW0+NNB9x3O7y5sgCu3lYnVlgsymrfdKF+8gPGDZOnzyLrgGdz7tYE86JRbHDvE9J7bneUtO+HyudipwpIIi3AJndsqCEjL5v88GP4lBMq/ehXYBSUC6gZopJ1lzaHs7VKJcnxfxEIAoxlbDshijQuxzga2ynMwbNOBvJEvITbrdm+D7+Hp1DF9fJxLz3oNJgTTs0USH1euLVAoMzkEhq4WQvI6BIZNtbT0gyXHJUGhMmAO4X6pOBuWHGZaxpAAAA="
   },
   "plancha": {
     "width": 2160,

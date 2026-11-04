@@ -31,7 +31,7 @@ export function Commander() {
   return (
     <section data-theme="dark" aria-labelledby="commander-title" className="on-dark relative bg-ink pt-[clamp(6rem,20vh,14rem)] pb-[clamp(1.5rem,5vh,3.5rem)]">
       <div className="container-cine">
-        <RevealText id="commander-title" lines={["Vous savez déjà", <em key="prendre">ce que vous allez prendre.</em>]} className="font-serif text-[clamp(2.7rem,7.2vw,9.5rem)] leading-[1] tracking-[-0.015em] text-cream" />
+        <RevealText id="commander-title" lines={["Vous savez déjà", "ce que vous allez prendre."]} className="t-l text-[8.6vw] text-cream md:text-[clamp(3rem,6vw,8rem)]" />
 
         <Link
           ref={button}

@@ -52,6 +52,11 @@ export const media = {
   visuelFritesCheddarOignons: img("/images/products/frites-cheddar-oignons.webp", 2000, 1333, "Frites au cheddar fondu et aux oignons frits croustillants dans leur barquette (visuel d’illustration)", "product", "50% 52%"),
   visuelFritesCheddarBacon: img("/images/products/frites-cheddar-bacon.webp", 2000, 1333, "Frites au cheddar fondu et aux éclats de bacon croustillant dans leur barquette (visuel d’illustration)", "product", "50% 52%"),
 
+  // ---------------- Milkshakes : illustrations générées d'après les vraies photos (à valider) ----------------
+  visuelDubaiShake: img("/images/products/milkshake-dubai.webp", 2000, 1336, "Dubai Shake : pistache, pâte à tartiner et chantilly dans son gobelet (visuel d’illustration)", "product"),
+  visuelBuenoBomb: img("/images/products/milkshake-bueno-bomb.webp", 2000, 1336, "Bueno Bomb’ : gaufrettes au chocolat, pâte à tartiner et chantilly dans son gobelet (visuel d’illustration)", "product"),
+  visuelMilkshakeComposer: img("/images/products/milkshake-a-composer.webp", 2000, 1336, "Milkshake à composer, ici au coulis caramel avec gaufrette au chocolat blanc (visuel d’illustration)", "product"),
+
   // ---------------- Photos réelles du restaurant ----------------
   realSpecial: img("/images/food/smash-le-special.webp", 720, 1186, "Le Spécial servi au restaurant : cheddar fondu et oignons crispy", "photo", "50% 55%"),
   realSpicyChicken: img("/images/food/classic-spicy-chicken.webp", 720, 1186, "Spicy Chicken servi au restaurant, tenu à la main", "photo", "45% 58%"),
@@ -82,8 +87,8 @@ export type MediaKey = keyof typeof media;
 
 /**
  * Photo de chaque produit de la carte (product.slug → image).
- * Frites : quatre visuels d'illustration distincts, un par recette (le seed les marque needsFinalProductPhoto).
- * Les photos réelles des frites restent dans la galerie, où elles ne présentent pas une recette précise.
+ * Frites et milkshakes : un visuel d'illustration par recette (le seed les marque needsFinalProductPhoto).
+ * Les photos réelles restent disponibles dans la banque d'images de l'administration.
  */
 export const productPhoto = {
   "smash-double": media.smashDouble,
@@ -105,8 +110,9 @@ export const productPhoto = {
   "frites-cheddar": media.visuelFritesCheddar,
   "frites-cheddar-oignons": media.visuelFritesCheddarOignons,
   "frites-cheddar-bacon": media.visuelFritesCheddarBacon,
-  "dubai-shake": media.milkshakePistache,
-  "milkshake-caramel": media.milkshakeCaramel,
+  "dubai-shake": media.visuelDubaiShake,
+  "bueno-bomb": media.visuelBuenoBomb,
+  "milkshake-caramel": media.visuelMilkshakeComposer,
 } satisfies Record<string, MediaImage>;
 
 export type ProductPhotoKey = keyof typeof productPhoto;
@@ -117,23 +123,3 @@ export function mediaBySrc(src: string | null | undefined): MediaImage | null {
   if (!src) return null;
   return bySrc.get(src) ?? null;
 }
-
-/** Galerie : photos réelles + visuels produits, dans un ordre éditorial. */
-export const gallery: MediaImage[] = [
-  media.realSpecial,
-  media.leMontagnard,
-  media.devanture,
-  media.fritesCheddarOignons,
-  media.leHot,
-  media.milkshakePistache,
-  media.realSpicyChicken,
-  media.smashTower,
-  media.terrasse,
-  media.realLeHot,
-  media.barbeuc,
-  media.milkshakeCaramel,
-  media.plateau,
-  media.leForestier,
-  media.fritesClassiques,
-  media.realForestier,
-];

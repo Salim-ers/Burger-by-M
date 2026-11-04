@@ -100,9 +100,9 @@ export function CheckoutFlow() {
         <p className="t-label text-cheddar-deep">Votre commande</p>
         <h1 className="mt-5">
           <span className="t-xl block">Panier</span>
-          <span className="s-xl block">encore vide.</span>
+          <span className="t-xl block">encore vide.</span>
         </h1>
-        <Link href="/menu" className="t-label mt-10 inline-flex h-14 items-center bg-ink px-8 text-cream transition-colors hover:bg-cheddar hover:text-ink">
+        <Link href="/menu" className="t-btn rounded-full mt-10 inline-flex h-14 items-center bg-ink px-8 text-cream transition-colors hover:bg-cheddar hover:text-ink">
           Voir la carte
         </Link>
       </div>
@@ -216,7 +216,7 @@ export function CheckoutFlow() {
       </Link>
       <h1 className="mt-6 flex flex-wrap items-baseline gap-x-4">
         <span className="t-xl">Votre</span>
-        <span className="s-xl">commande.</span>
+        <span className="t-xl">commande.</span>
       </h1>
 
       {pending && (
@@ -227,11 +227,11 @@ export function CheckoutFlow() {
           </div>
           <div className="flex flex-wrap gap-2">
             {pending.resumeUrl && (
-              <a href={pending.resumeUrl} className="t-label inline-flex h-12 items-center bg-cheddar px-6 text-ink">
+              <a href={pending.resumeUrl} className="t-btn rounded-full inline-flex h-12 items-center bg-cheddar px-6 text-ink">
                 Reprendre le paiement
               </a>
             )}
-            <button type="button" onClick={abandonPending} className="t-label inline-flex h-12 items-center border border-cream/30 px-6 text-cream hover:border-cream">
+            <button type="button" onClick={abandonPending} className="t-btn rounded-full inline-flex h-12 items-center border border-cream/30 px-6 text-cream hover:border-cream">
               Modifier ma commande
             </button>
           </div>
@@ -371,7 +371,7 @@ export function CheckoutFlow() {
           )}
 
           <div className="sticky bottom-0 z-20 -mx-[var(--gutter)] border-t border-rule bg-bg/95 px-[var(--gutter)] pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:static md:mx-0 md:border-0 md:bg-transparent md:p-0">
-            <button type="submit" disabled={submitting || blocked} className="t-label flex h-16 w-full items-center justify-center bg-ink px-6 text-[0.8rem] text-cream transition-colors hover:bg-cheddar hover:text-ink disabled:opacity-40">
+            <button type="submit" disabled={submitting || blocked} className="t-btn rounded-full flex h-16 w-full items-center justify-center bg-ink px-6 text-cream transition-colors hover:bg-cheddar hover:text-ink disabled:opacity-40">
               {submitting ? "Validation…" : method === "card" ? `Payer · ${total}` : `Valider ma commande · ${total}`}
             </button>
           </div>

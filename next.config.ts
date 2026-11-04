@@ -36,6 +36,7 @@ const nextConfig: NextConfig = {
       { source: "/confirmation", destination: "/", permanent: false },
       { source: "/commande/confirmation", destination: "/", permanent: false },
       { source: "/notre-histoire", destination: "/", permanent: true },
+      { source: "/galerie", destination: "/menu", permanent: true },
       // Anciennes adresses de l'administration
       { source: "/admin/dashboard", destination: "/admin", permanent: false },
       { source: "/admin/commandes/:path*", destination: "/admin/orders", permanent: false },

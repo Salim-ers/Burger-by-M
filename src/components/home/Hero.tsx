@@ -6,17 +6,22 @@ import { Magnetic } from "@/components/motion";
 import { useOrderingNotice } from "@/features/store/use-status";
 import { brand } from "@/data/brand";
 import { CinemaPicture, CinemaPreload } from "./CinemaPicture";
+import { GoogleRating } from "./GoogleRating";
 import { Cta } from "./Cta";
 
 /** Lettres révélées une à une, derrière un masque. Le texte reste lu d'un seul tenant par les lecteurs d'écran. */
 function Letters({ text, from }: { text: string; from: number }) {
   return (
     <>
-      {Array.from(text).map((char, i) => (
-        <span key={i} aria-hidden className="cine-char" style={{ "--c": from + i } as React.CSSProperties}>
-          {char === " " ? "\u00a0" : char}
-        </span>
-      ))}
+      {Array.from(text).map((char, i) =>
+        char === " " ? (
+          <span key={i} aria-hidden className="cine-space" />
+        ) : (
+          <span key={i} aria-hidden className="cine-char" style={{ "--c": from + i } as React.CSSProperties}>
+            {char}
+          </span>
+        ),
+      )}
     </>
   );
 }
@@ -89,17 +94,18 @@ export function Hero() {
             </span>
             <span className="cine-line">
               <Letters text="qui " from={7} />
-              <em className="cine-signature">
-                <span aria-hidden className="cine-char text-pink" style={{ "--c": 11 } as React.CSSProperties}>
-                  M
-                </span>
-                <Letters text="arque." from={12} />
-              </em>
+              <span aria-hidden className="cine-char text-pink" style={{ "--c": 11 } as React.CSSProperties}>
+                M
+              </span>
+              <Letters text="arque." from={12} />
             </span>
           </h1>
 
-          <div className="cine-enter flex flex-col gap-5">
-            <p className="cine-sentence text-[1rem] leading-snug text-cream/85 md:text-[1.1rem] min-[1800px]:text-[1.4rem]">Smash burgers préparés à la commande, à Rantigny.</p>
+          <div className="cine-enter flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              <p className="cine-sentence text-[1rem] leading-snug text-cream md:text-[1.1rem] min-[1800px]:text-[1.4rem]">Smash burgers préparés à la commande, à Rantigny.</p>
+              <GoogleRating />
+            </div>
             <div className="flex gap-2.5 max-[359px]:flex-col sm:flex-wrap">
               <Magnetic className="min-w-0 flex-1 sm:flex-none">
                 <Cta href="/menu" label={notice ? "Commandes fermées" : "Commander"} tone={notice ? "glass" : "solid"} className="w-full sm:w-auto" />

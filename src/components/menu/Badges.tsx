@@ -13,7 +13,7 @@ export function ProductBadges({ product, className }: { product: Pick<MenuProduc
   return (
     <div className={cn("flex flex-wrap gap-1.5", className)}>
       {items.map((i) => (
-        <span key={i.key} className={cn("t-label inline-flex h-6 items-center gap-1.5 border border-ink/15 bg-ivory/90 px-2 text-[0.58rem] tracking-[0.16em] text-ink", i.tone)}>
+        <span key={i.key} className={cn("t-label inline-flex h-6 items-center gap-1.5 rounded-full border border-ink/15 bg-ivory/90 px-2 text-[0.58rem] tracking-[0.16em] text-ink", i.tone)}>
           {i.icon}
           {i.label}
         </span>

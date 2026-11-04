@@ -48,7 +48,7 @@ export function Sheet({ open, onClose, labelledBy, desktop = "center", className
               className,
             )}
           >
-            <button type="button" onClick={onClose} className="t-label absolute top-3 right-3 z-20 h-11 px-4 text-fg transition-colors hover:text-cheddar-deep">
+            <button type="button" onClick={onClose} className="t-btn rounded-full absolute top-3 right-3 z-20 h-11 px-4 text-fg transition-colors hover:text-cheddar-deep">
               Fermer ✕
             </button>
             {children}

@@ -15,6 +15,8 @@ export const brand = {
   },
   address: { street: "19 avenue de la Gare", postalCode: "60290", city: "Rantigny", region: "Oise", country: "FR" },
   phone: { display: "03 44 24 89 18", e164: "+33344248918" },
+  /** Note Google communiquée par le restaurant, à tenir à jour : elle n'est pas relue automatiquement chez Google. */
+  googleRating: { label: "4,9" },
   logo: { src: "/images/logo/burger-by-m.webp", png: "/images/logo/burger-by-m.png", width: 532, height: 532 },
 } as const;
 

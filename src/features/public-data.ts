@@ -12,11 +12,11 @@ import type { ScheduleInput } from "@/lib/schedule";
  * Invalidation immédiate à chaque modification depuis l'administration (tags « menu », « store »).
  *
  * Ce cache survit aux déploiements : une migration qui modifie la carte n'y apparaît qu'après une heure,
- * sauf si elle change aussi la version ci-dessous (dernière en date : 0003_visuels_frites).
+ * sauf si elle change aussi la version ci-dessous (dernière en date : 0004_visuels_milkshakes).
  */
 export const CACHE_TAGS = { menu: "menu", store: "store" } as const;
 
-const MENU_CACHE_VERSION = "2";
+const MENU_CACHE_VERSION = "3";
 
 export const getPublicMenu = unstable_cache(async () => loadMenu(getDb()), ["public-menu", MENU_CACHE_VERSION], { tags: [CACHE_TAGS.menu], revalidate: 3600 });
 

@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Boutons rectangulaires, capitales espacées. Le cheddar signale l'interaction (survol, action principale).
+ * Boutons arrondis, les mêmes que sur l'accueil. Le cheddar signale l'interaction (survol, action principale).
  * ink : noir plein · ivory : crème plein · line : contour · cheddar : action principale · ghost : texte souligné.
  */
 export type ButtonVariant = "ink" | "ivory" | "line" | "cheddar" | "ghost";
@@ -18,15 +18,15 @@ const variants: Record<ButtonVariant, string> = {
 };
 
 const sizes: Record<ButtonSize, string> = {
-  sm: "h-10 px-4 text-[0.68rem]",
-  md: "h-12 px-6 text-[0.72rem]",
-  lg: "h-14 px-8 text-[0.75rem]",
-  xl: "h-16 px-10 text-[0.8rem]",
+  sm: "h-10 px-4",
+  md: "h-12 px-6",
+  lg: "h-14 px-8",
+  xl: "h-16 px-10",
 };
 
 export function buttonClasses(variant: ButtonVariant = "ink", size: ButtonSize = "md", className?: string) {
   return cn(
-    "group/btn relative inline-flex select-none items-center justify-center gap-3 whitespace-nowrap rounded-xs font-sans font-bold uppercase tracking-[0.2em]",
+    "group/btn relative inline-flex select-none items-center justify-center gap-3 whitespace-nowrap rounded-full t-btn",
     "transition-[background-color,color,border-color,opacity,transform] duration-300 ease-food active:scale-[0.985]",
     "disabled:pointer-events-none disabled:opacity-40 aria-disabled:pointer-events-none aria-disabled:opacity-40",
     variants[variant],

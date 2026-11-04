@@ -43,7 +43,7 @@ export function MobileCartBar() {
               type="button"
               onClick={() => setCartOpen(true)}
               aria-label={`Voir le panier (${count} article${count > 1 ? "s" : ""}) — ${formatPrice(total)}`}
-              className="t-label flex h-14 w-full items-center justify-between bg-ink px-5 text-cream shadow-lift"
+              className="t-btn rounded-full flex h-14 w-full items-center justify-between bg-ink px-5 text-cream shadow-lift"
             >
               <span>
                 Panier · <span className="tabular-nums">{count}</span>
@@ -51,7 +51,7 @@ export function MobileCartBar() {
               <span className="text-[0.85rem] tabular-nums text-cheddar">{formatPrice(total)}</span>
             </button>
           ) : (
-            <Link href="/menu" className={cn("t-label flex h-14 w-full items-center justify-center shadow-lift", notice ? "bg-charcoal text-cream/70" : "bg-cheddar text-ink")}>
+            <Link href="/menu" className={cn("t-btn rounded-full flex h-14 w-full items-center justify-center shadow-lift", notice ? "bg-charcoal text-cream/70" : "bg-cheddar text-ink")}>
               {notice ? ORDERING_CLOSED_LABEL : "Commander"}
             </Link>
           )}

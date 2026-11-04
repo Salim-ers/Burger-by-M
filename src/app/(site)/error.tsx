@@ -14,7 +14,7 @@ export default function SiteError({ error, reset }: { error: Error & { digest?: 
         <p className="t-label text-cheddar">Incident</p>
         <h1 className="mt-6">
           <span className="t-xl block">La plaque</span>
-          <span className="s-xl block">a un souci.</span>
+          <span className="t-xl block">a un souci.</span>
         </h1>
         <p className="mt-6 max-w-md leading-relaxed text-cream/70">Cette page n’a pas pu s’afficher. Réessayez ; si le problème continue, appelez-nous.</p>
         <div className="mt-10 flex flex-wrap gap-2">

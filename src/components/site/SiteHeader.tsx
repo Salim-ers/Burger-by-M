@@ -122,7 +122,7 @@ export function SiteHeader() {
             "on-dark pointer-events-auto flex w-full items-center justify-between rounded-full border border-white/10 pr-1.5 pl-1.5 text-cream backdrop-blur-xl backdrop-saturate-150 lg:grid lg:grid-cols-[1fr_auto_1fr]",
             "shadow-[0_18px_50px_-18px_rgb(0_0_0/0.65),inset_0_1px_0_rgb(255_255_255/0.08)] transition-[max-width,height,background-color] duration-500 ease-[var(--ease-food)]",
             compact ? "h-14 max-w-[60rem]" : "h-[3.75rem] max-w-[68rem]",
-            pathname !== "/" ? "bg-[rgb(18_14_11/0.93)]" : compact ? "bg-[rgb(18_14_11/0.82)]" : "bg-[rgb(18_14_11/0.58)]",
+            pathname !== "/" ? "bg-[rgb(18_14_11/0.93)]" : compact ? "bg-[rgb(18_14_11/0.86)]" : "bg-[rgb(18_14_11/0.74)]",
           )}
         >
           <Link href="/" className="group flex w-fit shrink-0 items-center rounded-full" aria-label={`${store.name} — accueil`}>

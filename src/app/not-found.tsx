@@ -24,7 +24,7 @@ export default async function NotFound() {
         <p className="t-label text-cheddar">Erreur 404</p>
         <h1 className="mt-6">
           <span className="t-xl block">Pas à</span>
-          <span className="s-xl block">la carte.</span>
+          <span className="t-xl block">la carte.</span>
         </h1>
         <p className="mt-8 max-w-md text-[1.05rem] leading-relaxed text-cream/70">La page demandée n’existe pas ou a changé d’adresse. La carte, elle, est toujours là.</p>
         <div className="mt-10 flex flex-wrap gap-2">

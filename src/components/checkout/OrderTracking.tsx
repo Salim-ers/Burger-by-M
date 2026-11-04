@@ -85,7 +85,7 @@ export function OrderTracking({ orderNumber, token, initial }: { orderNumber: st
               {order.orderNumber}
             </span>
           </h1>
-          <p className={cn("mt-4", head.loud ? "t-l max-w-4xl" : "s-xl")} aria-live="polite">
+          <p className={cn("mt-4", head.loud ? "t-l max-w-4xl" : "t-xl")} aria-live="polite">
             {head.title}
           </p>
           {head.text && <p className="mt-5 max-w-xl text-[1.02rem] leading-relaxed text-cream/75">{head.text}</p>}
@@ -127,7 +127,7 @@ export function OrderTracking({ orderNumber, token, initial }: { orderNumber: st
               </div>
             </dl>
           )}
-          {confirmed && status !== "completed" && <p className="s-l mt-10 text-pink">Présentez votre numéro au comptoir.</p>}
+          {confirmed && status !== "completed" && <p className="t-l mt-10 text-pink">Présentez votre numéro au comptoir.</p>}
 
           <p className="sr-only" aria-live="polite">
             Statut : {head.label}

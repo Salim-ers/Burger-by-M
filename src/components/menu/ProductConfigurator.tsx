@@ -22,10 +22,30 @@ interface Props {
   onDone: (added: boolean) => void;
   /** Visuel placé en tête de la zone défilante (bottom sheet mobile). */
   media?: React.ReactNode;
+  /** false : nom, prix et composition sont affichés ailleurs (colonne de gauche sur grand écran). */
+  showHeader?: boolean;
+}
+
+/** Nom, prix, composition et mentions du produit. */
+export function ProductHeader({ product }: { product: MenuProduct }) {
+  return (
+    <>
+      <ProductBadges product={product} />
+      <h2 id="product-title" className="t-l mt-4">
+        {product.name}
+      </h2>
+      <p className="t-m mt-3 text-cheddar-deep">
+        <Price cents={product.priceCents} />
+      </p>
+      <p className="mt-5 max-w-prose text-[1rem] leading-relaxed text-sub">{compositionText(product)}</p>
+      {product.image && product.needsFinalProductPhoto && <p className="mt-2 text-xs text-sub">Photo d’illustration : la présentation peut varier.</p>}
+      {product.allergens && <p className="mt-3 text-sm text-sub">Allergènes : {product.allergens}</p>}
+    </>
+  );
 }
 
 /** Fiche produit : composition, personnalisation pilotée par la base, quantité, prix recalculé en direct. */
-export function ProductConfigurator({ product, editing, onDone, media }: Props) {
+export function ProductConfigurator({ product, editing, onDone, media, showHeader = true }: Props) {
   const add = useCart((s) => s.add);
   const replace = useCart((s) => s.replace);
   const { store } = useSite();
@@ -87,19 +107,10 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
     <div className="flex h-full min-h-0 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         {media}
-        <div className="px-5 pt-7 pb-10 md:px-12 md:pt-16">
-          <ProductBadges product={product} />
-          <h2 id="product-title" className="t-l mt-4">
-            {product.name}
-          </h2>
-          <p className="t-m mt-3 text-cheddar-deep">
-            <Price cents={product.priceCents} />
-          </p>
-          <p className="mt-5 max-w-prose text-[1rem] leading-relaxed text-sub">{compositionText(product)}</p>
-          {product.image && product.needsFinalProductPhoto && <p className="mt-2 text-xs text-sub">Photo d’illustration : la présentation peut varier.</p>}
-          {product.allergens && <p className="mt-3 text-sm text-sub">Allergènes : {product.allergens}</p>}
+        <div className={cn("px-5 pb-10 md:px-12", showHeader ? "pt-7 md:pt-16" : "pt-16")}>
+          {showHeader && <ProductHeader product={product} />}
 
-          <div className="mt-10 space-y-9">
+          <div className={cn("space-y-9", showHeader && "mt-10")}>
             {before.map((g) => (
               <OptionGroup key={g.id} group={g} selected={selected} onToggle={(id) => toggle(g, id)} invalid={showErrors && missing.some((m) => m.id === g.id)} />
             ))}
@@ -140,7 +151,7 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder="Ex. : sauce à part"
-                  className="mt-3 min-h-20 w-full resize-none border border-rule bg-panel px-4 py-3 text-[0.95rem] outline-none placeholder:text-sub/70 focus:border-fg"
+                  className="mt-3 min-h-20 w-full resize-none rounded-xl border border-rule bg-panel px-4 py-3 text-[0.95rem] outline-none placeholder:text-sub/70 focus:border-fg"
                 />
               </div>
             )}
@@ -153,7 +164,7 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
         {orderable && notice ? (
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm font-semibold">{notice}</p>
-            <a href={store.phoneHref} className="t-label inline-flex h-12 items-center justify-center gap-2 border border-rule px-5 hover:border-fg">
+            <a href={store.phoneHref} className="t-btn rounded-full inline-flex h-12 items-center justify-center gap-2 border border-rule px-5 hover:border-fg">
               <Phone className="size-4" aria-hidden /> {store.phone}
             </a>
           </div>
@@ -164,7 +175,7 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
               type="button"
               onClick={submit}
               data-cursor="add"
-              className="t-label flex h-14 min-w-0 flex-1 items-center justify-center gap-2 bg-ink px-5 text-[0.76rem] text-cream transition-colors duration-300 hover:bg-cheddar hover:text-ink active:scale-[0.99]"
+              className="t-btn rounded-full flex h-14 min-w-0 flex-1 items-center justify-center gap-2 bg-ink px-5 text-cream transition-colors duration-300 hover:bg-cheddar hover:text-ink active:scale-[0.99]"
             >
               <span className="truncate">
                 {editing ? "Mettre à jour" : "Ajouter"} · <span className="tabular-nums">{formatPrice(total)}</span>
@@ -174,7 +185,7 @@ export function ProductConfigurator({ product, editing, onDone, media }: Props) 
         ) : product.priceCents === null ? (
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-sm text-sub">Prix à confirmer : à commander au comptoir ou par téléphone.</p>
-            <a href={store.phoneHref} className="t-label inline-flex h-12 items-center justify-center gap-2 border border-rule px-5 hover:border-fg">
+            <a href={store.phoneHref} className="t-btn rounded-full inline-flex h-12 items-center justify-center gap-2 border border-rule px-5 hover:border-fg">
               <Phone className="size-4" aria-hidden /> {store.phone}
             </a>
           </div>

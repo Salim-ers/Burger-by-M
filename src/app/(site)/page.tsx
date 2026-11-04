@@ -12,7 +12,7 @@ export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 /**
  * Accueil : donner envie d'explorer, pas tout montrer. Un hero, deux moments photographiques, une action.
- * La carte, le restaurant et la galerie ont leurs propres pages.
+ * La carte et le restaurant ont leurs propres pages.
  */
 export default async function HomePage() {
   const [store, h] = await Promise.all([getPublicStore(), headers()]);

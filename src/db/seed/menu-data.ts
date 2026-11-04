@@ -243,9 +243,9 @@ export const PRODUCTS: SeedProduct[] = [
   { slug: "canette", category: "boissons", name: "Canette", priceCents: 200, ingredients: [], description: "Au choix parmi les boissons de la carte.", groups: [{ key: "canette" }] },
 
   // ---------------- DESSERTS & MILKSHAKES ----------------
-  { slug: "dubai-shake", category: "desserts", name: "Dubai Shake", priceCents: 600, photo: "dubai-shake", groups: [],
+  { slug: "dubai-shake", category: "desserts", name: "Dubai Shake", priceCents: 600, photo: "dubai-shake", needsFinalProductPhoto: true, groups: [],
     ingredients: [{ name: "Glace vanille", fixed: true }, { name: "Lait", fixed: true }, { name: "Crème de pistache", fixed: true }, { name: "Nutella", fixed: true }, "Pistache concassée", "Chantilly"] },
-  { slug: "bueno-bomb", category: "desserts", name: "Bueno Bomb’", priceCents: 450, groups: [],
+  { slug: "bueno-bomb", category: "desserts", name: "Bueno Bomb’", priceCents: 450, photo: "bueno-bomb", needsFinalProductPhoto: true, groups: [],
     ingredients: [{ name: "Glace vanille", fixed: true }, { name: "Lait", fixed: true }, { name: "Double Kinder Bueno (White + Classic)", fixed: true }, "Nutella", "Chantilly"] },
   // Photo d'une composition possible (coulis caramel, Bueno White) : signalée « photo d'illustration ».
   { slug: "milkshake-a-composer", category: "desserts", name: "Milkshake à composer", priceCents: 400, photo: "milkshake-caramel", needsFinalProductPhoto: true,

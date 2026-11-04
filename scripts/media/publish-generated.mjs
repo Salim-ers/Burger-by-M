@@ -18,13 +18,13 @@ const manifest = JSON.parse(readFileSync("assets/generated/manifest.json", "utf8
 
 const CINEMA = {
   "hero-desktop": [1280, 1920, 2560, 3840],
-  "hero-mobile": [640, 828, 1170, 1620],
+  "hero-mobile": [640, 828, 1170, 1620, 2160],
   plancha: [640, 960, 1280, 1800],
   "table-desktop": [1280, 1920, 2560, 3840],
   "table-mobile": [640, 828, 1170, 1620],
 };
 
-const MENU = ["frites-classiques", "frites-cheddar", "frites-cheddar-oignons", "frites-cheddar-bacon"];
+const MENU = ["frites-classiques", "frites-cheddar", "frites-cheddar-oignons", "frites-cheddar-bacon", "milkshake-dubai", "milkshake-bueno-bomb", "milkshake-a-composer"];
 
 function selected(id) {
   const file = manifest.assets[id]?.selected;
@@ -43,8 +43,8 @@ for (const [id, widths] of Object.entries(CINEMA)) {
   const kept = widths.filter((w) => w <= width);
   for (const w of kept) {
     const resized = sharp(source).resize({ width: w, kernel: "lanczos3" });
-    await resized.clone().avif({ quality: 52, effort: 5 }).toFile(join(out, `${id}-${w}.avif`));
-    await resized.clone().webp({ quality: 76, effort: 5 }).toFile(join(out, `${id}-${w}.webp`));
+    await resized.clone().avif({ quality: 60, effort: 5 }).toFile(join(out, `${id}-${w}.avif`));
+    await resized.clone().webp({ quality: 82, effort: 5 }).toFile(join(out, `${id}-${w}.webp`));
   }
   const lqip = await sharp(source).resize({ width: 24 }).webp({ quality: 40 }).toBuffer();
   data[id] = { width, height, widths: kept, lqip: `data:image/webp;base64,${lqip.toString("base64")}` };

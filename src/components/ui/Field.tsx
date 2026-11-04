@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 
 const base =
-  "w-full rounded-xs border border-rule bg-panel px-4 text-[1rem] text-fg outline-none transition-colors placeholder:text-sub/70 focus:border-fg focus-visible:outline-none aria-[invalid=true]:border-danger";
+  "w-full rounded-xl border border-rule bg-panel px-4 text-[1rem] text-fg outline-none transition-colors placeholder:text-sub/70 focus:border-fg focus-visible:outline-none aria-[invalid=true]:border-danger";
 
 interface FieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;

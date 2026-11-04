@@ -5,7 +5,9 @@ test.describe("accueil", () => {
     await page.goto("/");
     await expect(page.getByRole("heading", { level: 1, name: /Le goût qui marque/ })).toBeVisible();
     const hero = page.locator(".cine-hero");
-    await expect(hero.getByRole("link")).toHaveCount(2);
+    // Deux actions, plus le lien discret vers les avis Google.
+    await expect(hero.locator(".cta")).toHaveCount(2);
+    await expect(hero.getByRole("link", { name: /Note Google/ })).toBeVisible();
     await expect(hero.getByRole("link", { name: "Découvrir la carte" })).toHaveAttribute("href", "/menu");
   });
 

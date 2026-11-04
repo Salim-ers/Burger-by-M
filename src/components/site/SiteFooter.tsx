@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Wordmark } from "@/components/brand/Logo";
 import { legalNav, mainNav } from "@/data/navigation";
 import { brand, mapsLinks } from "@/data/brand";
 import type { PublicStore } from "@/features/public-data";
@@ -26,8 +27,9 @@ export function SiteFooter({ store }: { store: PublicStore }) {
       <div className="container-cine">
         <div className="flex flex-col gap-6 border-b border-rule pb-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-10">
-            <Link href="/" aria-label={`${store.name} — accueil`} className="w-fit shrink-0 rounded-full">
-              <Image src={brand.logo.src} alt="" width={64} height={64} sizes="64px" className="size-16 rounded-full" />
+            <Link href="/" aria-label={`${store.name} — accueil`} className="flex w-fit shrink-0 items-center gap-3 text-cream">
+              <Image src={brand.logo.src} alt="" width={56} height={56} sizes="56px" className="size-14 rounded-full" />
+              <Wordmark accent className="text-[clamp(1.5rem,2.2vw,2rem)]" />
             </Link>
             <nav aria-label="Liens du site">
               <ul className="flex flex-wrap gap-x-6 gap-y-0 font-semibold text-cream/85">

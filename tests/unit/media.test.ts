@@ -31,6 +31,18 @@ describe("visuels des frites", () => {
   });
 });
 
+describe("visuels des milkshakes", () => {
+  it("chaque milkshake a son visuel, signalé comme illustration", () => {
+    const products = PRODUCTS.filter((p) => ["dubai-shake", "bueno-bomb", "milkshake-a-composer"].includes(p.slug));
+    expect(products).toHaveLength(3);
+    expect(new Set(products.map((p) => productPhoto[p.photo!].src)).size).toBe(3);
+    for (const p of products) {
+      expect(existsSync(`public${productPhoto[p.photo!].src}`)).toBe(true);
+      expect(p.needsFinalProductPhoto).toBe(true);
+    }
+  });
+});
+
 describe("visuels de l'accueil", () => {
   it("toutes les variantes référencées existent, en AVIF et en WebP", () => {
     for (const [id, asset] of Object.entries(cinemaAssets)) {

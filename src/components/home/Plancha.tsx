@@ -35,7 +35,7 @@ export function Plancha() {
           <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_top,rgb(10_8_6/0.82)_0%,rgb(10_8_6/0.25)_38%,transparent_60%)] md:bg-[linear-gradient(to_right,rgb(10_8_6/0.7)_0%,transparent_46%)]" />
         </div>
 
-        <h2 id="plancha-title" className="relative z-10 col-span-12 col-start-1 row-start-1 self-end pb-6 md:col-span-9 md:col-start-1 md:pb-[clamp(2rem,5vw,5rem)] font-serif text-[13vw] leading-[0.96] md:text-[clamp(3.1rem,8.2vw,11rem)] tracking-[-0.018em] text-cream">
+        <h2 id="plancha-title" className="relative z-10 col-span-12 col-start-1 row-start-1 self-end pb-6 md:col-span-9 md:col-start-1 md:pb-[clamp(2rem,5vw,5rem)] t-xl text-[11.6vw] text-cream md:text-[clamp(3.1rem,7.4vw,10rem)]">
           <span className="mask-line">
             <span>Votre burger</span>
           </span>
@@ -44,7 +44,7 @@ export function Plancha() {
           </span>
           <span className="mask-line">
             <span>
-              vous <em className="pr-[0.08em]">commandez.</em>
+              vous commandez.
             </span>
           </span>
         </h2>

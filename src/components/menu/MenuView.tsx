@@ -12,10 +12,10 @@ export function MenuView() {
     <>
       <section data-theme="light" className="on-light bg-ivory pt-28 md:pt-36">
         <div className="container-bm">
-          <p className="t-label text-cheddar-deep">Smashed to order · {store.city}</p>
+          <p className="t-label text-cheddar-deep">Préparé à la commande, à {store.city}</p>
           <h1 className="mt-4 flex flex-wrap items-baseline gap-x-5">
             <span className="t-xxl">Notre</span>
-            <span className="s-xxl">carte.</span>
+            <span className="t-xxl">carte.</span>
           </h1>
           <p className="mt-6 max-w-xl text-[1rem] leading-relaxed text-sub">Touchez un produit pour le composer : retirez, ajoutez, passez-le en menu. Le prix se met à jour en direct.</p>
           <RestaurantBar className="mt-10" />
@@ -32,13 +32,10 @@ export function MenuView() {
             return (
               <section key={c.id} id={`cat-${c.slug}`} aria-labelledby={`cat-title-${c.slug}`} className="pt-16 md:pt-24">
                 <header className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3 border-b-2 border-ink pb-4">
-                  <div className="flex items-baseline gap-5">
-                    <span className="t-label text-cheddar-deep tabular-nums">{String(ci + 1).padStart(2, "0")}</span>
-                    <h2 id={`cat-title-${c.slug}`} className="t-l">
-                      {c.title}
-                    </h2>
-                  </div>
-                  {c.note && <p className="s-m text-sub">{c.note}</p>}
+                  <h2 id={`cat-title-${c.slug}`} className="t-l">
+                    {c.title}
+                  </h2>
+                  {c.note && <p className="t-note text-sub">{c.note}</p>}
                 </header>
                 {withPhoto.length > 0 && (
                   <div className="-mx-[var(--gutter)] grid gap-y-10 pt-8 md:mx-0 md:grid-cols-2 md:gap-x-6 md:gap-y-12">

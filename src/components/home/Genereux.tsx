@@ -36,18 +36,18 @@ export function Genereux() {
 
       <div className="absolute inset-0 grid place-items-center overflow-hidden">
         <h2 id="genereux-title" className="relative flex flex-col items-center text-cream">
-          <span data-word className="block font-display text-[clamp(5rem,25vw,28rem)] leading-[0.92] uppercase will-change-transform">
+          <span data-word className="block font-display text-[clamp(4.6rem,23.5vw,27rem)] leading-[0.92] uppercase will-change-transform">
             Généreux
           </span>
-          <span data-sign className="-mt-[0.2em] block self-end pr-[0.06em] font-serif text-[clamp(2.6rem,9.5vw,10.5rem)] leading-none italic">
+          <span data-sign className="mt-[0.1em] block self-end pr-[0.06em] font-display text-[clamp(2.3rem,8.4vw,9.5rem)] leading-none uppercase">
             par nature.
           </span>
         </h2>
       </div>
 
       <div className="container-cine absolute inset-x-0 bottom-0 flex flex-wrap justify-between gap-x-8 gap-y-2 pb-[max(1.25rem,env(safe-area-inset-bottom))] md:pb-8">
+        <QuietLink href="/menu">La carte</QuietLink>
         <QuietLink href="/restaurant">Le restaurant</QuietLink>
-        <QuietLink href="/galerie">La galerie</QuietLink>
       </div>
     </section>
   );

@@ -19,12 +19,21 @@ Strictly forbidden: any text, letter, number, logo, sticker, label or watermark;
 const BURGER = `The burger: a soft brioche bun with a lightly glazed, slightly uneven golden crown and a few natural wrinkles; two thin smashed beef patties with dark, craggy, lacy crispy edges; real melted cheddar pooling irregularly over the meat; a loose pile of crispy fried onions; a couple of pickle slices barely visible. Nothing else in the burger.`;
 
 /**
- * Le vrai lieu (assets/sources/restaurant-comptoir-neon.png) : rien n'est inventé, seule la lumière change.
+ * Le vrai lieu (assets/sources/restaurant-comptoir-neon.png) : rien n'est inventé, y compris la lumière.
  * Le néon est le seul texte permis dans l'image.
  */
-const PLACE = `The place must stay faithful to the real photo: a counter whose front is made of vertical dark wooden slats, with a cream counter top; mounted on those slats, a warm yellow neon sign in handwritten script reading exactly "Burger By M", with these letters and this spelling, same lettering style as the photo; behind the counter, an open kitchen with white walls, a stainless steel extraction hood and backsplash, and a cook in black with a black cap seen from behind, out of focus; a warm light strip along the ceiling. Do not add any furniture, decoration, window or object that is not in the photo. Only the light changes: it is evening, the room lights are dimmed, the neon glows warm yellow and the white walls fall into warm shadow.`;
+const PLACE = `The place must look exactly like the real photo, in the same natural light: bright, clean white walls; a warm white LED strip along the ceiling edge, with an ochre ceiling panel above it; a stainless steel extraction hood with its ducting and a stainless steel backsplash; a tidy working kitchen with its real equipment, and a cook in a black t-shirt with a black cap seen from behind; a counter with a smooth cream top; the counter front made of vertical natural oak slats with thin black gaps; mounted on those slats, a thin warm yellow LED neon sign in handwritten script reading exactly "Burger By M", with these letters and this spelling, same lettering style as the photo. Do not add any furniture, decoration, window or object that is not in the photo. Do not darken the room: same daylight-balanced brightness as the photo.`;
 
-const CRAFT_PLACE = CRAFT.replace("any text, letter, number, logo, sticker, label or watermark", "any text, letter, number, logo, sticker, label or watermark other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text)");
+/** Rendu de vraie photographie : ni étalonnage de film, ni pénombre, ni brillance d'image générée. */
+const NATURAL = `Style: a real, clean, natural photograph by a professional interiors and food photographer, on a full-frame camera with a 50mm lens, sharp and detailed. True-to-life colours, neutral white balance, soft even ambient light from the room, natural contrast, gentle realistic shadows, natural depth of field. The food looks real and appetising, with natural colours and slight imperfections.
+Strictly forbidden: orange or teal colour grading, dramatic low-key lighting, dark moody atmosphere, haze, smoke, vignette, HDR look, oversaturated colours, oversharpening, plastic-looking cheese, waxy or CGI surfaces, any text, letter, number, logo or label other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text).`;
+
+/** Les milkshakes réels : gobelet transparent, sticker du logo, tenu à la main devant un mur beige. */
+const SHAKE_SET = `The set is the one of the real photos: a clear plastic cup with no lid, held up by a hand with natural skin and five natural fingers, in front of a plain warm beige wall, in soft natural daylight. A generous swirl of real whipped cream rises above the rim. On the front of the cup, a round black sticker reproducing the attached logo exactly: a thin white ring, a small burger icon, the word "BURGER" in spaced white serif capitals and "By M" in pale pink serif below, with these letters and this spelling. No other text anywhere.
+
+Composition: camera at eye level, a little further back than the real photo. The cup, its whipped cream and the sticker are entirely visible, centred, with empty beige wall on the left and right. The top of the cream and the sticker both stay inside the central 16:9 band of the frame, because the picture is also displayed cropped to 16:9. The hand enters from the bottom edge.`;
+
+const SHAKE_STYLE = `Style: a real, clean, natural photograph, sharp and detailed, true-to-life colours, slight natural imperfections in the cream and the drips. Strictly forbidden: plastic-looking cream, CGI surfaces, extra fingers, oversaturated colours, HDR look, ingredients not listed, any wrapper or brand lettering on food.`;
 
 /** Fond et lumière des visuels de la carte (burgers sur fond crème) : les frites doivent s'y intégrer. */
 const MENU_SET = `Set and light, identical to the brand's menu pictures (see the burger reference): a warm cream seamless studio backdrop with a very gentle gradient, soft large frontal-top light, a soft natural contact shadow under the tray. Camera at a low three-quarter angle, slightly above the tray. Pull the camera back: the tray is centred and only about 58% of the frame width, with wide empty cream backdrop on every side. The whole tray and its contents stay inside the central 16:9 band of the frame, with clear margins above and below, because the picture is also displayed cropped to 16:9.`;
@@ -42,32 +51,32 @@ export const briefs = {
     size: "3840x2160",
     draftSize: "1536x864",
     refs: ["assets/sources/restaurant-comptoir-neon.png", "public/images/food/smash-le-special.webp", "public/images/food/plateau-burgers-frites.webp"],
-    prompt: `Reference 1 is a real photo of the inside of the restaurant. Reference 2 is its real burger. Reference 3 shows its real paper and table. Create a wide cinematic campaign photograph taken inside this exact restaurant.
+    prompt: `Reference 1 is a real photo of the inside of the restaurant, the absolute reference for the place, the colours and the light. Reference 2 is its real burger. Reference 3 shows its real paper and dark wooden table. Create a wide 16:9 photograph taken inside this exact restaurant, as if a professional had taken the same photo with a better camera: it must immediately look like the same place.
 
 ${PLACE}
 
 ${BURGER}
 
-Scene: late evening. In the foreground, close to the camera, the burger rests on slightly crumpled greaseproof paper on a dark table. Behind it, a few metres away and softly out of focus, the restaurant's counter runs across the frame, seen at a slight angle.
+Scene: in the foreground, close to the camera, the burger rests on slightly crumpled plain white greaseproof paper, with only a fine, small-scale, faint grey newsprint texture and no large shapes, on a dark wooden table, with natural colours. Behind it, a few metres away and only slightly out of focus, the counter runs across the frame.
 
-Composition: a wide shot. The burger sits at the right third of the frame, low in the image, only about 22% of the frame width. The neon sign is in the right half of the frame, above and behind the burger, never hidden by it, large enough to read at a glance. The left half of the frame is calmer and darker, with the counter and the kitchen receding into warm shadow, leaving room for a headline. The bottom of the frame is the dark table, falling smoothly to near black. A thin wisp of steam rises from the burger. Palette: warm yellow neon glow, warm wood, deep shadow.
+Composition: the white wall, the hood and the kitchen fill the top of the frame. The neon sign is in the right half of the frame, above and behind the burger, never hidden by it, large and readable. The burger sits at the right third of the frame, low in the image, only about 22% of the frame width. The left half of the frame stays uncluttered, with the counter and the slats continuing, and leaves room for a headline over the slats and the table at the bottom left. The bottom of the frame is the dark wooden table.
 
-${CRAFT_PLACE}`,
+${NATURAL}`,
   },
   "hero-mobile": {
     usage: "Hero de l'accueil — cadrage portrait (vrai recadrage, pas une découpe)",
     size: "2160x3840",
     draftSize: "864x1536",
     refs: [{ asset: "hero-desktop" }, "assets/sources/restaurant-comptoir-neon.png", "public/images/food/smash-le-special.webp"],
-    prompt: `Reference 1 is the campaign scene. Reference 2 is a real photo of the same restaurant. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera: same place, same light, same burger, same mood, nothing new.
+    prompt: `Reference 1 is the wide photograph of the scene. Reference 2 is a real photo of the same restaurant, the absolute reference for the place, the colours and the light. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera: same place, same natural light, same burger, nothing new.
 
 ${PLACE}
 
 ${BURGER}
 
-Composition, from top to bottom, the camera further back: a narrow band of kitchen in soft shadow at the very top; then the neon sign, horizontally centred, whole and readable, about 66% of the frame width, its centre about 21% from the top of the frame; then the burger on its paper, horizontally centred, small in the frame: only about 44% of the frame width, its centre about 36% from the top, and nothing of the burger or its paper lower than 47% from the top. It must not hide the neon. Everything below 47% from the top is only the dark empty table, falling smoothly to near black, calm enough for a large headline. A thin wisp of steam rises from the burger.
+Composition, from top to bottom, the camera further back: a band of white wall, hood and kitchen at the top; then the neon sign, horizontally centred, whole and readable, about 66% of the frame width, its centre about 23% from the top of the frame; then the burger on its paper on the dark wooden table, horizontally centred, small in the frame: only about 44% of the frame width, its centre about 38% from the top, and nothing of the burger or its paper lower than 48% from the top. It must not hide the neon. Everything below 48% from the top is only the empty dark wooden table, calm enough for a large headline.
 
-${CRAFT_PLACE}`,
+${NATURAL}`,
   },
 
   // ---------------- « Votre burger commence quand vous commandez. » ----------------
@@ -105,6 +114,47 @@ ${CRAFT}`,
     prompt: `Reference 1 is the campaign scene. Recompose the same table as a true vertical photograph taken from directly above and slightly closer: same trays, same food, same wood, same warm pendant light, nothing new. Trays overlap naturally toward the top and bottom of the frame. The central horizontal band of the frame is calmer, with more bare dark wood, for large typography; the corners fall off to black. No beer, no wine, no glasses, no bottles, no candle, no jalapeños, no people, no hands.
 
 ${CRAFT}`,
+  },
+
+  // ---------------- Milkshakes : les trois de la carte, une seule série ----------------
+  "milkshake-dubai": {
+    usage: "Carte : Dubai Shake",
+    size: "3520x2352",
+    draftSize: "1536x1024",
+    refs: ["public/images/food/milkshake-pistache.webp", "public/images/logo/burger-by-m.png"],
+    prompt: `Reference 1 is a real photo of the restaurant's Dubai Shake: match its cup, its colours and its look. Reference 2 is the logo for the sticker. Create the same milkshake, photographed better.
+
+${SHAKE_SET}
+
+The recipe, nothing else: a pale pistachio-green vanilla and pistachio shake; thick streaks of chocolate-hazelnut spread running down the inside of the cup; on top of the whipped cream, crushed pistachios and a thin drizzle of chocolate-hazelnut spread.
+
+${SHAKE_STYLE}`,
+  },
+  "milkshake-bueno-bomb": {
+    usage: "Carte : Bueno Bomb’",
+    size: "3520x2352",
+    draftSize: "1536x1024",
+    refs: [{ asset: "milkshake-dubai" }, "public/images/food/milkshake-caramel.webp", "public/images/logo/burger-by-m.png"],
+    prompt: `Reference 1 is the previous picture of this menu series: keep the same set, hand position, framing and light. Reference 2 is a real photo of another milkshake of the restaurant: same wafer bar on top. Reference 3 is the logo for the sticker. Create the "Bueno Bomb" milkshake.
+
+${SHAKE_SET}
+
+The recipe, nothing else: a creamy pale beige vanilla and hazelnut shake; thick streaks of chocolate-hazelnut spread running down the inside of the cup; on top of the whipped cream, a thin drizzle of chocolate-hazelnut spread and two pieces of unwrapped chocolate-coated wafer bars filled with hazelnut cream, one with white chocolate and one with milk chocolate. No text on the bars.
+
+${SHAKE_STYLE}`,
+  },
+  "milkshake-a-composer": {
+    usage: "Carte : Milkshake à composer (exemple : coulis caramel, topping wafer chocolat blanc)",
+    size: "3520x2352",
+    draftSize: "1536x1024",
+    refs: ["public/images/food/milkshake-caramel.webp", { asset: "milkshake-dubai" }, "public/images/logo/burger-by-m.png"],
+    prompt: `Reference 1 is a real photo of a milkshake of the restaurant: match its recipe and its look. Reference 2 is the previous picture of this menu series: keep the same set, hand position, framing and light. Reference 3 is the logo for the sticker. Create the same caramel milkshake, photographed better.
+
+${SHAKE_SET}
+
+The recipe, nothing else: a creamy pale vanilla shake; thick streaks of caramel sauce running down the inside of the cup; on top of the whipped cream, a drizzle of caramel sauce and one piece of unwrapped white-chocolate-coated wafer bar. No text on the bar.
+
+${SHAKE_STYLE}`,
   },
 
   // ---------------- Frites : quatre recettes, quatre visuels, une seule série ----------------

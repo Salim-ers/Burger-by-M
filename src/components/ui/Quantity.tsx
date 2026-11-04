@@ -15,7 +15,7 @@ interface Props {
 export function Quantity({ value, onChange, min = 1, max = 20, label = "Quantité", size = "md" }: Props) {
   const btn = cn("grid place-items-center transition-colors hover:bg-fg/8 disabled:opacity-25 disabled:hover:bg-transparent", size === "md" ? "size-12" : "size-10");
   return (
-    <div role="group" aria-label={label} className="inline-flex shrink-0 items-center rounded-xs border border-rule text-fg">
+    <div role="group" aria-label={label} className="inline-flex shrink-0 items-center rounded-full border border-rule text-fg">
       <button type="button" className={btn} onClick={() => onChange(value - 1)} disabled={value <= min} aria-label="Retirer un">
         <Minus className="size-4" aria-hidden strokeWidth={1.75} />
       </button>

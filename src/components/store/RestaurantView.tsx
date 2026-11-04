@@ -43,17 +43,17 @@ export function RestaurantView() {
               {numbered ? (
                 <>
                   <span className="mask-line hero-line" style={{ "--i": 0 } as React.CSSProperties}>
-                    <span className="t-xxl">
+                    <span className="t-xl">
                       {num} {rest[0]}
                     </span>
                   </span>
                   <span className="mask-line hero-line" style={{ "--i": 1 } as React.CSSProperties}>
-                    <span className="s-xxl">{rest.slice(1).join(" ")}.</span>
+                    <span className="t-xl">{rest.slice(1).join(" ")}.</span>
                   </span>
                 </>
               ) : (
                 <span className="mask-line hero-line">
-                  <span className="t-xxl">{store.street}.</span>
+                  <span className="t-xl">{store.street}.</span>
                 </span>
               )}
             </h1>
@@ -62,13 +62,13 @@ export function RestaurantView() {
             </p>
             <OpenStatus className="hero-fade mt-8" />
             <div className="hero-fade mt-10 flex flex-wrap gap-2">
-              <a href={maps.directions} target="_blank" rel="noopener noreferrer" className="t-label inline-flex h-14 items-center bg-cream px-7 text-ink transition-colors hover:bg-cheddar">
+              <a href={maps.directions} target="_blank" rel="noopener noreferrer" className="t-btn rounded-full inline-flex h-14 items-center bg-cream px-7 text-ink transition-colors hover:bg-cheddar">
                 Itinéraire
               </a>
-              <a href={store.phoneHref} className="t-label inline-flex h-14 items-center border border-cream/30 px-7 transition-colors hover:border-cream">
+              <a href={store.phoneHref} className="t-btn rounded-full inline-flex h-14 items-center border border-cream/30 px-7 transition-colors hover:border-cream">
                 Appeler · {store.phone}
               </a>
-              <Link href="/menu" className={cn("t-label inline-flex h-14 items-center px-7 transition-colors", notice ? "border border-cream/20 text-sub" : "bg-cheddar text-ink hover:bg-cream")}>
+              <Link href="/menu" className={cn("t-btn rounded-full inline-flex h-14 items-center px-7 transition-colors", notice ? "border border-cream/20 text-sub" : "bg-cheddar text-ink hover:bg-cream")}>
                 {notice ? ORDERING_CLOSED_LABEL : "Commander"}
               </Link>
             </div>
@@ -85,7 +85,7 @@ export function RestaurantView() {
         <div className="container-bm grid gap-14 md:grid-cols-12">
           <div className="md:col-span-5">
             <p className="t-label text-cheddar-deep">Horaires</p>
-            <RevealText id="horaires-title" as="h2" className="mt-5" lines={[<span key="a" className="t-xl">Ouvert</span>, <span key="b" className="s-xl">{openDaysLabel(store.schedule.weekly)}</span>]} />
+            <RevealText id="horaires-title" as="h2" className="mt-5" lines={[<span key="a" className="t-xl">Ouvert</span>, <span key="b" className="t-xl">{openDaysLabel(store.schedule.weekly)}</span>]} />
             <p className="mt-6 max-w-sm leading-relaxed text-sub">Sur place ou à emporter. Commandez en ligne, choisissez votre heure de retrait : votre commande est préparée pour ce moment-là.</p>
             <a href={store.phoneHref} className="t-m mt-8 inline-block underline decoration-ink/20 underline-offset-8 transition-colors hover:decoration-cheddar">
               {store.phone}
@@ -104,14 +104,14 @@ export function RestaurantView() {
             <p className="t-label text-cheddar-deep">Accès</p>
             <h2 id="acces-title" className="mt-5">
               <span className="t-l block">Venir</span>
-              <span className="s-l block">jusqu’à nous.</span>
+              <span className="t-l block">jusqu’à nous.</span>
             </h2>
             <address className="mt-6 leading-relaxed text-sub not-italic">
               {store.name}
               <br />
               {address}
             </address>
-            <a href={maps.directions} target="_blank" rel="noopener noreferrer" className="t-label mt-8 inline-flex h-12 items-center bg-ink px-6 text-cream transition-colors hover:bg-cheddar hover:text-ink">
+            <a href={maps.directions} target="_blank" rel="noopener noreferrer" className="t-btn rounded-full mt-8 inline-flex h-12 items-center bg-ink px-6 text-cream transition-colors hover:bg-cheddar hover:text-ink">
               Calculer l’itinéraire
             </a>
             <a href={reviews} target="_blank" rel="noopener noreferrer" className="mt-8 block w-fit border-b border-ink/25 pb-1 text-[0.95rem] text-sub transition-colors hover:border-cheddar hover:text-fg">
@@ -126,7 +126,7 @@ export function RestaurantView() {
         <div className="container-bm grid gap-12 md:grid-cols-12 md:items-center">
           <div className="md:col-span-5 md:col-start-2">
             <p className="t-label text-cheddar">Aux beaux jours</p>
-            <RevealText id="terrasse-title" as="h2" className="mt-5" lines={[<span key="a" className="t-xl">La</span>, <span key="b" className="s-xl">terrasse.</span>]} />
+            <RevealText id="terrasse-title" as="h2" className="mt-5" lines={[<span key="a" className="t-xl">La</span>, <span key="b" className="t-xl">terrasse.</span>]} />
             <p className="mt-6 max-w-sm leading-relaxed text-cream/70">Tables dehors, au calme, pour manger chaud sans attendre d’être rentré.</p>
           </div>
           <div className="md:col-span-5">

@@ -2,7 +2,7 @@
 
 Site officiel de **Burger By M** (SAS, SIRET 937 935 609 00027), 19 avenue de la Gare, 60290 Rantigny — 03 44 24 89 18.
 
-- **Site public** : accueil cinématographique en quatre séquences (hero, plancha, table, commande), navigation flottante, carte avec fiche produit personnalisable, restaurant, galerie, pages légales.
+- **Site public** : accueil cinématographique en quatre séquences (hero, plancha, table, commande), navigation flottante, carte avec fiche produit personnalisable, restaurant, pages légales. Une seule police (Archivo).
 - **Commande invitée** (aucun compte client) : panier, créneau de retrait, coordonnées, paiement en ligne **Mollie** (montant réservé, encaissé à l’acceptation) ou au retrait, suivi en direct `/commande/M1042`.
 - **Back-office** `/admin` : tableau de bord, **écran cuisine installable (PWA)** `/admin/cuisine` (ACCEPTER / REFUSER, son, notifications, écran maintenu allumé), commandes et remboursements, carte (prix, photos, options, ruptures), horaires, réglages, **mode coup de feu**, **commandes online ON/OFF**.
 
@@ -132,12 +132,13 @@ Toutes les images passent par [src/data/media.ts](src/data/media.ts) (banque uni
 
 ### Visuels générés (accueil et frites)
 
-L’accueil (`public/images/cinema/`) et les quatre visuels de frites (`public/images/products/frites-*.webp`) sont des **créations générées** via l’API d’images OpenAI, à partir des vraies photos du restaurant (recette, barquettes, papier, table, et le comptoir au néon pour le hero : `assets/sources/restaurant-comptoir-neon.png`). Ce ne sont pas des photos du restaurant : le site les présente comme des visuels d’ambiance ou d’illustration, jamais comme contractuels.
+L’accueil (`public/images/cinema/`), les visuels de frites et de milkshakes (`public/images/products/frites-*.webp`, `milkshake-*.webp`) sont des **créations générées** via l’API d’images OpenAI, à partir des vraies photos du restaurant (recette, barquettes, papier, table, et le comptoir au néon pour le hero : `assets/sources/restaurant-comptoir-neon.png`). Ce ne sont pas des photos du restaurant : le site les présente comme des visuels d’ambiance ou d’illustration, jamais comme contractuels.
 
 - `scripts/media/image-briefs.mjs` : direction artistique et prompts. `assets/generated/` : fichiers sources et `manifest.json` (modèle, prompt, références, version retenue, statut « à valider »).
 - `npm run media:generate -- --only hero-desktop --draft` juge un cadrage à bas coût, `--only hero-desktop --refine` le reprend en pleine définition, `npm run media:publish` produit les variantes web (AVIF + WebP par largeur pour l’accueil).
 - La clé `OPENAI_API_KEY` reste dans `.env.local` (non versionné). Ces scripts se lancent uniquement à la main : le site ne les appelle jamais, ni au build ni à la visite d’une page. **Ne pas déclarer la clé sur Vercel.**
-- Remplacer un visuel de frites par une vraie photo : import depuis `/admin/menu`, puis retirer « Photo d’illustration » dans la fiche du produit. La migration `0003_visuels_frites` n’écrase jamais une image importée.
+- Remplacer un visuel par une vraie photo : import depuis `/admin/menu`, puis retirer « Photo d’illustration » dans la fiche du produit. Les migrations `0003` et `0004` n’écrasent jamais une image importée.
+- **Note Google** de l’accueil : valeur fixe dans `src/data/brand.ts`, à tenir à jour à la main. Le lien mène à l’URL des avis renseignée dans `/admin/settings` (sinon à la fiche Google Maps).
 
 ## 8. À compléter avant la mise en ligne publique
 
@@ -152,7 +153,7 @@ L’accueil (`public/images/cinema/`) et les quatre visuels de frites (`public/i
 
 ```
 src/
-  app/(site)/        pages publiques (accueil, carte, produit, checkout, suivi, restaurant, galerie, légal)
+  app/(site)/        pages publiques (accueil, carte, produit, checkout, suivi, restaurant, légal)
   app/admin/         back-office (login, tableau de bord, cuisine, commandes, carte, horaires, réglages)
   app/api/           checkout, créneaux, suivi, webhook Mollie, cuisine, push, auth
   components/        interface (home, menu, cart, checkout, admin, site, ui, motion)

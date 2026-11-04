@@ -8,15 +8,15 @@ import { useSite } from "@/features/site-context";
 import { useModal } from "@/hooks/use-modal";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { gsap, reducedMotion } from "@/components/motion/gsap";
-import { ProductConfigurator } from "./ProductConfigurator";
+import { ProductConfigurator, ProductHeader } from "./ProductConfigurator";
 import { ProductImage } from "./ProductImage";
 import { useToast } from "@/components/site/Toast";
 
 const EASE = [0.19, 1, 0.22, 1] as const;
 
 /**
- * Fiche produit immersive : écran scindé sur desktop (grande photo à gauche, personnalisation à droite),
- * bottom sheet pleine hauteur sur mobile. À l'ajout, la photo se contracte légèrement vers le panier.
+ * Fiche produit : sur grand écran, la photo entière (jamais recadrée) et le produit à gauche, la personnalisation
+ * à droite ; bottom sheet pleine hauteur sur mobile. À l'ajout, la photo se contracte légèrement vers le panier.
  */
 export function ProductSheet() {
   const sheet = useUi((s) => s.sheet);
@@ -63,17 +63,22 @@ export function ProductSheet() {
             animate={wide ? { opacity: 1, x: 0 } : { y: 0 }}
             exit={wide ? { opacity: 0, x: "6%" } : { y: "100%" }}
             transition={{ duration: 0.55, ease: EASE }}
-            className={wide ? "absolute inset-y-0 right-0 grid w-[min(1280px,94vw)] grid-cols-[1.15fr_1fr] bg-bg shadow-sheet" : "absolute inset-x-0 top-[4dvh] bottom-0 flex flex-col overflow-hidden rounded-t-[8px] bg-bg shadow-sheet"}
+            className={wide ? "absolute inset-y-0 right-0 grid w-[min(1280px,94vw)] grid-cols-[1.15fr_1fr] bg-bg shadow-sheet" : "absolute inset-x-0 top-[4dvh] bottom-0 flex flex-col overflow-hidden rounded-t-3xl bg-bg shadow-sheet"}
           >
-            <button type="button" onClick={onClose} aria-label="Fermer la fiche" className="t-label absolute top-3 right-3 z-20 h-11 bg-bg/90 px-4 text-fg backdrop-blur transition-colors hover:bg-fg hover:text-bg">
+            <button type="button" onClick={onClose} aria-label="Fermer la fiche" className="t-btn rounded-full absolute top-3 right-3 z-20 h-11 bg-bg/90 px-4 text-fg backdrop-blur transition-colors hover:bg-fg hover:text-bg">
               Fermer ✕
             </button>
             {wide ? (
               <>
-                <motion.div ref={photoRef} className="relative h-full overflow-hidden bg-sand" initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 0.8, ease: [0.77, 0, 0.18, 1] }}>
-                  <ProductImage image={product.image} name={product.name} sizes="60vw" className="absolute inset-0" priority />
-                </motion.div>
-                <ProductConfigurator key={`${product.id}-${editing?.key ?? "new"}`} product={product} editing={editing} onDone={done} />
+                <div className="flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain border-r border-rule">
+                  <motion.div ref={photoRef} className="relative shrink-0 overflow-hidden bg-sand" initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 0.8, ease: [0.77, 0, 0.18, 1] }}>
+                    <ProductImage image={product.image} name={product.name} sizes="(min-width: 1280px) 680px, 54vw" className="aspect-[3/2] w-full" priority />
+                  </motion.div>
+                  <div className="px-12 py-9">
+                    <ProductHeader product={product} />
+                  </div>
+                </div>
+                <ProductConfigurator key={`${product.id}-${editing?.key ?? "new"}`} product={product} editing={editing} onDone={done} showHeader={false} />
               </>
             ) : (
               <ProductConfigurator
@@ -83,7 +88,7 @@ export function ProductSheet() {
                 onDone={done}
                 media={
                   <div ref={photoRef}>
-                    <ProductImage image={product.image} name={product.name} sizes="100vw" className="aspect-[16/10] w-full" priority />
+                    <ProductImage image={product.image} name={product.name} sizes="100vw" className="aspect-[3/2] w-full" priority />
                   </div>
                 }
               />

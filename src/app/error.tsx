@@ -14,14 +14,14 @@ export default function RootError({ error, reset }: { error: Error & { digest?: 
         <p className="t-label text-cheddar">Incident</p>
         <h1 className="mt-6">
           <span className="t-xl block">La plaque</span>
-          <span className="s-xl block">a un souci.</span>
+          <span className="t-xl block">a un souci.</span>
         </h1>
         <p className="mt-6 max-w-md leading-relaxed text-cream/70">Une erreur est survenue de notre côté. Réessayez dans un instant ; si le problème continue, appelez-nous au 03 44 24 89 18.</p>
         <div className="mt-10 flex flex-wrap gap-2">
-          <button type="button" onClick={reset} className="t-label inline-flex h-14 items-center bg-cheddar px-8 text-ink transition-colors hover:bg-cream">
+          <button type="button" onClick={reset} className="t-btn rounded-full inline-flex h-14 items-center bg-cheddar px-8 text-ink transition-colors hover:bg-cream">
             Réessayer
           </button>
-          <Link href="/" className="t-label inline-flex h-14 items-center border border-cream/30 px-8 transition-colors hover:border-cream">
+          <Link href="/" className="t-btn rounded-full inline-flex h-14 items-center border border-cream/30 px-8 transition-colors hover:border-cream">
             Accueil
           </Link>
         </div>

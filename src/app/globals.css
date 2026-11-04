@@ -5,7 +5,7 @@
    Construit depuis le logo : noir profond, crème, rose du « By M »
    (#F8C4C0, relevé sur le logo — usage très ponctuel).
    Cheddar = couleur FONCTIONNELLE (prix, interactions, progression).
-   Anton (brut) · Instrument Serif (éditorial) · Manrope (interface).
+   Une seule police : Archivo. Titres étroits et très gras, texte en largeur normale.
    ========================================================= */
 @theme {
   --color-ink: #0a0a0a; /* noir profond */
@@ -34,9 +34,8 @@
 }
 
 @theme inline {
-  --font-display: var(--font-anton), "Anton", "Impact", "Arial Narrow", sans-serif;
-  --font-serif: var(--font-instrument), "Instrument Serif", "Times New Roman", serif;
-  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-archivo), "Arial Narrow", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --color-fg: var(--fg);
   --color-bg: var(--bg);
   --color-panel: var(--panel);
@@ -104,75 +103,66 @@
   }
 }
 
-/* ---------- Typographie ---------- */
-/* Brut (Anton, capitales) */
+/* ---------- Typographie : une seule police, une seule échelle ---------- */
 @utility t-xxl {
   font-family: var(--font-display);
-  font-size: clamp(4.4rem, 15.5vw, 16.5rem);
-  line-height: 0.84;
-  letter-spacing: -0.005em;
+  font-size: clamp(3.8rem, 14vw, 15rem);
+  font-stretch: 62%;
+  font-weight: 800;
+  line-height: 0.9;
   text-transform: uppercase;
 }
 @utility t-xl {
   font-family: var(--font-display);
-  font-size: clamp(3.3rem, 9.6vw, 9.8rem);
-  line-height: 0.86;
+  font-size: clamp(3rem, 8.8vw, 9.5rem);
+  font-stretch: 62%;
+  font-weight: 800;
+  line-height: 0.92;
   text-transform: uppercase;
 }
 @utility t-l {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 5.6vw, 5.9rem);
-  line-height: 0.9;
+  font-size: clamp(2.3rem, 5.2vw, 5.6rem);
+  font-stretch: 62%;
+  font-weight: 800;
+  line-height: 0.95;
   text-transform: uppercase;
 }
 @utility t-m {
   font-family: var(--font-display);
-  font-size: clamp(1.9rem, 3.1vw, 3.2rem);
-  line-height: 0.95;
+  font-size: clamp(1.75rem, 2.9vw, 3rem);
+  font-stretch: 62%;
+  font-weight: 800;
+  line-height: 1;
   text-transform: uppercase;
 }
 @utility t-s {
   font-family: var(--font-display);
-  font-size: clamp(1.35rem, 1.9vw, 1.8rem);
-  line-height: 1;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-}
-/* Éditorial (Instrument Serif, italique) */
-@utility s-xxl {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: clamp(4rem, 13vw, 14rem);
-  line-height: 0.86;
-  letter-spacing: -0.02em;
-}
-@utility s-xl {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: clamp(3rem, 8.5vw, 8.8rem);
-  line-height: 0.9;
-  letter-spacing: -0.015em;
-}
-@utility s-l {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: clamp(2.2rem, 4.6vw, 4.8rem);
-  line-height: 0.95;
-  letter-spacing: -0.01em;
-}
-@utility s-m {
-  font-family: var(--font-serif);
-  font-style: italic;
-  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+  font-size: clamp(1.3rem, 1.8vw, 1.7rem);
+  font-stretch: 62%;
+  font-weight: 800;
   line-height: 1.05;
+  text-transform: uppercase;
 }
-/* Labels d'interface */
+/* Petite phrase sous un titre */
+@utility t-note {
+  font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+  font-weight: 500;
+  line-height: 1.3;
+}
+/* Libellés d'interface */
 @utility t-label {
   font-family: var(--font-sans);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+/* Texte de bouton : le même partout */
+@utility t-btn {
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  font-weight: 700;
 }
 @utility container-bm {
   width: 100%;
@@ -230,6 +220,9 @@ html.lenis, html.lenis body { height: auto; }
 .lenis.lenis-stopped { overflow: clip; }
 
 @layer components {
+  /* Le raccourci « font-display » donne aussi la largeur et la graisse des titres. */
+  .font-display { font-stretch: 62%; font-weight: 800; }
+
   /* Grain photographique très léger */
   .grain::after {
     content: "";
@@ -250,7 +243,7 @@ html.lenis, html.lenis body { height: auto; }
 
   /* Pages légales */
   .legal-prose { font-size: 0.98rem; line-height: 1.75; color: var(--sub); }
-  .legal-prose h2 { margin-top: 2.75rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--rule); font-family: var(--font-display); text-transform: uppercase; font-size: 1.5rem; line-height: 1.05; color: var(--fg); }
+  .legal-prose h2 { margin-top: 2.75rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--rule); font-family: var(--font-display); font-stretch: 62%; font-weight: 800; text-transform: uppercase; font-size: 1.6rem; line-height: 1.05; color: var(--fg); }
   .legal-prose h2:first-child { margin-top: 0; }
   .legal-prose h3 { margin-top: 1.6rem; font-weight: 700; color: var(--fg); }
   .legal-prose p, .legal-prose ul, .legal-prose dl, .legal-prose table { margin-top: 1rem; }
@@ -314,11 +307,21 @@ html.intro-seen .cine-logo { display: none; }
     linear-gradient(to bottom, rgb(10 10 10 / 0.38) 0%, transparent 15%);
 }
 
-/* Portrait : l'image a son propre cadrage (néon, burger, puis table vide pour le titre). */
+/* Portrait : l'image a son propre cadrage ; elle remonte pour que le titre se pose sur la table, sous le burger. */
 @media (orientation: portrait) {
+  [data-hero-pointer] { top: -9.5%; bottom: 6.5%; }
   .cine-shade {
     background:
       linear-gradient(to top, rgb(10 10 10) 0%, rgb(10 10 10) 12%, rgb(10 10 10 / 0.84) 32%, rgb(10 10 10 / 0.4) 43%, transparent 52%),
+      linear-gradient(to bottom, rgb(10 10 10 / 0.38) 0%, transparent 14%);
+  }
+}
+@media (orientation: portrait) and (max-height: 620px) {
+  [data-hero-pointer] { top: -15.5%; bottom: 12.5%; }
+  /* Le titre y chevauche le papier clair : le dégradé monte plus haut pour rester lisible. */
+  .cine-shade {
+    background:
+      linear-gradient(to top, rgb(10 10 10) 0%, rgb(10 10 10) 22%, rgb(10 10 10 / 0.8) 50%, rgb(10 10 10 / 0.42) 62%, transparent 72%),
       linear-gradient(to bottom, rgb(10 10 10 / 0.38) 0%, transparent 14%);
   }
 }
@@ -331,8 +334,10 @@ html.intro-seen .cine-logo { display: none; }
 .cine-title {
   color: var(--color-cream);
   font-family: var(--font-display);
-  font-size: clamp(3.4rem, min(18.4vw, 15svh), 9rem);
-  line-height: 0.92;
+  font-size: clamp(3.3rem, min(17vw, 15svh), 9rem);
+  font-stretch: 62%;
+  font-weight: 800;
+  line-height: 0.94;
   text-transform: uppercase;
 }
 @media (min-width: 1024px) {
@@ -348,16 +353,8 @@ html.intro-seen .cine-logo { display: none; }
   margin-bottom: -0.2em;
   white-space: nowrap;
 }
-.cine-signature {
-  font-family: var(--font-serif);
-  font-size: 1.14em;
-  font-style: italic;
-  letter-spacing: -0.015em;
-  line-height: 0;
-  padding-right: 0.06em;
-  text-transform: none;
-}
-.cine-signature .cine-char { line-height: 0.9; }
+/* Espace entre les mots du titre, à l'échelle de la police étroite. */
+.cine-space { display: inline-block; width: 0.24em; }
 .cine-char {
   display: inline-block;
   transform-origin: 0 100%;
@@ -391,7 +388,7 @@ html:not(.intro-seen):has(.cine-hero) [data-nav] > nav { animation: nav-drop 1s 
   overflow: hidden;
   border-radius: 999px;
   font-family: var(--font-sans);
-  font-size: 0.86rem;
+  font-size: 0.88rem;
   font-weight: 700;
   white-space: nowrap;
   transition: transform 0.5s var(--ease-food), color 0.35s ease;
@@ -485,6 +482,8 @@ html:not(.intro-seen):has(.cine-hero) [data-nav] > nav { animation: nav-drop 1s 
   color: var(--color-ink);
   font-family: var(--font-display);
   font-size: clamp(2.9rem, 14.8vw, 26rem);
+  font-stretch: 62%;
+  font-weight: 800;
   line-height: 1.08;
   text-transform: uppercase;
   transition: transform 0.6s var(--ease-food), color 0.4s ease;

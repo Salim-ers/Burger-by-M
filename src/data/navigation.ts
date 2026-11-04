@@ -3,7 +3,6 @@ export const mainNav = [
   { href: "/", label: "Accueil" },
   { href: "/menu", label: "La carte" },
   { href: "/restaurant", label: "Le restaurant" },
-  { href: "/galerie", label: "Galerie" },
 ] as const;
 
 export const legalNav = [
@@ -18,7 +17,6 @@ export function transitionLabel(pathname: string): string | null {
   if (pathname === "/") return "Burger by M.";
   if (pathname.startsWith("/menu")) return "La carte.";
   if (pathname.startsWith("/restaurant")) return "Le restaurant.";
-  if (pathname.startsWith("/galerie")) return "Galerie.";
   if (pathname.startsWith("/checkout")) return "Votre commande.";
   return null;
 }

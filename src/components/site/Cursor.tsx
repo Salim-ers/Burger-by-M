@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 const LABELS: Record<string, string> = { add: "Ajouter", view: "Voir", open: "Ouvrir", drag: "Glisser" };
 
 /**
- * Étiquette qui suit la souris, uniquement là où elle informe : produits (« AJOUTER »), photos (« VOIR »)
- * et galerie (« OUVRIR »), via data-cursor. Ailleurs, rien : seul le curseur natif reste visible.
+ * Étiquette qui suit la souris, uniquement là où elle informe : produits (« AJOUTER »), photos (« VOIR »),
+ * via data-cursor. Ailleurs, rien : seul le curseur natif reste visible.
  */
 export function Cursor() {
   const ref = useRef<HTMLDivElement>(null);
@@ -33,12 +33,15 @@ export function Cursor() {
       raf = requestAnimationFrame(loop);
     };
     const leave = () => setMode("hidden");
+    const clicked = () => setMode("idle");
     window.addEventListener("pointermove", move, { passive: true });
     document.documentElement.addEventListener("pointerleave", leave);
+    window.addEventListener("click", clicked, true);
     raf = requestAnimationFrame(loop);
     return () => {
       window.removeEventListener("pointermove", move);
       document.documentElement.removeEventListener("pointerleave", leave);
+      window.removeEventListener("click", clicked, true);
       cancelAnimationFrame(raf);
     };
   }, []);
