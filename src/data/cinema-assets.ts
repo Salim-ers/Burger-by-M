@@ -4,12 +4,11 @@ export const cinemaAssets = {
     "width": 3840,
     "height": 2160,
     "widths": [
-      1280,
       1920,
       2560,
       3840
     ],
-    "lqip": "data:image/webp;base64,UklGRsIAAABXRUJQVlA4ILYAAAAwBQCdASoYAA4APu1iqU2ppaOiMAgBMB2JYgCdMoMYLI1z/4tgllIRs24NRJrG3t6qAAD+4ZYTrfxRGcZjtFWWtdEwS3Zorj2QASTGF6XLixVwl/nnL17yoVu8xsE4V8Tvw3Ludw3vSmD4ytSLnUjGwIJJ434FBK0yNMCCc7FTnonsNEX74XG3BVk9x9Tt8obP9a+Qjo0ze5+2KNdKtG0fGGS0ZGPOc5uzArCO9PwEeAUekM0AAA=="
+    "lqip": "data:image/webp;base64,UklGRqwAAABXRUJQVlA4IKAAAABwBACdASoYAA4APu1iqU2ppaOiMAgBMB2JYgCdMoMlj0gRwVc1bEAg+J2PcAD+0+SmADp4Ie76prYtEEkoa47UWW86DTyRI+iD/HKBvQyKt//UYBlXq42q9ajrFWmZqZEp2Nt4/thLcr27Hy3AHmoDtaIvMnSIww+WjNk9H/GLU4l1jX7qs/Snhaw1Z+lT1qWccGuUOqAP1WbgpDA6AAAA"
   },
   "hero-mobile": {
     "width": 2160,
@@ -21,7 +20,7 @@ export const cinemaAssets = {
       1620,
       2160
     ],
-    "lqip": "data:image/webp;base64,UklGRhoBAABXRUJQVlA4IA4BAAAQBwCdASoYACsAPu1oq1AppaOiqrgMATAdiUAVHruAH9b9ZpouyXx5GklGGRYCk24IifYlUQ0ewvAgy/ShboVAAAD+kbIFgYdhoHPOcOeKgI79WsVnHspmHi9aMXv0fYNyjnU1rkGp2nV46M8+MC0zB4htR6Ly47GWagz/HRAf4JFX+IMN0UAU5H0T5qs/GCX3AzrYIFd8A3QcNMH7gIboFvwrKWY63iKaRr9bkxKYU5C3E9eRHCJJKZwC+BbcJy4lB1Fs/JDPFCMHQEHfMOYUbNaHFCFw9t5vWMmqDRLJI6ySkpuvn4/cJd4A3D55N5OinmEHERvNm/pIncE/mQdbAr3OcK/YoZ/ykFAsAAA="
+    "lqip": "data:image/webp;base64,UklGRg4BAABXRUJQVlA4IAIBAACQBgCdASoYACsAPu1irE2ppaSiKqwBMB2JQBajdmhYhjH0TwYOA0+rm77x/eyflaC5bR+y3vpNIHvoXFAAAP3jiZzbj2FXhbtM6/XrptbaJttjl/+050UXpCrQvNIsL613phEIrEvrvD85gsvSgXr2GAIHZloHia4bM/B+58Y3vHf7VMfnzTZo3DKEyYc1g5/bjMFxbPMCe248nDCNohdM74eN2pBk982tyc7GfIyu86AToZxpEhXwpsGQ0QuouzPLEL2tT6T65DjdbOtqjqG5FHaGZ4ClM/UaOoRuAB5OMWccshM250E0RQX3HFHG18WKoiSSFNPFDZfDF7GI0vgAAAA="
   },
   "plancha": {
     "width": 2160,
@@ -38,7 +37,6 @@ export const cinemaAssets = {
     "width": 3840,
     "height": 2160,
     "widths": [
-      1280,
       1920,
       2560,
       3840
@@ -49,7 +47,6 @@ export const cinemaAssets = {
     "width": 3840,
     "height": 2160,
     "widths": [
-      1280,
       1920,
       2560,
       3840

@@ -47,6 +47,28 @@ test.describe("accueil", () => {
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Notre");
   });
 
+  test("la photo du hero reste immobile", async ({ page }) => {
+    const state = () =>
+      page.evaluate(() => {
+        const img = document.querySelector<HTMLElement>(".cine-hero img")!;
+        const box = img.getBoundingClientRect();
+        const transforms: string[] = [];
+        for (let el: HTMLElement | null = img; el && !el.classList.contains("cine-hero"); el = el.parentElement) {
+          const t = getComputedStyle(el).transform;
+          if (t !== "none") transforms.push(t);
+        }
+        return { x: box.x, y: box.y, width: box.width, height: box.height, transforms };
+      });
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    const before = await state();
+    expect(before.transforms).toEqual([]);
+    await page.mouse.move(100, 100);
+    await page.mouse.move(900, 600, { steps: 8 });
+    await page.waitForTimeout(1500);
+    expect(await state()).toEqual(before);
+  });
+
   test("mouvement réduit : tout est affiché sans animation", async ({ browser }) => {
     const context = await browser.newContext({ reducedMotion: "reduce", viewport: { width: 1280, height: 800 } });
     const page = await context.newPage();

@@ -17,11 +17,11 @@ import sharp from "sharp";
 const manifest = JSON.parse(readFileSync("assets/generated/manifest.json", "utf8"));
 
 const CINEMA = {
-  "hero-desktop": [1280, 1920, 2560, 3840],
+  "hero-desktop": [1920, 2560, 3840],
   "hero-mobile": [640, 828, 1170, 1620, 2160],
   plancha: [640, 960, 1280, 1800],
-  "plancha-desktop": [1280, 1920, 2560, 3840],
-  "table-desktop": [1280, 1920, 2560, 3840],
+  "plancha-desktop": [1920, 2560, 3840],
+  "table-desktop": [1920, 2560, 3840],
   "table-mobile": [640, 828, 1170, 1620],
 };
 
@@ -43,9 +43,12 @@ for (const [id, widths] of Object.entries(CINEMA)) {
   const { width, height } = await sharp(source).metadata();
   const kept = widths.filter((w) => w <= width);
   for (const w of kept) {
-    const resized = sharp(source).resize({ width: w, kernel: "lanczos3" });
-    await resized.clone().avif({ quality: 60, effort: 5 }).toFile(join(out, `${id}-${w}.avif`));
-    await resized.clone().webp({ quality: 82, effort: 5 }).toFile(join(out, `${id}-${w}.webp`));
+    // Légère accentuation après réduction, couleurs en pleine résolution (4:4:4) : le mur blanc reste propre.
+    // Cadrages portrait : écrans très denses, où une compression plus forte ne se voit pas et accélère l'affichage.
+    const resized = sharp(source).resize({ width: w, kernel: "lanczos3" }).sharpen({ sigma: 0.55 });
+    const quality = id.endsWith("-desktop") ? 76 : 62;
+    await resized.clone().avif({ quality, effort: 5, chromaSubsampling: "4:4:4" }).toFile(join(out, `${id}-${w}.avif`));
+    await resized.clone().webp({ quality: id.endsWith("-desktop") ? 88 : 78, effort: 5, smartSubsample: true }).toFile(join(out, `${id}-${w}.webp`));
   }
   const lqip = await sharp(source).resize({ width: 24 }).webp({ quality: 40 }).toBuffer();
   data[id] = { width, height, widths: kept, lqip: `data:image/webp;base64,${lqip.toString("base64")}` };

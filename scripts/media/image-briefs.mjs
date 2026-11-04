@@ -35,6 +35,13 @@ Composition: camera at eye level, a little further back than the real photo. The
 
 const SHAKE_STYLE = `Style: a real, clean, natural photograph, sharp and detailed, true-to-life colours, slight natural imperfections in the cream and the drips. Strictly forbidden: plastic-looking cream, CGI surfaces, extra fingers, oversaturated colours, HDR look, ingredients not listed, any wrapper or brand lettering on food.`;
 
+/** Trois vraies recettes de la carte, sans invention. */
+const BURGERS = `Three different burgers from the restaurant's real menu, all in the same soft, lightly glazed golden brioche bun with a slightly uneven crown:
+1. Le Spécial: double thin smashed beef patties with dark, lacy, crispy edges, melted cheddar, crispy fried onions, a few pickle slices (as in the real photo).
+2. Smash Double: double smashed beef patties, melted cheddar, green lettuce, pinkish smash sauce.
+3. Le Montagnard: one beef patty, crispy bacon, melted raclette cheese, soft caramelised onions, green lettuce.
+Nothing else in these burgers. They look real and appetising, each one different, with natural imperfections.`;
+
 /** Fond et lumière des visuels de la carte (burgers sur fond crème) : les frites doivent s'y intégrer. */
 const MENU_SET = `Set and light, identical to the brand's menu pictures (see the burger reference): a warm cream seamless studio backdrop with a very gentle gradient, soft large frontal-top light, a soft natural contact shadow under the tray. Camera at a low three-quarter angle, slightly above the tray. Pull the camera back: the tray is centred and only about 58% of the frame width, with wide empty cream backdrop on every side. The whole tray and its contents stay inside the central 16:9 band of the frame, with clear margins above and below, because the picture is also displayed cropped to 16:9.`;
 
@@ -50,16 +57,16 @@ export const briefs = {
     usage: "Hero de l'accueil — cadrage paysage",
     size: "3840x2160",
     draftSize: "1536x864",
-    refs: ["assets/sources/restaurant-comptoir-neon.png", "public/images/food/smash-le-special.webp", "public/images/food/plateau-burgers-frites.webp"],
-    prompt: `Reference 1 is a real photo of the inside of the restaurant, the absolute reference for the place, the colours and the light. Reference 2 is its real burger. Reference 3 shows its real paper and dark wooden table. Create a wide 16:9 photograph taken inside this exact restaurant, as if a professional had taken the same photo with a better camera: it must immediately look like the same place.
+    refs: ["assets/sources/restaurant-comptoir-neon.png", "public/images/food/smash-le-special.webp", "public/images/products/smash-double.webp", "public/images/products/le-montagnard.webp"],
+    prompt: `Reference 1 is a real photo of the inside of the restaurant, the absolute reference for the place, the colours and the light. References 2, 3 and 4 show its real burgers. Create a wide 16:9 photograph taken inside this exact restaurant, as if a professional had taken the same photo with a better camera: it must immediately look like the same place.
 
 ${PLACE}
 
-${BURGER}
+${BURGERS}
 
-Scene: in the foreground, close to the camera, the burger rests on slightly crumpled plain white greaseproof paper, with only a fine, small-scale, faint grey newsprint texture and no large shapes, on a dark wooden table, with natural colours. Behind it, a few metres away and just as sharp, the counter runs across the frame.
+Scene: in the foreground, close to the camera, the three burgers stand side by side on slightly crumpled plain white greaseproof paper, with only a fine, small-scale, faint grey newsprint texture and no large shapes, on a dark wooden table, with natural colours. Behind them, a few metres away and just as sharp, the counter runs across the frame.
 
-Composition: the white wall, the hood and the kitchen fill the top of the frame. The neon sign is in the right half of the frame, above and behind the burger, never hidden by it, large and readable. The burger sits at the right third of the frame, about 24% of the frame width, entirely visible, with its lowest point no lower than 78% of the frame height: a clear band of empty dark wooden table stays below it and its paper, because the picture is also cropped on wide computer screens. The left half of the frame stays uncluttered, with the counter and the slats continuing, and leaves room for a headline over the slats and the table at the bottom left.
+Composition: the white wall, the hood and the kitchen fill the top of the frame. The neon sign is in the right half of the frame, entirely above the burgers, never hidden by them, large and readable. The three burgers form a loose group in the right half of the frame, from about 50% to 96% of the frame width, entirely visible, the lowest point of the burgers and paper no higher than the bottom of the frame minus 18%: a clear band of empty dark wooden table stays below them, because the picture is also cropped on wide computer screens. The left half of the frame stays uncluttered, with the counter and the slats continuing, and leaves room for a headline over the slats and the table at the bottom left.
 
 ${NATURAL}`,
   },
@@ -67,14 +74,14 @@ ${NATURAL}`,
     usage: "Hero de l'accueil — cadrage portrait (vrai recadrage, pas une découpe)",
     size: "2160x3840",
     draftSize: "864x1536",
-    refs: [{ asset: "hero-desktop" }, "assets/sources/restaurant-comptoir-neon.png", "public/images/food/smash-le-special.webp"],
-    prompt: `Reference 1 is the wide photograph of the scene. Reference 2 is a real photo of the same restaurant, the absolute reference for the place, the colours and the light. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera: same place, same natural light, same burger, nothing new.
+    refs: [{ asset: "hero-desktop" }, "assets/sources/restaurant-comptoir-neon.png"],
+    prompt: `Reference 1 is the wide photograph of the scene. Reference 2 is a real photo of the same restaurant, the absolute reference for the place, the colours and the light. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera: same place, same natural light, same three burgers, nothing new.
 
 ${PLACE}
 
-${BURGER}
+${BURGERS}
 
-Composition, from top to bottom, the camera further back: a band of white wall, hood and kitchen at the top; then the neon sign, horizontally centred, whole and readable, about 66% of the frame width, its centre about 23% from the top of the frame; then the burger on its paper on the dark wooden table, horizontally centred, small in the frame: only about 44% of the frame width, its centre about 38% from the top, and nothing of the burger or its paper lower than 48% from the top. It must not hide the neon. Everything below 48% from the top is only the empty dark wooden table, calm enough for a large headline.
+Composition, from top to bottom, the camera further back: a band of white wall, hood and kitchen at the top; then the neon sign, horizontally centred, whole and readable, about 66% of the frame width, its centre about 23% from the top of the frame; then the three burgers in a tight group on their paper on the dark wooden table, horizontally centred, about 86% of the frame width together, their centre about 39% from the top, and nothing of the burgers or their paper lower than 50% from the top. They must not hide the neon. Everything below 50% from the top is only the empty dark wooden table, calm enough for a large headline.
 
 ${NATURAL}`,
   },

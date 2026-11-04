@@ -4,7 +4,7 @@
     "hero-desktop": {
       "usage": "Hero de l'accueil — cadrage paysage",
       "status": "à valider",
-      "selected": "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T151204.webp",
+      "selected": "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T155101__logo.webp",
       "versions": [
         {
           "file": "assets/generated/_drafts/hero-desktop__genere-ia__20261104T125935.webp",
@@ -286,6 +286,94 @@
             },
             "total_tokens": 18049
           }
+        },
+        {
+          "file": "assets/generated/_drafts/hero-desktop__genere-ia__20261104T154854.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "1536x864",
+          "quality": "medium",
+          "draft": true,
+          "references": [
+            "assets/sources/restaurant-comptoir-neon.png",
+            "public/images/food/smash-le-special.webp",
+            "public/images/products/smash-double.webp",
+            "public/images/products/le-montagnard.webp"
+          ],
+          "prompt": "Reference 1 is a real photo of the inside of the restaurant, the absolute reference for the place, the colours and the light. References 2, 3 and 4 show its real burgers. Create a wide 16:9 photograph taken inside this exact restaurant, as if a professional had taken the same photo with a better camera: it must immediately look like the same place.\n\nThe place must look exactly like the real photo, in the same natural light: bright, clean white walls; a warm white LED strip along the ceiling edge, with an ochre ceiling panel above it; a stainless steel extraction hood with its ducting and a stainless steel backsplash; a tidy working kitchen with its real equipment, and a cook in a black t-shirt with a black cap seen from behind; a counter with a smooth cream top; the counter front made of vertical natural oak slats with thin black gaps; mounted on those slats, a thin warm yellow LED neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo. Do not add any furniture, decoration, window or object that is not in the photo. Do not darken the room: same daylight-balanced brightness as the photo.\n\nThree different burgers from the restaurant's real menu, all in the same soft, lightly glazed golden brioche bun with a slightly uneven crown:\n1. Le Spécial: double thin smashed beef patties with dark, lacy, crispy edges, melted cheddar, crispy fried onions, a few pickle slices (as in the real photo).\n2. Smash Double: double smashed beef patties, melted cheddar, green lettuce, pinkish smash sauce.\n3. Le Montagnard: one beef patty, crispy bacon, melted raclette cheese, soft caramelised onions, green lettuce.\nNothing else in these burgers. They look real and appetising, each one different, with natural imperfections.\n\nScene: in the foreground, close to the camera, the three burgers stand side by side on slightly crumpled plain white greaseproof paper, with only a fine, small-scale, faint grey newsprint texture and no large shapes, on a dark wooden table, with natural colours. Behind them, a few metres away and just as sharp, the counter runs across the frame.\n\nComposition: the white wall, the hood and the kitchen fill the top of the frame. The neon sign is in the right half of the frame, entirely above the burgers, never hidden by them, large and readable. The three burgers form a loose group in the right half of the frame, from about 50% to 96% of the frame width, entirely visible, the lowest point of the burgers and paper no higher than the bottom of the frame minus 18%: a clear band of empty dark wooden table stays below them, because the picture is also cropped on wide computer screens. The left half of the frame stays uncluttered, with the counter and the slats continuing, and leaves room for a headline over the slats and the table at the bottom left.\n\nStyle: a real, clean, natural photograph by a professional interiors and food photographer, on a full-frame camera with a 35mm lens at f/11, sharp and detailed everywhere. Deep depth of field: everything is in crisp focus from the foreground to the back wall, including the neon sign, the counter, the kitchen and the hood. No background blur, no bokeh. True-to-life colours, neutral white balance, soft even ambient light from the room, natural contrast, gentle realistic shadows. The food looks real and appetising, with natural colours and slight imperfections.\nStrictly forbidden: orange or teal colour grading, dramatic low-key lighting, dark moody atmosphere, haze, smoke, vignette, HDR look, oversaturated colours, oversharpening, plastic-looking cheese, waxy or CGI surfaces, any text, letter, number, logo or label other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text).",
+          "createdAt": "2026-11-04T15:48:54.753Z",
+          "usage": {
+            "input_tokens": 5027,
+            "input_tokens_details": {
+              "image_tokens": 4151,
+              "text_tokens": 876
+            },
+            "output_tokens": 280,
+            "output_tokens_details": {
+              "image_tokens": 280,
+              "text_tokens": 0
+            },
+            "total_tokens": 5307
+          }
+        },
+        {
+          "file": "assets/generated/_drafts/hero-desktop__genere-ia__20261104T154931.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "1536x864",
+          "quality": "medium",
+          "draft": true,
+          "references": [
+            "assets/sources/restaurant-comptoir-neon.png",
+            "public/images/food/smash-le-special.webp",
+            "public/images/products/smash-double.webp",
+            "public/images/products/le-montagnard.webp"
+          ],
+          "prompt": "Reference 1 is a real photo of the inside of the restaurant, the absolute reference for the place, the colours and the light. References 2, 3 and 4 show its real burgers. Create a wide 16:9 photograph taken inside this exact restaurant, as if a professional had taken the same photo with a better camera: it must immediately look like the same place.\n\nThe place must look exactly like the real photo, in the same natural light: bright, clean white walls; a warm white LED strip along the ceiling edge, with an ochre ceiling panel above it; a stainless steel extraction hood with its ducting and a stainless steel backsplash; a tidy working kitchen with its real equipment, and a cook in a black t-shirt with a black cap seen from behind; a counter with a smooth cream top; the counter front made of vertical natural oak slats with thin black gaps; mounted on those slats, a thin warm yellow LED neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo. Do not add any furniture, decoration, window or object that is not in the photo. Do not darken the room: same daylight-balanced brightness as the photo.\n\nThree different burgers from the restaurant's real menu, all in the same soft, lightly glazed golden brioche bun with a slightly uneven crown:\n1. Le Spécial: double thin smashed beef patties with dark, lacy, crispy edges, melted cheddar, crispy fried onions, a few pickle slices (as in the real photo).\n2. Smash Double: double smashed beef patties, melted cheddar, green lettuce, pinkish smash sauce.\n3. Le Montagnard: one beef patty, crispy bacon, melted raclette cheese, soft caramelised onions, green lettuce.\nNothing else in these burgers. They look real and appetising, each one different, with natural imperfections.\n\nScene: in the foreground, close to the camera, the three burgers stand side by side on slightly crumpled plain white greaseproof paper, with only a fine, small-scale, faint grey newsprint texture and no large shapes, on a dark wooden table, with natural colours. Behind them, a few metres away and just as sharp, the counter runs across the frame.\n\nComposition: the white wall, the hood and the kitchen fill the top of the frame. The neon sign is in the right half of the frame, entirely above the burgers, never hidden by them, large and readable. The three burgers form a loose group in the right half of the frame, from about 50% to 96% of the frame width, entirely visible, the lowest point of the burgers and paper no higher than the bottom of the frame minus 18%: a clear band of empty dark wooden table stays below them, because the picture is also cropped on wide computer screens. The left half of the frame stays uncluttered, with the counter and the slats continuing, and leaves room for a headline over the slats and the table at the bottom left.\n\nStyle: a real, clean, natural photograph by a professional interiors and food photographer, on a full-frame camera with a 35mm lens at f/11, sharp and detailed everywhere. Deep depth of field: everything is in crisp focus from the foreground to the back wall, including the neon sign, the counter, the kitchen and the hood. No background blur, no bokeh. True-to-life colours, neutral white balance, soft even ambient light from the room, natural contrast, gentle realistic shadows. The food looks real and appetising, with natural colours and slight imperfections.\nStrictly forbidden: orange or teal colour grading, dramatic low-key lighting, dark moody atmosphere, haze, smoke, vignette, HDR look, oversaturated colours, oversharpening, plastic-looking cheese, waxy or CGI surfaces, any text, letter, number, logo or label other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text).\n\nDirector's note: Important correction of the framing: the three burgers are smaller and closer together, slightly overlapping each other in a tight group, each one only about 15% of the frame width. The whole group, paper included, stays between 54% and 98% of the frame width. Nothing but empty table and counter on the left of 54%. The burgers, the paper and the neon sign stay entirely inside the frame. Keep the table dark brown wood, the same sharp focus everywhere, and the neon sign above the group.",
+          "createdAt": "2026-11-04T15:49:31.388Z",
+          "usage": {
+            "input_tokens": 5137,
+            "input_tokens_details": {
+              "image_tokens": 4151,
+              "text_tokens": 986
+            },
+            "output_tokens": 280,
+            "output_tokens_details": {
+              "image_tokens": 280,
+              "text_tokens": 0
+            },
+            "total_tokens": 5417
+          }
+        },
+        {
+          "file": "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T155101.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "3840x2160",
+          "quality": "max",
+          "draft": false,
+          "references": [
+            "assets/generated/_drafts/hero-desktop__genere-ia__20261104T154931.webp",
+            "assets/sources/restaurant-comptoir-neon.png",
+            "public/images/food/smash-le-special.webp",
+            "public/images/products/smash-double.webp",
+            "public/images/products/le-montagnard.webp"
+          ],
+          "prompt": "The FIRST attached image is the approved composition. Reproduce this exact composition, framing, objects and lighting at much higher resolution, with finer natural detail. The other attached images are the references below, numbered from 1 in order, used only to stay faithful to the real products.\n\nReference 1 is a real photo of the inside of the restaurant, the absolute reference for the place, the colours and the light. References 2, 3 and 4 show its real burgers. Create a wide 16:9 photograph taken inside this exact restaurant, as if a professional had taken the same photo with a better camera: it must immediately look like the same place.\n\nThe place must look exactly like the real photo, in the same natural light: bright, clean white walls; a warm white LED strip along the ceiling edge, with an ochre ceiling panel above it; a stainless steel extraction hood with its ducting and a stainless steel backsplash; a tidy working kitchen with its real equipment, and a cook in a black t-shirt with a black cap seen from behind; a counter with a smooth cream top; the counter front made of vertical natural oak slats with thin black gaps; mounted on those slats, a thin warm yellow LED neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo. Do not add any furniture, decoration, window or object that is not in the photo. Do not darken the room: same daylight-balanced brightness as the photo.\n\nThree different burgers from the restaurant's real menu, all in the same soft, lightly glazed golden brioche bun with a slightly uneven crown:\n1. Le Spécial: double thin smashed beef patties with dark, lacy, crispy edges, melted cheddar, crispy fried onions, a few pickle slices (as in the real photo).\n2. Smash Double: double smashed beef patties, melted cheddar, green lettuce, pinkish smash sauce.\n3. Le Montagnard: one beef patty, crispy bacon, melted raclette cheese, soft caramelised onions, green lettuce.\nNothing else in these burgers. They look real and appetising, each one different, with natural imperfections.\n\nScene: in the foreground, close to the camera, the three burgers stand side by side on slightly crumpled plain white greaseproof paper, with only a fine, small-scale, faint grey newsprint texture and no large shapes, on a dark wooden table, with natural colours. Behind them, a few metres away and just as sharp, the counter runs across the frame.\n\nComposition: the white wall, the hood and the kitchen fill the top of the frame. The neon sign is in the right half of the frame, entirely above the burgers, never hidden by them, large and readable. The three burgers form a loose group in the right half of the frame, from about 50% to 96% of the frame width, entirely visible, the lowest point of the burgers and paper no higher than the bottom of the frame minus 18%: a clear band of empty dark wooden table stays below them, because the picture is also cropped on wide computer screens. The left half of the frame stays uncluttered, with the counter and the slats continuing, and leaves room for a headline over the slats and the table at the bottom left.\n\nStyle: a real, clean, natural photograph by a professional interiors and food photographer, on a full-frame camera with a 35mm lens at f/11, sharp and detailed everywhere. Deep depth of field: everything is in crisp focus from the foreground to the back wall, including the neon sign, the counter, the kitchen and the hood. No background blur, no bokeh. True-to-life colours, neutral white balance, soft even ambient light from the room, natural contrast, gentle realistic shadows. The food looks real and appetising, with natural colours and slight imperfections.\nStrictly forbidden: orange or teal colour grading, dramatic low-key lighting, dark moody atmosphere, haze, smoke, vignette, HDR look, oversaturated colours, oversharpening, plastic-looking cheese, waxy or CGI surfaces, any text, letter, number, logo or label other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text).\n\nDirector's note: Razor sharp fine detail everywhere, including the kitchen, the hood and the wall. Keep exactly the same framing as the first attached image.",
+          "createdAt": "2026-11-04T15:51:01.847Z",
+          "usage": {
+            "input_tokens": 6420,
+            "input_tokens_details": {
+              "image_tokens": 5447,
+              "text_tokens": 973
+            },
+            "output_tokens": 13342,
+            "output_tokens_details": {
+              "image_tokens": 13342,
+              "text_tokens": 0
+            },
+            "total_tokens": 19762
+          }
         }
       ]
     },
@@ -533,7 +621,7 @@
     "hero-mobile": {
       "usage": "Hero de l'accueil — cadrage portrait (vrai recadrage, pas une découpe)",
       "status": "à valider",
-      "selected": "assets/generated/hero-mobile/hero-mobile__genere-ia__20261104T151423.webp",
+      "selected": "assets/generated/hero-mobile/hero-mobile__genere-ia__20261104T155348__logo.webp",
       "versions": [
         {
           "file": "assets/generated/_drafts/hero-mobile__genere-ia__20261104T130304.webp",
@@ -870,6 +958,61 @@
               "text_tokens": 0
             },
             "total_tokens": 18595
+          }
+        },
+        {
+          "file": "assets/generated/_drafts/hero-mobile__genere-ia__20261104T155122.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "864x1536",
+          "quality": "medium",
+          "draft": true,
+          "references": [
+            "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T155101.webp",
+            "assets/sources/restaurant-comptoir-neon.png"
+          ],
+          "prompt": "Reference 1 is the wide photograph of the scene. Reference 2 is a real photo of the same restaurant, the absolute reference for the place, the colours and the light. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera: same place, same natural light, same three burgers, nothing new.\n\nThe place must look exactly like the real photo, in the same natural light: bright, clean white walls; a warm white LED strip along the ceiling edge, with an ochre ceiling panel above it; a stainless steel extraction hood with its ducting and a stainless steel backsplash; a tidy working kitchen with its real equipment, and a cook in a black t-shirt with a black cap seen from behind; a counter with a smooth cream top; the counter front made of vertical natural oak slats with thin black gaps; mounted on those slats, a thin warm yellow LED neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo. Do not add any furniture, decoration, window or object that is not in the photo. Do not darken the room: same daylight-balanced brightness as the photo.\n\nThree different burgers from the restaurant's real menu, all in the same soft, lightly glazed golden brioche bun with a slightly uneven crown:\n1. Le Spécial: double thin smashed beef patties with dark, lacy, crispy edges, melted cheddar, crispy fried onions, a few pickle slices (as in the real photo).\n2. Smash Double: double smashed beef patties, melted cheddar, green lettuce, pinkish smash sauce.\n3. Le Montagnard: one beef patty, crispy bacon, melted raclette cheese, soft caramelised onions, green lettuce.\nNothing else in these burgers. They look real and appetising, each one different, with natural imperfections.\n\nComposition, from top to bottom, the camera further back: a band of white wall, hood and kitchen at the top; then the neon sign, horizontally centred, whole and readable, about 66% of the frame width, its centre about 23% from the top of the frame; then the three burgers in a tight group on their paper on the dark wooden table, horizontally centred, about 86% of the frame width together, their centre about 39% from the top, and nothing of the burgers or their paper lower than 50% from the top. They must not hide the neon. Everything below 50% from the top is only the empty dark wooden table, calm enough for a large headline.\n\nStyle: a real, clean, natural photograph by a professional interiors and food photographer, on a full-frame camera with a 35mm lens at f/11, sharp and detailed everywhere. Deep depth of field: everything is in crisp focus from the foreground to the back wall, including the neon sign, the counter, the kitchen and the hood. No background blur, no bokeh. True-to-life colours, neutral white balance, soft even ambient light from the room, natural contrast, gentle realistic shadows. The food looks real and appetising, with natural colours and slight imperfections.\nStrictly forbidden: orange or teal colour grading, dramatic low-key lighting, dark moody atmosphere, haze, smoke, vignette, HDR look, oversaturated colours, oversharpening, plastic-looking cheese, waxy or CGI surfaces, any text, letter, number, logo or label other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text).",
+          "createdAt": "2026-11-04T15:51:22.490Z",
+          "usage": {
+            "input_tokens": 3074,
+            "input_tokens_details": {
+              "image_tokens": 2314,
+              "text_tokens": 760
+            },
+            "output_tokens": 280,
+            "output_tokens_details": {
+              "image_tokens": 280,
+              "text_tokens": 0
+            },
+            "total_tokens": 3354
+          }
+        },
+        {
+          "file": "assets/generated/hero-mobile/hero-mobile__genere-ia__20261104T155348.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "2160x3840",
+          "quality": "max",
+          "draft": false,
+          "references": [
+            "assets/generated/_drafts/hero-mobile__genere-ia__20261104T155122.webp",
+            "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T155101.webp",
+            "assets/sources/restaurant-comptoir-neon.png"
+          ],
+          "prompt": "The FIRST attached image is the approved composition. Reproduce this exact composition, framing, objects and lighting at much higher resolution, with finer natural detail. The other attached images are the references below, numbered from 1 in order, used only to stay faithful to the real products.\n\nReference 1 is the wide photograph of the scene. Reference 2 is a real photo of the same restaurant, the absolute reference for the place, the colours and the light. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera: same place, same natural light, same three burgers, nothing new.\n\nThe place must look exactly like the real photo, in the same natural light: bright, clean white walls; a warm white LED strip along the ceiling edge, with an ochre ceiling panel above it; a stainless steel extraction hood with its ducting and a stainless steel backsplash; a tidy working kitchen with its real equipment, and a cook in a black t-shirt with a black cap seen from behind; a counter with a smooth cream top; the counter front made of vertical natural oak slats with thin black gaps; mounted on those slats, a thin warm yellow LED neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo. Do not add any furniture, decoration, window or object that is not in the photo. Do not darken the room: same daylight-balanced brightness as the photo.\n\nThree different burgers from the restaurant's real menu, all in the same soft, lightly glazed golden brioche bun with a slightly uneven crown:\n1. Le Spécial: double thin smashed beef patties with dark, lacy, crispy edges, melted cheddar, crispy fried onions, a few pickle slices (as in the real photo).\n2. Smash Double: double smashed beef patties, melted cheddar, green lettuce, pinkish smash sauce.\n3. Le Montagnard: one beef patty, crispy bacon, melted raclette cheese, soft caramelised onions, green lettuce.\nNothing else in these burgers. They look real and appetising, each one different, with natural imperfections.\n\nComposition, from top to bottom, the camera further back: a band of white wall, hood and kitchen at the top; then the neon sign, horizontally centred, whole and readable, about 66% of the frame width, its centre about 23% from the top of the frame; then the three burgers in a tight group on their paper on the dark wooden table, horizontally centred, about 86% of the frame width together, their centre about 39% from the top, and nothing of the burgers or their paper lower than 50% from the top. They must not hide the neon. Everything below 50% from the top is only the empty dark wooden table, calm enough for a large headline.\n\nStyle: a real, clean, natural photograph by a professional interiors and food photographer, on a full-frame camera with a 35mm lens at f/11, sharp and detailed everywhere. Deep depth of field: everything is in crisp focus from the foreground to the back wall, including the neon sign, the counter, the kitchen and the hood. No background blur, no bokeh. True-to-life colours, neutral white balance, soft even ambient light from the room, natural contrast, gentle realistic shadows. The food looks real and appetising, with natural colours and slight imperfections.\nStrictly forbidden: orange or teal colour grading, dramatic low-key lighting, dark moody atmosphere, haze, smoke, vignette, HDR look, oversaturated colours, oversharpening, plastic-looking cheese, waxy or CGI surfaces, any text, letter, number, logo or label other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text).\n\nDirector's note: Razor sharp fine detail everywhere, including the kitchen, the hood and the wall. Keep exactly the same framing as the first attached image.",
+          "createdAt": "2026-11-04T15:53:48.524Z",
+          "usage": {
+            "input_tokens": 4467,
+            "input_tokens_details": {
+              "image_tokens": 3610,
+              "text_tokens": 857
+            },
+            "output_tokens": 13342,
+            "output_tokens_details": {
+              "image_tokens": 13342,
+              "text_tokens": 0
+            },
+            "total_tokens": 17809
           }
         }
       ]

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, useGSAP, reducedMotion, finePointer } from "@/components/motion/gsap";
+import { gsap, useGSAP, reducedMotion } from "@/components/motion/gsap";
 import { Magnetic } from "@/components/motion";
 import { useOrderingNotice } from "@/features/store/use-status";
 import { brand } from "@/data/brand";
@@ -28,10 +28,10 @@ function Letters({ text, from }: { text: string; from: number }) {
 
 /**
  * HERO — une photographie, une phrase, deux actions.
- * Le logo apparaît sur le noir, le cadre s'ouvre comme une ouverture de cinéma sur une scène, la caméra
- * finit de se poser, le titre se lève. L'animation est en CSS : elle ne dépend pas du JavaScript et ne
- * bloque rien (les boutons sont dans la page dès le départ, le défilement n'est jamais retenu).
- * Au défilement et au pointeur, le cadre se déplace à peine, pour la profondeur.
+ * Le logo apparaît sur le noir, le cadre s'ouvre comme une ouverture de cinéma sur une scène, le titre se lève.
+ * L'animation est en CSS : elle ne dépend pas du JavaScript et ne bloque rien (les boutons sont dans la page dès
+ * le départ, le défilement n'est jamais retenu). La photo elle-même reste immobile : la déplacer ou la zoomer
+ * la rééchantillonne en continu, ce qui la rend floue.
  */
 export function Hero() {
   const root = useRef<HTMLElement>(null);
@@ -40,20 +40,7 @@ export function Hero() {
   useGSAP(
     () => {
       if (reducedMotion() || !root.current) return;
-      const pass = { trigger: root.current, start: "top top", end: "bottom top", scrub: true };
-      gsap.to("[data-hero-scroll]", { yPercent: 9, ease: "none", scrollTrigger: pass });
-      gsap.to("[data-hero-copy]", { yPercent: -10, autoAlpha: 0, ease: "none", scrollTrigger: { ...pass, end: "65% top" } });
-
-      if (!finePointer()) return;
-      const xTo = gsap.quickTo("[data-hero-pointer]", "x", { duration: 1.6, ease: "power3.out" });
-      const yTo = gsap.quickTo("[data-hero-pointer]", "y", { duration: 1.6, ease: "power3.out" });
-      const move = (e: PointerEvent) => {
-        xTo((e.clientX / window.innerWidth - 0.5) * -18);
-        yTo((e.clientY / window.innerHeight - 0.5) * -10);
-      };
-      const el = root.current;
-      el.addEventListener("pointermove", move);
-      return () => el.removeEventListener("pointermove", move);
+      gsap.to("[data-hero-copy]", { yPercent: -10, autoAlpha: 0, ease: "none", scrollTrigger: { trigger: root.current, start: "top top", end: "65% top", scrub: true } });
     },
     { scope: root },
   );
@@ -63,19 +50,15 @@ export function Hero() {
       <CinemaPreload landscape="hero-desktop" portrait="hero-mobile" sizes="100vw" />
 
       <div className="cine-aperture absolute inset-0 -z-10">
-        <div data-hero-scroll className="absolute inset-0">
-          <div data-hero-pointer className="absolute -inset-[1.5%]">
-            <div className="cine-camera absolute inset-0">
-              <CinemaPicture
-                id="hero-desktop"
-                portraitId="hero-mobile"
-                priority
-                sizes="100vw"
-                position="100% 100%"
-                alt="Scène d’ambiance : un burger au cheddar fondu sur une table, devant le comptoir et l’enseigne lumineuse Burger By M, le soir"
-              />
-            </div>
-          </div>
+        <div className="cine-frame absolute inset-0">
+          <CinemaPicture
+            id="hero-desktop"
+            portraitId="hero-mobile"
+            priority
+            sizes="100vw"
+            position="100% 100%"
+            alt="Trois burgers au cheddar sur une table, devant le comptoir et l’enseigne lumineuse Burger By M"
+          />
         </div>
         <div aria-hidden className="cine-shade absolute inset-0" />
       </div>

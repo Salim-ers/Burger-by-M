@@ -263,7 +263,7 @@ html.lenis, html.lenis body { height: auto; }
 /* ---------- Accueil : ouverture du hero ----------
    Entièrement en CSS : ne dépend pas du JavaScript, ne bloque ni le défilement ni les clics.
    Première visite de la session : le logo sur le noir, puis le cadre s'ouvre.
-   Visites suivantes (html.intro-seen) : le cadre s'ouvre directement. */
+   Visites suivantes (html.intro-seen) : le cadre s'ouvre directement. La photo reste immobile. */
 .cine-hero { --t0: 0.78s; }
 html.intro-seen .cine-hero { --t0: 0s; }
 
@@ -291,13 +291,6 @@ html.intro-seen .cine-logo { display: none; }
   to { clip-path: inset(0 0 0 0); }
 }
 
-/* La caméra finit de se poser, très lentement. */
-.cine-camera { animation: cine-camera 7s cubic-bezier(0.12, 0.8, 0.2, 1) var(--t0) both; }
-@keyframes cine-camera {
-  from { transform: scale(1.075); }
-  to { transform: scale(1); }
-}
-
 /* Dégradés de lecture, limités à la zone du texte : le burger et le néon gardent toute leur lumière.
    Le bas se fond exactement dans le noir de la section suivante. */
 .cine-shade {
@@ -309,7 +302,7 @@ html.intro-seen .cine-logo { display: none; }
 
 /* Portrait : l'image a son propre cadrage ; elle remonte pour que le titre se pose sur la table, sous le burger. */
 @media (orientation: portrait) {
-  [data-hero-pointer] { top: -9.5%; bottom: 6.5%; }
+  .cine-frame { top: -8%; bottom: 8%; }
   .cine-shade {
     background:
       linear-gradient(to top, rgb(10 10 10) 0%, rgb(10 10 10) 12%, rgb(10 10 10 / 0.84) 32%, rgb(10 10 10 / 0.4) 43%, transparent 52%),
@@ -317,7 +310,7 @@ html.intro-seen .cine-logo { display: none; }
   }
 }
 @media (orientation: portrait) and (max-height: 620px) {
-  [data-hero-pointer] { top: -15.5%; bottom: 12.5%; }
+  .cine-frame { top: -14%; bottom: 14%; }
   /* Le titre y chevauche le papier clair : le dégradé monte plus haut pour rester lisible. */
   .cine-shade {
     background:
@@ -341,7 +334,7 @@ html.intro-seen .cine-logo { display: none; }
   text-transform: uppercase;
 }
 @media (min-width: 1024px) {
-  .cine-title { font-size: clamp(4.6rem, min(8.4vw, 18.5svh), 16rem); }
+  .cine-title { font-size: clamp(4.4rem, min(7.6vw, 17svh), 15rem); }
 }
 /* Masque d'une ligne : marges pour les accents (Û) et le jambage du q italique. */
 .cine-line {
@@ -531,7 +524,7 @@ html:not(.intro-seen):has(.cine-hero) [data-nav] > nav { animation: nav-drop 1s 
 
 @media (prefers-reduced-motion: reduce) {
   .cine-logo { display: none; }
-  .cine-aperture, .cine-camera, .cine-char, .cine-enter, html:not(.intro-seen):has(.cine-hero) [data-nav] > nav { animation: none; }
+  .cine-aperture, .cine-char, .cine-enter, html:not(.intro-seen):has(.cine-hero) [data-nav] > nav { animation: none; }
   .hero-line > span, .hero-fade { animation: none; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }

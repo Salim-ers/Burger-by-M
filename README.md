@@ -136,6 +136,8 @@ L’accueil (`public/images/cinema/`), les visuels de frites et de milkshakes (`
 
 - `scripts/media/image-briefs.mjs` : direction artistique et prompts. `assets/generated/` : fichiers sources et `manifest.json` (modèle, prompt, références, version retenue, statut « à valider »).
 - `npm run media:generate -- --only hero-desktop --draft` juge un cadrage à bas coût, `--only hero-desktop --refine` le reprend en pleine définition, `npm run media:publish` produit les variantes web (AVIF + WebP par largeur pour l’accueil).
+- `scripts/media/retouch-logo.mjs` : pose le vrai logo sur le dos du cuisinier du hero, car les modèles déforment les petits textes. À relancer si le hero est régénéré.
+- La photo du hero reste immobile : une photo déplacée ou zoomée en continu perd sa netteté.
 - La clé `OPENAI_API_KEY` reste dans `.env.local` (non versionné). Ces scripts se lancent uniquement à la main : le site ne les appelle jamais, ni au build ni à la visite d’une page. **Ne pas déclarer la clé sur Vercel.**
 - Remplacer un visuel par une vraie photo : import depuis `/admin/menu`. Les migrations `0003` et `0004` n’écrasent jamais une image importée.
 - **Note Google** de l’accueil : valeur fixe dans `src/data/brand.ts`, à tenir à jour à la main. Le lien mène à l’URL des avis renseignée dans `/admin/settings` (sinon à la fiche Google Maps).
