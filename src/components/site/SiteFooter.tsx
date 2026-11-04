@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { FooterCta } from "./FooterCta";
 import { legalNav } from "@/data/navigation";
 import { brand, mapsLinks } from "@/data/brand";
 import { DAY_NAMES, DAY_ORDER, formatRanges } from "@/lib/schedule";
@@ -23,9 +24,7 @@ export function SiteFooter({ store, menu }: { store: PublicStore; menu: Pick<Men
             <Image src={brand.logo.src} alt="Logo Burger By M" width={96} height={96} className="size-20 rounded-full md:size-24" />
             <p className="s-m max-w-xs text-cream/90">Généreux par nature. Préparé à la commande, à {store.city}.</p>
           </div>
-          <Link href="/menu" className="t-label inline-flex h-14 items-center justify-center bg-cheddar px-10 text-ink transition-colors hover:bg-cream">
-            Commander
-          </Link>
+          <FooterCta />
         </div>
 
         <div className="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.45fr_1fr_1fr]">

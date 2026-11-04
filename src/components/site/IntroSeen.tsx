@@ -2,11 +2,13 @@
 
 import { useEffect } from "react";
 
-/** Après la première intro, elle ne se rejoue plus (même en revenant sur l'accueil sans recharger). */
+/**
+ * Une fois l'ouverture terminée, elle ne se rejoue plus, même en revenant sur l'accueil sans recharger.
+ * Le minuteur n'est pas annulé si l'on quitte la page avant la fin : il ne fait que poser une classe.
+ */
 export function IntroSeen() {
   useEffect(() => {
-    const id = window.setTimeout(() => document.documentElement.classList.add("intro-seen"), 1700);
-    return () => window.clearTimeout(id);
+    window.setTimeout(() => document.documentElement.classList.add("intro-seen"), 8000);
   }, []);
   return null;
 }

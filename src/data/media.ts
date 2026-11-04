@@ -5,6 +5,9 @@
  *  - products/*.webp     extraits des planches visuelles fournies (assets/sources/planche-*.webp) par
  *                        scripts/media/extract-product-photos.mjs : nom et composition incrustés retirés,
  *                        le texte est rendu en HTML. Un visuel = un produit (aucun réemploi trompeur).
+ *  - products/frites-*   créations générées (scripts/media/generate-images.mjs, assets/generated/manifest.json),
+ *                        à partir des vraies frites et barquettes du restaurant : à valider, jamais contractuelles.
+ *                        Les produits concernés restent marqués « Photo d'illustration ».
  *  - food/*.webp         photos réelles prises au restaurant (smash, chicken, Frenchy, shakes, plateau, frites).
  *  - restaurant/*.webp   devanture et terrasse réelles (19 avenue de la Gare).
  *  - editorial/*.webp    compositions dérivées (hero 16:9).
@@ -43,6 +46,12 @@ export const media = {
   smashy: img("/images/products/smashy.webp", 1760, 1174, "Frenchy Smashy : triple steak smash, cheddar, bacon et cornichons", "product"),
   leForestier: img("/images/products/le-forestier.webp", 1760, 1174, "Frenchy Le Forestier : filet de poulet crunch et sauce crème champignon", "product"),
 
+  // ---------------- Frites : une recette, un visuel (illustrations générées, à valider) ----------------
+  visuelFritesClassiques: img("/images/products/frites-classiques.webp", 2000, 1333, "Frites classiques dorées dans leur barquette (visuel d’illustration)", "product", "50% 52%"),
+  visuelFritesCheddar: img("/images/products/frites-cheddar.webp", 2000, 1333, "Frites nappées de cheddar fondu dans leur barquette (visuel d’illustration)", "product", "50% 52%"),
+  visuelFritesCheddarOignons: img("/images/products/frites-cheddar-oignons.webp", 2000, 1333, "Frites au cheddar fondu et aux oignons frits croustillants dans leur barquette (visuel d’illustration)", "product", "50% 52%"),
+  visuelFritesCheddarBacon: img("/images/products/frites-cheddar-bacon.webp", 2000, 1333, "Frites au cheddar fondu et aux éclats de bacon croustillant dans leur barquette (visuel d’illustration)", "product", "50% 52%"),
+
   // ---------------- Photos réelles du restaurant ----------------
   realSpecial: img("/images/food/smash-le-special.webp", 720, 1186, "Le Spécial servi au restaurant : cheddar fondu et oignons crispy", "photo", "50% 55%"),
   realSpicyChicken: img("/images/food/classic-spicy-chicken.webp", 720, 1186, "Spicy Chicken servi au restaurant, tenu à la main", "photo", "45% 58%"),
@@ -73,8 +82,8 @@ export type MediaKey = keyof typeof media;
 
 /**
  * Photo de chaque produit de la carte (product.slug → image).
- * Les frites utilisent les photos réelles du plateau : la variante cheddar & bacon n'a pas de photo dédiée
- * (le seed la marque needsFinalProductPhoto).
+ * Frites : quatre visuels d'illustration distincts, un par recette (le seed les marque needsFinalProductPhoto).
+ * Les photos réelles des frites restent dans la galerie, où elles ne présentent pas une recette précise.
  */
 export const productPhoto = {
   "smash-double": media.smashDouble,
@@ -92,9 +101,10 @@ export const productPhoto = {
   "le-hot": media.leHot,
   smashy: media.smashy,
   "le-forestier": media.leForestier,
-  "frites-classiques": media.fritesClassiques,
-  "frites-cheddar": media.fritesCheddarOignons,
-  "frites-cheddar-oignons": media.fritesCheddarOignons,
+  "frites-classiques": media.visuelFritesClassiques,
+  "frites-cheddar": media.visuelFritesCheddar,
+  "frites-cheddar-oignons": media.visuelFritesCheddarOignons,
+  "frites-cheddar-bacon": media.visuelFritesCheddarBacon,
   "dubai-shake": media.milkshakePistache,
   "milkshake-caramel": media.milkshakeCaramel,
 } satisfies Record<string, MediaImage>;
@@ -127,52 +137,3 @@ export const gallery: MediaImage[] = [
   media.fritesClassiques,
   media.realForestier,
 ];
-
-/**
- * Détourages (fond transparent) : `cutouts/` pour fonds clairs, `cutouts/dark/` décontaminés pour fonds sombres.
- * Dimensions réelles des fichiers (next/image).
- */
-const CUTOUT_DIMS: Record<string, [number, number]> = {
-  "bacon-crispy": [1324, 793],
-  "barbeuc": [1226, 761],
-  "chicken": [1169, 774],
-  "jalathai": [1174, 781],
-  "le-chevre-miel": [1651, 600],
-  "le-forestier": [1685, 666],
-  "le-hot": [1673, 622],
-  "le-montagnard": [1205, 993],
-  "le-special": [1273, 801],
-  "roquefort": [1284, 773],
-  "smash-double": [1144, 764],
-  "smash-tower": [1195, 855],
-  "smashy": [1703, 673],
-  "spicy-chicken": [1178, 1029],
-  "vegg": [1115, 930],
-  "dark/bacon-crispy": [1322, 790],
-  "dark/barbeuc": [1222, 753],
-  "dark/chicken": [1165, 769],
-  "dark/jalathai": [1171, 776],
-  "dark/le-chevre-miel": [1649, 596],
-  "dark/le-forestier": [1683, 662],
-  "dark/le-hot": [1671, 618],
-  "dark/le-montagnard": [1195, 991],
-  "dark/le-special": [1251, 781],
-  "dark/roquefort": [1281, 768],
-  "dark/smash-double": [1141, 757],
-  "dark/smash-tower": [1190, 848],
-  "dark/smashy": [1700, 669],
-  "dark/spicy-chicken": [1174, 1027],
-  "dark/vegg": [1112, 928],
-};
-
-export function cutout(slug: string, tone: "light" | "dark" = "light"): { src: string; width: number; height: number } | null {
-  const key = tone === "dark" ? `dark/${slug}` : slug;
-  const d = CUTOUT_DIMS[key];
-  return d ? { src: `/images/cutouts/${key}.webp`, width: d[0], height: d[1] } : null;
-}
-
-/** Détourage correspondant à un visuel produit de la carte (/images/products/<slug>.webp), s'il existe. */
-export function cutoutForImage(src: string | null | undefined, tone: "light" | "dark" = "light") {
-  const m = src?.match(/^\/images\/products\/([a-z0-9-]+)\.webp$/);
-  return m ? cutout(m[1]!, tone) : null;
-}

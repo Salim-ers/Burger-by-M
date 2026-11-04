@@ -4,10 +4,22 @@ import { useEffect, useRef, useState } from "react";
 import type { MenuCategory } from "@/features/menu/types";
 import { cn } from "@/lib/utils";
 
-/** Catégories collantes sous le header (défilement horizontal sur mobile), section visible suivie. */
+/**
+ * Catégories collantes sous la barre flottante (défilement horizontal sur mobile), section visible suivie.
+ * Une fois collées, une bande ivoire monte jusqu'en haut de l'écran : la carte ne défile pas autour de la barre.
+ */
 export function CategoryNav({ categories }: { categories: Pick<MenuCategory, "id" | "slug" | "name">[] }) {
   const [active, setActive] = useState(categories[0]?.slug ?? "");
   const navRef = useRef<HTMLDivElement>(null);
+  const sentinel = useRef<HTMLDivElement>(null);
+  const [stuck, setStuck] = useState(false);
+
+  useEffect(() => {
+    if (!sentinel.current) return;
+    const io = new IntersectionObserver(([e]) => setStuck(!e!.isIntersecting), { rootMargin: "-73px 0px 0px 0px" });
+    io.observe(sentinel.current);
+    return () => io.disconnect();
+  }, []);
 
   useEffect(() => {
     const sections = categories.map((c) => document.getElementById(`cat-${c.slug}`)).filter((el): el is HTMLElement => Boolean(el));
@@ -34,7 +46,15 @@ export function CategoryNav({ categories }: { categories: Pick<MenuCategory, "id
   }, [active]);
 
   return (
-    <nav aria-label="Catégories de la carte" className="sticky top-16 z-30 border-b border-rule bg-ivory/90 backdrop-blur-md">
+    <>
+      <div ref={sentinel} aria-hidden className="h-px bg-ivory" />
+      <nav
+        aria-label="Catégories de la carte"
+        className={cn(
+          "sticky top-[var(--nav-offset)] z-30 border-b border-rule bg-ivory before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:h-[var(--nav-offset)] before:bg-ivory before:transition-opacity before:duration-300",
+          stuck ? "before:opacity-100" : "before:opacity-0",
+        )}
+      >
       <div ref={navRef} className="no-scrollbar container-bm flex gap-1 overflow-x-auto">
         {categories.map((c) => (
           <a
@@ -51,6 +71,7 @@ export function CategoryNav({ categories }: { categories: Pick<MenuCategory, "id
           </a>
         ))}
       </div>
-    </nav>
+      </nav>
+    </>
   );
 }

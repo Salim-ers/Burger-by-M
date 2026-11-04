@@ -23,6 +23,8 @@
     "media:cutouts-dark": "node scripts/media/cutout-dark.mjs",
     "media:lineups": "node scripts/media/lineups.mjs",
     "media:icons": "node scripts/media/pwa-icons.mjs",
+    "media:generate": "node scripts/media/generate-images.mjs",
+    "media:publish": "node scripts/media/publish-generated.mjs",
     "vapid:generate": "web-push generate-vapid-keys"
   },
   "engines": {

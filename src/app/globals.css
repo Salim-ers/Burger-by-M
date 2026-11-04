@@ -31,14 +31,6 @@
 
   --ease-food: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-mask: cubic-bezier(0.77, 0, 0.18, 1);
-
-  --animate-marquee: marquee 70s linear infinite;
-  --animate-ticker: marquee 40s linear infinite;
-
-  @keyframes marquee {
-    from { transform: translate3d(0, 0, 0); }
-    to { transform: translate3d(-50%, 0, 0); }
-  }
 }
 
 @theme inline {
@@ -69,6 +61,8 @@
   --space-md: 2rem;
   --space-lg: 4.5rem;
   --space-xl: clamp(6rem, 12vw, 11rem);
+  /* Hauteur occupée par la navigation flottante (barre + marge haute). */
+  --nav-offset: 4.5rem;
 }
 
 /* Schémas : chaque section déclare le sien (le header s'adapte à la section qu'il survole). */
@@ -186,6 +180,13 @@
   max-width: var(--container);
   padding-inline: var(--gutter);
 }
+/* Séquences plein cadre de l'accueil : respire aussi sur les grands écrans. */
+@utility container-cine {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 2400px;
+  padding-inline: var(--gutter);
+}
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
@@ -201,7 +202,7 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-padding-top: 8.5rem;
+    scroll-padding-top: 9rem;
     background: var(--color-ink);
   }
   body {
@@ -246,7 +247,6 @@ html.lenis, html.lenis body { height: auto; }
   .mask-line > span { display: block; }
   .hero-line > span { animation: rise 1.15s var(--ease-food) both; animation-delay: calc(var(--intro-delay, 0s) + var(--i, 0) * 0.09s); }
   .hero-fade { animation: soft-in 0.9s var(--ease-food) both; animation-delay: calc(var(--intro-delay, 0s) + var(--d, 0.4s)); }
-  .hero-photo { animation: settle 1.8s var(--ease-food) both; animation-delay: calc(var(--intro-delay, 0s) * 0.5); }
 
   /* Pages légales */
   .legal-prose { font-size: 0.98rem; line-height: 1.75; color: var(--sub); }
@@ -265,34 +265,267 @@ html.lenis, html.lenis body { height: auto; }
 
 @keyframes rise { from { transform: translate3d(0, 108%, 0); } to { transform: none; } }
 @keyframes soft-in { from { opacity: 0; transform: translate3d(0, 14px, 0); } to { opacity: 1; transform: none; } }
-@keyframes settle { from { transform: scale(1.04); } to { transform: scale(1); } }
 @keyframes cart-bump { 0% { transform: scale(1); } 35% { transform: scale(1.35); } 100% { transform: scale(1); } }
 
-/* ---------- Intro (accueil, ~1,6 s, une fois par session ; CSS pur : aucun blocage si JS échoue) ---------- */
-@keyframes intro-draw { to { stroke-dashoffset: 0; } }
-@keyframes intro-word { from { opacity: 0; transform: translate3d(0, 35%, 0); } to { opacity: 1; transform: none; } }
-@keyframes intro-open { from { clip-path: circle(75% at 50% 50%); } to { clip-path: circle(0% at 50% 50%); } }
-@keyframes intro-gone { to { visibility: hidden; } }
-.intro {
-  position: fixed;
+/* ---------- Accueil : ouverture du hero ----------
+   Entièrement en CSS : ne dépend pas du JavaScript, ne bloque ni le défilement ni les clics.
+   Première visite de la session : le logo sur le noir, puis le cadre s'ouvre.
+   Visites suivantes (html.intro-seen) : le cadre s'ouvre directement. */
+.cine-hero { --t0: 0.78s; }
+html.intro-seen .cine-hero { --t0: 0s; }
+
+.cine-logo {
+  position: absolute;
   inset: 0;
-  z-index: 200;
+  z-index: 5;
   display: grid;
   place-items: center;
-  background: var(--color-ink);
-  color: var(--color-cream);
   pointer-events: none;
-  animation: intro-open 0.7s var(--ease-mask) 0.9s both, intro-gone 0s linear 1.62s both;
+  animation: cine-logo 1.5s ease-out both;
 }
-.intro circle { stroke-dasharray: 1; stroke-dashoffset: 1; animation: intro-draw 0.75s var(--ease-mask) 0.05s forwards; }
-.intro .intro-word { animation: intro-word 0.5s var(--ease-food) both; }
-html.intro-seen .intro { display: none; }
-/* Le hero attend la fin de l'intro… sauf si elle a déjà été vue dans la session. */
-[data-intro-delay] { --intro-delay: 1.05s; }
-html.intro-seen [data-intro-delay] { --intro-delay: 0s; }
+html.intro-seen .cine-logo { display: none; }
+@keyframes cine-logo {
+  0% { opacity: 0; transform: scale(0.95); }
+  34% { opacity: 1; transform: scale(1); }
+  58% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.03); }
+}
+
+/* Le cadre s'ouvre depuis une fente horizontale : le même geste que la transition entre pages. */
+.cine-aperture { animation: cine-open 1.4s var(--ease-mask) var(--t0) both; }
+@keyframes cine-open {
+  from { clip-path: inset(49.7% 0 49.7% 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+/* La caméra finit de se poser, très lentement. */
+.cine-camera { animation: cine-camera 7s cubic-bezier(0.12, 0.8, 0.2, 1) var(--t0) both; }
+@keyframes cine-camera {
+  from { transform: scale(1.075); }
+  to { transform: scale(1); }
+}
+
+/* Dégradés de lecture : le bas se fond exactement dans le noir de la section suivante. */
+.cine-shade {
+  background:
+    linear-gradient(to top, rgb(10 10 10) 0%, rgb(10 10 10 / 0.74) 22%, rgb(10 10 10 / 0.18) 46%, transparent 62%),
+    linear-gradient(to bottom, rgb(10 10 10 / 0.42) 0%, transparent 18%);
+}
+
+/* Portrait : la photo remonte pour que le titre se pose sous le burger, sur le comptoir. */
+@media (orientation: portrait) {
+  [data-hero-pointer] { top: -8%; bottom: 9%; }
+  .cine-shade {
+    background:
+      linear-gradient(to top, rgb(10 10 10) 0%, rgb(10 10 10) 10%, rgb(10 10 10 / 0.78) 30%, rgb(10 10 10 / 0.2) 50%, transparent 64%),
+      linear-gradient(to bottom, rgb(10 10 10 / 0.42) 0%, transparent 18%);
+  }
+}
+/* Très petits écrans : le titre et les boutons d'abord (la phrase reste lue par les lecteurs d'écran dans le titre). */
+@media (orientation: portrait) and (max-height: 620px) {
+  .cine-sentence { display: none; }
+}
+
+.cine-title {
+  color: var(--color-cream);
+  font-family: var(--font-display);
+  font-size: clamp(3.4rem, min(18.4vw, 15svh), 9rem);
+  line-height: 0.92;
+  text-transform: uppercase;
+}
+@media (min-width: 1024px) {
+  .cine-title { font-size: clamp(5.4rem, min(10.8vw, 23svh), 19rem); }
+}
+/* Masque d'une ligne : marges pour les accents (Û) et le jambage du q italique. */
+.cine-line {
+  display: block;
+  overflow: hidden;
+  padding-top: 0.16em;
+  margin-top: -0.16em;
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+  white-space: nowrap;
+}
+.cine-signature {
+  font-family: var(--font-serif);
+  font-size: 1.14em;
+  font-style: italic;
+  letter-spacing: -0.015em;
+  line-height: 0;
+  padding-right: 0.06em;
+  text-transform: none;
+}
+.cine-signature .cine-char { line-height: 0.9; }
+.cine-char {
+  display: inline-block;
+  transform-origin: 0 100%;
+  animation: cine-rise 1.1s var(--ease-food) both;
+  animation-delay: calc(var(--t0) + 0.4s + var(--c, 0) * 24ms);
+}
+@keyframes cine-rise {
+  from { transform: translate3d(0, 150%, 0) rotate(3deg); }
+  to { transform: none; }
+}
+.cine-enter { animation: soft-in 1s var(--ease-food) both; animation-delay: calc(var(--t0) + 1.05s); }
+
+/* Première visite : la navigation entre dans la composition avec le titre. */
+html:not(.intro-seen):has(.cine-hero) [data-nav] > nav { animation: nav-drop 1s var(--ease-food) 1.35s both; }
+@keyframes nav-drop {
+  from { opacity: 0; transform: translate3d(0, -130%, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Boutons de l'accueil ---------- */
+.cta {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 3.5rem;
+  padding-left: 1.4rem;
+  padding-right: 0.4rem;
+  overflow: hidden;
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: 0.86rem;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: transform 0.5s var(--ease-food), color 0.35s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.cta:active { transform: scale(0.975); }
+.cta-solid { background: var(--color-cheddar); color: var(--color-ink); }
+.cta-glass {
+  background: rgb(18 14 11 / 0.45);
+  box-shadow: inset 0 0 0 1px rgb(241 234 223 / 0.3);
+  color: var(--color-cream);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.cta-label { position: relative; z-index: 1; display: inline-block; overflow: hidden; line-height: 1.35; }
+.cta-label > span, .cta-label::after { display: block; transition: transform 0.6s var(--ease-food); }
+.cta-label::after { content: attr(data-text) / ""; position: absolute; top: 100%; left: 0; }
+.cta-disc {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.7rem;
+  height: 2.7rem;
+  color: var(--color-ink);
+}
+/* Le disque s'étend jusqu'à remplir le bouton (crème dans les deux cas). */
+.cta-disc::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: 50%;
+  background: var(--color-cream);
+  transition: transform 0.75s var(--ease-food);
+}
+.cta-arrow { display: flex; width: 1rem; overflow: hidden; }
+.cta-arrow > svg { flex: none; transform: translateX(-100%); transition: transform 0.6s var(--ease-food); }
+@media (hover: hover) {
+  .cta:hover .cta-disc::before, .cta:focus-visible .cta-disc::before { transform: scale(9); }
+  .cta:hover .cta-label > span, .cta:hover .cta-label::after, .cta:focus-visible .cta-label > span, .cta:focus-visible .cta-label::after { transform: translateY(-100%); }
+  .cta:hover .cta-arrow > svg, .cta:focus-visible .cta-arrow > svg { transform: translateX(0); }
+  .cta-glass:hover, .cta-glass:focus-visible { color: var(--color-ink); }
+}
+
+/* Très grands écrans : les boutons et la phrase suivent l'échelle du titre. */
+@media (min-width: 1800px) {
+  .cta { height: 4.25rem; padding-left: 1.8rem; padding-right: 0.5rem; font-size: 1.05rem; gap: 1.4rem; }
+  .cta-disc { width: 3.25rem; height: 3.25rem; }
+}
+
+.quiet-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 2.75rem;
+  color: var(--color-cream);
+  font-size: 0.98rem;
+  font-weight: 600;
+}
+.quiet-link-text {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  padding-bottom: 2px;
+  transition: background-size 0.6s var(--ease-food);
+}
+.quiet-link > svg { transition: transform 0.6s var(--ease-food); }
+@media (hover: hover) {
+  .quiet-link:hover .quiet-link-text { background-size: 100% 1px; }
+  .quiet-link:hover > svg { transform: translateX(5px); }
+}
+
+/* Le mot est le bouton : la seule grande surface cheddar du site. */
+.final-cta {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.14em;
+  width: 100%;
+  overflow: hidden;
+  padding: 0.1em 0.24em 0.08em;
+  border-radius: clamp(1rem, 2.2vw, 2.25rem);
+  background: var(--color-cheddar);
+  color: var(--color-ink);
+  font-family: var(--font-display);
+  font-size: clamp(2.9rem, 14.8vw, 26rem);
+  line-height: 1.08;
+  text-transform: uppercase;
+  transition: transform 0.6s var(--ease-food), color 0.4s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.final-cta:active { transform: scale(0.99); }
+.final-cta::before {
+  content: "";
+  position: absolute;
+  top: var(--y, 50%);
+  left: var(--x, 50%);
+  z-index: -1;
+  width: 260%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--color-cream);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 1s var(--ease-food);
+}
+.final-cta-arrow { flex: none; width: 0.6em; height: 0.6em; transition: transform 0.9s var(--ease-food); }
+.final-cta-closed { background: transparent; box-shadow: inset 0 0 0 1px rgb(241 234 223 / 0.25); color: var(--color-cream); }
+@media (hover: hover) {
+  .final-cta:hover::before, .final-cta:focus-visible::before { transform: translate(-50%, -50%) scale(1); }
+  .final-cta:hover .final-cta-arrow { transform: translateX(0.05em); }
+  .final-cta-closed:hover { color: var(--color-ink); }
+}
+
+/* ---------- Menu mobile : s'ouvre depuis le bouton, dans la barre flottante ---------- */
+.nav-sheet {
+  clip-path: circle(0 at calc(100% - 2.1rem) 2.5rem);
+  visibility: hidden;
+  transition: clip-path 0.75s var(--ease-mask), visibility 0s linear 0.75s;
+}
+.nav-sheet[data-open="true"] {
+  clip-path: circle(150vmax at calc(100% - 2.1rem) 2.5rem);
+  visibility: visible;
+  transition: clip-path 0.75s var(--ease-mask), visibility 0s;
+}
+.nav-sheet-item { opacity: 0; transform: translate3d(0, 1.5rem, 0); transition: opacity 0.25s ease, transform 0.25s ease; }
+.nav-sheet[data-open="true"] .nav-sheet-item {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.7s var(--ease-food), transform 0.9s var(--ease-food);
+  transition-delay: calc(0.18s + var(--i, 0) * 55ms);
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .intro { display: none; }
-  .hero-line > span, .hero-fade, .hero-photo { animation: none; }
+  .cine-logo { display: none; }
+  .cine-aperture, .cine-camera, .cine-char, .cine-enter, html:not(.intro-seen):has(.cine-hero) [data-nav] > nav { animation: none; }
+  .hero-line > span, .hero-fade { animation: none; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }

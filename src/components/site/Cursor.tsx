@@ -7,13 +7,13 @@ import { cn } from "@/lib/utils";
 const LABELS: Record<string, string> = { add: "Ajouter", view: "Voir", open: "Ouvrir", drag: "Glisser" };
 
 /**
- * Curseur desktop léger : point qui suit la souris, cercle sur les liens, étiquette sur les produits
- * (« AJOUTER »), les photos (« VOIR ») et la galerie (« OUVRIR ») via data-cursor. Le curseur natif reste visible.
+ * Étiquette qui suit la souris, uniquement là où elle informe : produits (« AJOUTER »), photos (« VOIR »)
+ * et galerie (« OUVRIR »), via data-cursor. Ailleurs, rien : seul le curseur natif reste visible.
  */
 export function Cursor() {
   const ref = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(false);
-  const [mode, setMode] = useState<"idle" | "link" | string>("idle");
+  const [mode, setMode] = useState<string>("idle");
 
   useEffect(() => {
     if (!finePointer() || reducedMotion()) return;
@@ -24,7 +24,7 @@ export function Cursor() {
       y = e.clientY;
       const t = e.target as HTMLElement | null;
       const labelled = t?.closest<HTMLElement>("[data-cursor]");
-      setMode(labelled ? (labelled.dataset.cursor ?? "link") : t?.closest("a,button,[role=button],label,select") ? "link" : "idle");
+      setMode(labelled?.dataset.cursor ?? "idle");
     };
     const loop = () => {
       cx += (x - cx) * 0.22;
@@ -50,8 +50,7 @@ export function Cursor() {
       <div
         className={cn(
           "grid -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full transition-[width,height,background-color,border-color,opacity] duration-300 ease-[var(--ease-food)]",
-          label ? "size-20 bg-cheddar text-ink" : mode === "link" ? "size-10 border border-cheddar bg-cheddar/10" : "size-2.5 bg-cheddar",
-          mode === "hidden" && "opacity-0",
+          label ? "size-20 bg-cheddar text-ink" : "size-2.5 bg-cheddar opacity-0",
         )}
       >
         {label && <span className="t-label text-[0.58rem] tracking-[0.18em]">{label}</span>}

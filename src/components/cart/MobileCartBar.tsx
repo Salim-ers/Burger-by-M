@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCart, useUi, cartCount } from "@/features/cart/store";
 import { checkCart } from "@/features/cart/lines";
@@ -14,8 +13,8 @@ import { cn } from "@/lib/utils";
 
 /**
  * Barre collante mobile : « VOIR LE PANIER — 24,80 € » quand le panier existe,
- * sinon « COMMANDER » toujours accessible (sauf sur la carte, déjà affichée ; sur l'accueil, une fois le hero passé,
- * qui a déjà ses propres boutons).
+ * sinon « COMMANDER » toujours accessible (sauf sur la carte, déjà affichée, et sur l'accueil,
+ * où la barre flottante et la dernière séquence y pourvoient : les photographies restent dégagées).
  */
 export function MobileCartBar() {
   const pathname = usePathname();
@@ -26,10 +25,8 @@ export function MobileCartBar() {
   const notice = useOrderingNotice();
   const count = hydrated ? cartCount(lines) : 0;
   const hidden = pathname.startsWith("/checkout") || pathname.startsWith("/commande/") || pathname.startsWith("/legal");
-  const mode = hidden || !hydrated ? null : count > 0 ? "cart" : pathname === "/menu" ? null : "order";
+  const visible = hidden || !hydrated ? null : count > 0 ? "cart" : pathname === "/menu" || pathname === "/" ? null : "order";
   const total = count > 0 ? checkCart(lines, products).subtotalCents : 0;
-  const pastHero = usePastHero(pathname === "/");
-  const visible = mode === "order" && pathname === "/" && !pastHero ? null : mode;
 
   return (
     <AnimatePresence>
@@ -62,17 +59,4 @@ export function MobileCartBar() {
       )}
     </AnimatePresence>
   );
-}
-
-/** true une fois le hero de l'accueil (≈ un écran) dépassé. */
-function usePastHero(active: boolean) {
-  const [past, setPast] = useState(false);
-  useEffect(() => {
-    if (!active) return;
-    const onScroll = () => setPast(window.scrollY > window.innerHeight * 0.9);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [active]);
-  return active && past;
 }

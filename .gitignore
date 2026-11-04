@@ -12,3 +12,6 @@ next-env.d.ts
 .data
 /test-results
 /playwright-report
+
+# Brouillons de génération d'images (les versions retenues sont versionnées)
+/assets/generated/_drafts

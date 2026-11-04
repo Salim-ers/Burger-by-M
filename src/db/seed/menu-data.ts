@@ -221,7 +221,7 @@ export const PRODUCTS: SeedProduct[] = [
   { slug: "frites-classiques", category: "frites", name: "Frites classiques", priceCents: null, ingredients: [], groups: [], photo: "frites-classiques", needsFinalProductPhoto: true },
   { slug: "frites-cheddar", category: "frites", name: "Frites cheddar", priceCents: null, ingredients: [], groups: [], photo: "frites-cheddar", needsFinalProductPhoto: true },
   { slug: "frites-cheddar-oignons-frits", category: "frites", name: "Frites cheddar & oignons frits", priceCents: null, ingredients: [], groups: [], photo: "frites-cheddar-oignons", needsFinalProductPhoto: true },
-  { slug: "frites-cheddar-bacon", category: "frites", name: "Frites cheddar & bacon", priceCents: null, ingredients: [], groups: [], photo: "frites-cheddar", needsFinalProductPhoto: true },
+  { slug: "frites-cheddar-bacon", category: "frites", name: "Frites cheddar & bacon", priceCents: null, ingredients: [], groups: [], photo: "frites-cheddar-bacon", needsFinalProductPhoto: true },
 
   // ---------------- EXTRAS (×3 4,00 € / ×6 6,00 €) ----------------
   ...["Mozza sticks", "Nuggets", "Camembert crispy", "Chili cheese"].map<SeedProduct>((name) => ({

@@ -2,7 +2,7 @@
 
 Site officiel de **Burger By M** (SAS, SIRET 937 935 609 00027), 19 avenue de la Gare, 60290 Rantigny — 03 44 24 89 18.
 
-- **Site public V3** « luxury street food » : intro, hero monumental, burger qui se construit au défilement, signatures, Frenchy’s, milkshakes, restaurant, galerie, carte avec fiche produit personnalisable, pages légales.
+- **Site public** : accueil cinématographique en quatre séquences (hero, plancha, table, commande), navigation flottante, carte avec fiche produit personnalisable, restaurant, galerie, pages légales.
 - **Commande invitée** (aucun compte client) : panier, créneau de retrait, coordonnées, paiement en ligne **Mollie** (montant réservé, encaissé à l’acceptation) ou au retrait, suivi en direct `/commande/M1042`.
 - **Back-office** `/admin` : tableau de bord, **écran cuisine installable (PWA)** `/admin/cuisine` (ACCEPTER / REFUSER, son, notifications, écran maintenu allumé), commandes et remboursements, carte (prix, photos, options, ruptures), horaires, réglages, **mode coup de feu**, **commandes online ON/OFF**.
 
@@ -49,6 +49,7 @@ Sans `MOLLIE_API_KEY`, seul le paiement au retrait est proposé ; sans clés VAP
 | `npm run admin:create -- --email … --name … --role owner\|staff` | Crée ou réinitialise un compte de l’équipe (mot de passe demandé, ou `ADMIN_PASSWORD`) |
 | `npm run vapid:generate` | Génère la paire de clés Web Push |
 | `npm run media:products` / `media:cutouts` / `media:cutouts-dark` / `media:lineups` / `media:icons` | Régénère les visuels produits, les détourages (fonds clairs / fonds sombres), les compositions éditoriales, les icônes PWA |
+| `npm run media:generate -- --list` / `media:publish` | Génère à la main un visuel via l’API d’images OpenAI / publie les versions retenues pour le web (voir § 7) |
 
 Tests E2E : `PW_CHANNEL=chrome E2E_OWNER_EMAIL=… E2E_OWNER_PASSWORD=… npm run test:e2e` (créer d’abord le compte avec `admin:create`).
 
@@ -124,13 +125,23 @@ Paiement (`payment_status`) : `pending`, `authorized` (montant réservé), `paid
 Toutes les images passent par [src/data/media.ts](src/data/media.ts) (banque unique). Sources originales des visuels fournis : `assets/sources/` (WebP sans perte).
 
 - `public/images/products/` : visuels de la carte extraits des planches (`npm run media:products`), texte incrusté retiré — le texte est en HTML.
-- `public/images/cutouts/` : versions détourées pour fonds clairs ; `cutouts/dark/` : versions décontaminées pour fonds sombres (hero, construction du burger).
+- `public/images/cutouts/` : versions détourées pour fonds clairs ; `cutouts/dark/` : versions décontaminées pour fonds sombres. Servent aux compositions de `editorial/`, plus affichées directement.
 - `public/images/editorial/` : compositions réalisées à partir des vrais visuels produits (alignements 2400×1350). Aucune source 3840×2160 n’existe dans le projet (les plus grandes font ~1800 px) : pour des plans larges en très haute définition, fournir de nouvelles photos.
 - `public/images/food/`, `restaurant/` : photos réelles.
 - Un produit dont la photo n’est pas exactement le produit porte `needsFinalProductPhoto` → mention « Photo d’illustration » sur le site (frites, milkshake à composer). À remplacer par de vraies photos depuis `/admin/menu` (import → WebP stocké en base, servi par `/media/…`).
 
+### Visuels générés (accueil et frites)
+
+L’accueil (`public/images/cinema/`) et les quatre visuels de frites (`public/images/products/frites-*.webp`) sont des **créations générées** via l’API d’images OpenAI, à partir des vraies photos du restaurant (recette, barquettes, papier, table). Ce ne sont pas des photos du restaurant : le site les présente comme des visuels d’ambiance ou d’illustration, jamais comme contractuels.
+
+- `scripts/media/image-briefs.mjs` : direction artistique et prompts. `assets/generated/` : fichiers sources et `manifest.json` (modèle, prompt, références, version retenue, statut « à valider »).
+- `npm run media:generate -- --only hero-desktop --draft` juge un cadrage à bas coût, `--only hero-desktop --refine` le reprend en pleine définition, `npm run media:publish` produit les variantes web (AVIF + WebP par largeur pour l’accueil).
+- La clé `OPENAI_API_KEY` reste dans `.env.local` (non versionné). Ces scripts se lancent uniquement à la main : le site ne les appelle jamais, ni au build ni à la visite d’une page. **Ne pas déclarer la clé sur Vercel.**
+- Remplacer un visuel de frites par une vraie photo : import depuis `/admin/menu`, puis retirer « Photo d’illustration » dans la fiche du produit. La migration `0003_visuels_frites` n’écrase jamais une image importée.
+
 ## 8. À compléter avant la mise en ligne publique
 
+- **Visuels générés** : les valider (voir § 7). Dès que possible, photographier les frites et remplacer les illustrations.
 - **Prix des frites** : non lisibles sur la carte fournie → produits visibles mais non commandables tant que le prix n’est pas saisi dans `/admin/menu` (aucun prix inventé).
 - **Allergènes** : non communiqués → le site indique « liste disponible au restaurant ». Les renseigner produit par produit dans `/admin/menu`.
 - **Mentions légales** ([src/data/legal.ts](src/data/legal.ts)) : capital social, ville du RCS, n° de TVA, directeur·rice de la publication, **médiateur de la consommation** (obligatoire pour la vente en ligne aux consommateurs). Les lignes vides ne sont pas affichées.

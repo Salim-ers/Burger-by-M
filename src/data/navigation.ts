@@ -1,12 +1,10 @@
-/** Navigation principale (header) : la carte, les signatures, le restaurant. */
+/** Navigation principale (barre flottante et menu mobile). */
 export const mainNav = [
+  { href: "/", label: "Accueil" },
   { href: "/menu", label: "La carte" },
-  { href: "/#signatures", label: "Nos signatures" },
   { href: "/restaurant", label: "Le restaurant" },
+  { href: "/galerie", label: "Galerie" },
 ] as const;
-
-/** Pages secondaires (menu mobile, pied de page). */
-export const secondaryNav = [{ href: "/galerie", label: "Galerie" }] as const;
 
 export const legalNav = [
   { href: "/legal/mentions-legales", label: "Mentions légales" },

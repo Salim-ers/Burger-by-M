@@ -33,7 +33,7 @@ export function MotionProvider({ children }: { children: React.ReactNode }) {
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
       syncTouch: false,
-      anchors: { offset: -120 },
+      anchors: { offset: -136 },
       // Les zones défilantes des fenêtres (panier, fiche produit…) gardent le défilement natif.
       prevent: (node) => Boolean(node.closest("[data-lenis-prevent], [role=dialog]")),
     });

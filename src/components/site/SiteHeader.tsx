@@ -3,50 +3,74 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ShoppingBag } from "lucide-react";
+import { lockSmoothScroll } from "@/components/motion/MotionProvider";
 import { useCart, useUi, cartCount } from "@/features/cart/store";
 import { useSite } from "@/features/site-context";
 import { useOpeningStatus, useOrderingNotice } from "@/features/store/use-status";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { brand } from "@/data/brand";
-import { mainNav, secondaryNav } from "@/data/navigation";
-import { formatHour } from "@/lib/schedule";
+import { mainNav } from "@/data/navigation";
 import { cn } from "@/lib/utils";
 
-type Theme = "dark" | "light";
+const isActive = (href: string, pathname: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-/** Thème de la section sous le header (data-theme), relu au défilement. */
-function useSectionTheme(pathname: string): Theme {
-  const [theme, setTheme] = useState<Theme>("dark");
-  useEffect(() => {
-    let raf = 0;
-    const read = () => {
-      raf = 0;
-      let t: Theme = "light";
-      for (const el of document.querySelectorAll<HTMLElement>("[data-theme]")) {
-        const r = el.getBoundingClientRect();
-        if (r.top <= 36 && r.bottom > 36) t = el.dataset.theme === "dark" ? "dark" : "light";
-      }
-      setTheme(t);
-    };
-    const onScroll = () => {
-      if (!raf) raf = requestAnimationFrame(read);
-    };
-    read();
-    const late = window.setTimeout(read, 200);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.clearTimeout(late);
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [pathname]);
-  return theme;
+/**
+ * Liens du bureau : un seul halo repose sur la page courante, glisse vers le lien survolé et revient.
+ * Rien d'autre : pas de soulignement, pas de décoration.
+ */
+function DesktopLinks({ pathname }: { pathname: string }) {
+  const list = useRef<HTMLUListElement>(null);
+  const [halo, setHalo] = useState<{ x: number; w: number } | null>(null);
+
+  const moveTo = useCallback((el: HTMLElement | null) => {
+    const item = el?.closest("li");
+    setHalo(item ? { x: item.offsetLeft, w: item.offsetWidth } : null);
+  }, []);
+  const rest = useCallback(() => {
+    moveTo(list.current?.querySelector<HTMLElement>("[aria-current=page]") ?? null);
+  }, [moveTo]);
+
+  useIsoLayoutEffect(() => {
+    rest();
+    // Les polices et le changement de taille de la barre déplacent les liens.
+    const el = list.current;
+    if (!el) return;
+    const ro = new ResizeObserver(rest);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [pathname, rest]);
+
+  return (
+    <ul ref={list} onPointerLeave={rest} onBlur={rest} className="relative hidden items-center lg:flex">
+      <span
+        aria-hidden
+        className={cn("absolute inset-y-0 left-0 rounded-full bg-white/[0.09] transition-[transform,width,opacity] duration-500 ease-[var(--ease-food)]", halo ? "opacity-100" : "opacity-0")}
+        style={halo ? { width: halo.w, transform: `translateX(${halo.x}px)` } : undefined}
+      />
+      {mainNav.map((item) => {
+        const active = isActive(item.href, pathname);
+        return (
+          <li key={item.href} className="relative">
+            <Link
+              href={item.href}
+              aria-current={active ? "page" : undefined}
+              onPointerEnter={(e) => moveTo(e.currentTarget)}
+              onFocus={(e) => moveTo(e.currentTarget)}
+              className={cn("block rounded-full px-4 py-2.5 text-[0.8rem] font-semibold tracking-[0.01em] transition-colors duration-300", active ? "text-cream" : "text-cream/65 hover:text-cream")}
+            >
+              {item.label}
+            </Link>
+          </li>
+        );
+      })}
+    </ul>
+  );
 }
 
-/** Header : transparent sur le hero, compact au défilement, couleur adaptée à la section survolée. */
+/** Navigation flottante : détachée du haut de la fenêtre, toujours accessible, sombre sur toutes les pages. */
 export function SiteHeader() {
   const pathname = usePathname();
   const hydrated = useHydrated();
@@ -56,14 +80,13 @@ export function SiteHeader() {
   const { store } = useSite();
   const status = useOpeningStatus();
   const notice = useOrderingNotice();
-  const theme = useSectionTheme(pathname);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const count = hydrated ? cartCount(lines) : 0;
-  const dark = menuOpen || theme === "dark";
+  const compact = scrolled || menuOpen;
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => setScrolled(window.scrollY > 48);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -71,12 +94,20 @@ export function SiteHeader() {
   useEffect(() => setMenuOpen(false), [pathname]);
   useEffect(() => {
     if (!menuOpen) return;
+    const behind = document.querySelectorAll<HTMLElement>("main, footer");
     document.documentElement.style.overflow = "hidden";
+    lockSmoothScroll(true);
+    behind.forEach((el) => (el.inert = true));
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
+    const onResize = () => window.innerWidth >= 1024 && setMenuOpen(false);
     window.addEventListener("keydown", onKey);
+    window.addEventListener("resize", onResize);
     return () => {
       document.documentElement.style.overflow = "";
+      lockSmoothScroll(false);
+      behind.forEach((el) => (el.inert = false));
       window.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onResize);
     };
   }, [menuOpen]);
 
@@ -84,97 +115,108 @@ export function SiteHeader() {
 
   return (
     <>
-      <header
-        className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,color] duration-500 ease-[var(--ease-food)]",
-          dark ? "on-dark" : "on-light",
-          scrolled && !menuOpen ? (dark ? "border-b border-white/10 bg-ink/72 backdrop-blur-md" : "border-b border-ink/10 bg-ivory/82 backdrop-blur-md") : "border-b border-transparent bg-transparent",
-        )}
-      >
-        <nav aria-label="Navigation principale" className={cn("container-bm flex items-center gap-6 transition-[height] duration-500", scrolled ? "h-16" : "h-[4.5rem] md:h-24")}>
-          <Link href="/" className="flex shrink-0 items-center gap-3" aria-label={`${store.name} — accueil`}>
-            <Image src={brand.logo.src} alt="" width={44} height={44} preload className={cn("rounded-full transition-[width,height] duration-500", scrolled ? "size-9" : "size-10 md:size-11")} />
-            <span className="hidden text-[1.05rem] leading-none sm:inline">
-              <span className="font-display tracking-[0.06em]">BURGER</span> <span className="font-serif text-[1.2rem] italic">by M</span>
-            </span>
+      <header data-nav className={cn("pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-3 transition-[padding] duration-500 ease-[var(--ease-food)]", scrolled ? "pt-2.5" : "pt-3 md:pt-5")}>
+        <nav
+          aria-label="Navigation principale"
+          className={cn(
+            "on-dark pointer-events-auto flex w-full items-center justify-between rounded-full border border-white/10 pr-1.5 pl-1.5 text-cream backdrop-blur-xl backdrop-saturate-150 lg:grid lg:grid-cols-[1fr_auto_1fr]",
+            "shadow-[0_18px_50px_-18px_rgb(0_0_0/0.65),inset_0_1px_0_rgb(255_255_255/0.08)] transition-[max-width,height,background-color] duration-500 ease-[var(--ease-food)]",
+            compact ? "h-14 max-w-[60rem]" : "h-[3.75rem] max-w-[68rem]",
+            pathname !== "/" ? "bg-[rgb(18_14_11/0.93)]" : compact ? "bg-[rgb(18_14_11/0.82)]" : "bg-[rgb(18_14_11/0.58)]",
+          )}
+        >
+          <Link href="/" className="group flex w-fit shrink-0 items-center rounded-full" aria-label={`${store.name} — accueil`}>
+            <Image src={brand.logo.src} alt="" width={48} height={48} preload sizes="48px" className={cn("rounded-full transition-[width,height,transform] duration-500 ease-[var(--ease-food)] group-hover:rotate-[-6deg]", compact ? "size-11" : "size-12")} />
           </Link>
 
-          <ul className="ml-auto hidden items-center gap-8 lg:flex">
-            {mainNav.map((item) => {
-              const active = item.href === "/menu" ? pathname.startsWith("/menu") : item.href === "/restaurant" ? pathname.startsWith("/restaurant") : false;
-              return (
-                <li key={item.href}>
-                  <Link href={item.href} aria-current={active ? "page" : undefined} className="group t-label relative py-2">
-                    {item.label}
-                    <span className={cn("absolute -bottom-0.5 left-0 h-px w-full origin-left bg-cheddar transition-transform duration-500 ease-[var(--ease-food)]", active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100")} />
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <DesktopLinks pathname={pathname} />
 
-          <div className="ml-auto flex items-center gap-2 lg:ml-4">
-            {statusLabel && (
-              <p className="t-label hidden items-center gap-2 xl:flex">
-                <span aria-hidden className={cn("size-1.5 rounded-full", status.ready && status.isOpen ? "bg-open" : "bg-closed")} />
-                {statusLabel}
-                {status.ready && status.isOpen && status.closesAt && <span className="text-sub">· jusqu’à {formatHour(status.closesAt)}</span>}
-              </p>
-            )}
-            <button type="button" data-cart-target onClick={() => setCartOpen(true)} aria-label={`Panier, ${count} article${count > 1 ? "s" : ""}`} className="t-label relative flex h-11 items-center gap-2 px-3">
-              <span className="hidden md:inline">Panier</span>
-              <span key={bump} className={cn("grid h-6 min-w-6 place-items-center rounded-full px-1.5 text-[0.65rem] tabular-nums", count > 0 ? "animate-[cart-bump_0.5s_var(--ease-food)] bg-cheddar text-ink" : dark ? "bg-white/12" : "bg-ink/8")}>
-                {count}
-              </span>
+          <div className="flex items-center justify-end gap-1">
+            <button
+              type="button"
+              data-cart-target
+              onClick={() => setCartOpen(true)}
+              aria-label={`Panier, ${count} article${count > 1 ? "s" : ""}`}
+              className="relative grid size-11 place-items-center rounded-full transition-colors duration-300 hover:bg-white/[0.09]"
+            >
+              <ShoppingBag aria-hidden className="size-[1.15rem]" strokeWidth={1.75} />
+              {count > 0 && (
+                <span key={bump} className="absolute top-0.5 right-0.5 grid h-[1.15rem] min-w-[1.15rem] animate-[cart-bump_0.5s_var(--ease-food)] place-items-center rounded-full bg-cheddar px-1 text-[0.62rem] font-bold text-ink tabular-nums">
+                  {count}
+                </span>
+              )}
             </button>
+
             <Link
               href="/menu"
               className={cn(
-                "t-label hidden h-11 items-center px-5 transition-colors duration-300 sm:inline-flex",
-                notice ? "border border-current/30 text-sub" : dark ? "bg-cream text-ink hover:bg-cheddar" : "bg-ink text-cream hover:bg-cheddar hover:text-ink",
+                "nav-cta inline-flex h-11 items-center rounded-full px-4 text-[0.74rem] font-bold tracking-[0.02em] transition-colors duration-300 sm:px-5",
+                notice ? "border border-white/20 text-cream/70 hover:text-cream" : "bg-cheddar text-ink hover:bg-cream",
               )}
             >
-              {notice ? "Commandes fermées" : "Commander"}
+              {notice ? (
+                <>
+                  <span className="sm:hidden">La carte</span>
+                  <span className="hidden sm:inline">Commandes fermées</span>
+                </>
+              ) : (
+                "Commander"
+              )}
             </Link>
-            <button type="button" className="relative grid size-11 place-items-center lg:hidden" aria-expanded={menuOpen} aria-controls="menu-mobile" aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"} onClick={() => setMenuOpen((v) => !v)}>
-              <span aria-hidden className={cn("absolute h-px w-6 bg-current transition-transform duration-300", menuOpen ? "rotate-45" : "-translate-y-[4px]")} />
-              <span aria-hidden className={cn("absolute h-px w-6 bg-current transition-transform duration-300", menuOpen ? "-rotate-45" : "translate-y-[4px]")} />
+
+            <button
+              type="button"
+              className="relative grid size-11 place-items-center rounded-full transition-colors duration-300 hover:bg-white/[0.09] lg:hidden"
+              aria-expanded={menuOpen}
+              aria-controls="menu-mobile"
+              aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+              onClick={() => setMenuOpen((v) => !v)}
+            >
+              <span aria-hidden className={cn("absolute h-[1.5px] w-5 rounded-full bg-current transition-transform duration-500 ease-[var(--ease-food)]", menuOpen ? "rotate-45" : "-translate-y-[3.5px]")} />
+              <span aria-hidden className={cn("absolute h-[1.5px] w-5 rounded-full bg-current transition-transform duration-500 ease-[var(--ease-food)]", menuOpen ? "-rotate-45" : "translate-y-[3.5px]")} />
             </button>
           </div>
         </nav>
       </header>
 
-      <div
-        id="menu-mobile"
-        inert={!menuOpen}
-        className={cn(
-          "on-dark fixed inset-0 z-40 flex flex-col bg-ink px-[var(--gutter)] pt-28 pb-10 transition-[clip-path] duration-700 ease-[var(--ease-mask)] lg:hidden",
-          menuOpen ? "[clip-path:inset(0_0_0_0)]" : "pointer-events-none [clip-path:inset(0_0_100%_0)]",
-        )}
-      >
-        <ul className="flex flex-col gap-1">
-          {[{ href: "/", label: "Accueil" }, ...mainNav, ...secondaryNav].map((item) => (
-            <li key={item.href}>
-              <Link href={item.href} onClick={() => setMenuOpen(false)} className="t-l block py-1">
-                {item.label}
-              </Link>
-            </li>
-          ))}
+      <div id="menu-mobile" inert={!menuOpen} data-open={menuOpen} data-lenis-prevent className="nav-sheet on-dark fixed inset-0 z-40 flex flex-col overflow-y-auto bg-[#0d0a08] px-5 pt-24 pb-[max(1.25rem,env(safe-area-inset-bottom))] lg:hidden">
+        <ul className="flex flex-col">
+          {mainNav.map((item, i) => {
+            const active = isActive(item.href, pathname);
+            return (
+              <li key={item.href} className="nav-sheet-item" style={{ "--i": i } as React.CSSProperties}>
+                <Link
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  aria-current={active ? "page" : undefined}
+                  className={cn("flex min-h-14 items-center font-display text-[clamp(2.4rem,min(12.5vw,8.6svh),4rem)] leading-none uppercase transition-colors duration-300", active ? "text-cream" : "text-cream/55 active:text-cream")}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
-        <div className="mt-auto space-y-5">
-          <div className="h-px bg-white/15" />
-          <p className="t-label flex items-center gap-2">
-            {statusLabel && <span aria-hidden className={cn("size-1.5 rounded-full", status.ready && status.isOpen ? "bg-open" : "bg-closed")} />}
-            {statusLabel}
-            {store.prepMinutes !== null && !notice && <span className="text-sub">· retrait ≈ {store.prepMinutes} min</span>}
-          </p>
-          <p className="text-sm text-sub">
-            {store.street}, {store.postalCode} {store.city}
-          </p>
-          <a href={store.phoneHref} className="t-m block">
-            {store.phone}
-          </a>
-          <Link href="/menu" onClick={() => setMenuOpen(false)} className={cn("t-label flex h-14 items-center justify-center", notice ? "border border-white/25 text-sub" : "bg-cheddar text-ink")}>
+        <div className="nav-sheet-item mt-auto space-y-4 pt-6" style={{ "--i": mainNav.length } as React.CSSProperties}>
+          <div className="space-y-1.5 text-[0.95rem] text-cream/60">
+            {statusLabel && (
+              <p className="font-semibold text-cream">
+                {statusLabel}
+                {store.prepMinutes !== null && !notice && <span className="font-normal text-cream/60"> · retrait en {store.prepMinutes} min environ</span>}
+              </p>
+            )}
+            <p>
+              {store.street}, {store.postalCode} {store.city}
+            </p>
+            <a href={store.phoneHref} className="inline-flex min-h-11 items-center font-semibold text-cream">
+              {store.phone}
+            </a>
+          </div>
+          <Link
+            href="/menu"
+            onClick={() => setMenuOpen(false)}
+            className={cn("flex h-14 items-center justify-center rounded-full text-[0.95rem] font-bold", notice ? "border border-white/20 text-cream/70" : "bg-cheddar text-ink")}
+          >
             {notice ? "Commandes temporairement fermées" : "Commander"}
           </Link>
         </div>
