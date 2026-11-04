@@ -22,7 +22,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
           </a>
           <SiteHeader />
           <main id="contenu">{children}</main>
-          <SiteFooter store={store} menu={menu.map((c) => ({ slug: c.slug, name: c.name }))} />
+          <SiteFooter store={store} />
           <SiteChrome />
         </div>
       </MotionProvider>

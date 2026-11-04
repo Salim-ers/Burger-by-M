@@ -1,127 +1,81 @@
 import Image from "next/image";
 import Link from "next/link";
-import { FooterCta } from "./FooterCta";
-import { legalNav } from "@/data/navigation";
+import { legalNav, mainNav } from "@/data/navigation";
 import { brand, mapsLinks } from "@/data/brand";
-import { DAY_NAMES, DAY_ORDER, formatRanges } from "@/lib/schedule";
 import type { PublicStore } from "@/features/public-data";
-import type { MenuCategory } from "@/features/menu/types";
 
-/** Pied de page noir : très grand « BURGER BY M » qui sort du cadre, colonnes, coordonnées réelles. */
-export function SiteFooter({ store, menu }: { store: PublicStore; menu: Pick<MenuCategory, "slug" | "name">[] }) {
+const LINK = "inline-flex min-h-11 items-center transition-colors duration-300 hover:text-cream md:min-h-0";
+
+/**
+ * Pied de page : l'essentiel, sur deux lignes en grand écran. Coordonnées réelles (base), liens utiles, mentions légales.
+ * La carte et les horaires ont leur page ; « Commander » reste toujours accessible dans la barre flottante.
+ * Marge basse sur mobile : la barre du panier ne doit jamais cacher les mentions légales.
+ */
+export function SiteFooter({ store }: { store: PublicStore }) {
   const address = `${store.street}, ${store.postalCode} ${store.city}`;
   const maps = mapsLinks(address);
-  const socials = [
-    { label: "Instagram", url: store.instagramUrl },
-    { label: "Facebook", url: store.facebookUrl },
-  ].filter((s): s is { label: string; url: string } => Boolean(s.url));
+  const contacts = [
+    { label: store.phone, href: store.phoneHref },
+    ...(store.email ? [{ label: store.email, href: `mailto:${store.email}` }] : []),
+    ...(store.instagramUrl ? [{ label: "Instagram", href: store.instagramUrl, external: true }] : []),
+    ...(store.facebookUrl ? [{ label: "Facebook", href: store.facebookUrl, external: true }] : []),
+  ];
 
   return (
-    <footer data-theme="dark" className="on-dark relative overflow-hidden bg-ink pt-24 md:pt-32">
-      <div className="container-bm">
-        <div className="flex flex-col gap-10 border-b border-rule pb-16 md:flex-row md:items-end md:justify-between">
-          <div className="flex items-center gap-5">
-            <Image src={brand.logo.src} alt="Logo Burger By M" width={96} height={96} className="size-20 rounded-full md:size-24" />
-            <p className="s-m max-w-xs text-cream/90">Généreux par nature. Préparé à la commande, à {store.city}.</p>
-          </div>
-          <FooterCta />
-        </div>
-
-        <div className="grid gap-12 py-16 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.45fr_1fr_1fr]">
-          <nav aria-label="La carte">
-            <p className="t-label text-sub">Carte</p>
-            <ul className="mt-5 space-y-2.5 text-[0.95rem]">
-              {menu.map((c) => (
-                <li key={c.slug}>
-                  <Link href={`/menu#cat-${c.slug}`} className="text-cream/80 transition-colors hover:text-cheddar">
-                    {c.name}
+    <footer data-theme="dark" className="on-dark bg-ink pt-10 pb-24 text-[0.92rem] text-cream/70 md:pt-14 md:pb-8">
+      <div className="container-cine">
+        <div className="flex flex-col gap-6 border-b border-rule pb-8 lg:flex-row lg:items-center lg:justify-between lg:gap-12">
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-10">
+            <Link href="/" aria-label={`${store.name} — accueil`} className="w-fit shrink-0 rounded-full">
+              <Image src={brand.logo.src} alt="" width={64} height={64} sizes="64px" className="size-16 rounded-full" />
+            </Link>
+            <nav aria-label="Liens du site">
+              <ul className="flex flex-wrap gap-x-6 gap-y-0 font-semibold text-cream/85">
+                {mainNav
+                  .filter((item) => item.href !== "/")
+                  .map((item) => (
+                    <li key={item.href}>
+                      <Link href={item.href} className={LINK}>
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                <li>
+                  <Link href="/restaurant#horaires-title" className={LINK}>
+                    Horaires
                   </Link>
                 </li>
-              ))}
-            </ul>
-          </nav>
-          <div>
-            <p className="t-label text-sub">Restaurant</p>
-            <address className="mt-5 space-y-2.5 text-[0.95rem] text-cream/80 not-italic">
-              <p>
-                {store.street}
-                <br />
-                {store.postalCode} {store.city}
-              </p>
-              <p>
-                <a href={maps.directions} target="_blank" rel="noopener noreferrer" className="underline decoration-white/30 underline-offset-4 hover:text-cheddar">
-                  Itinéraire
-                </a>
-              </p>
-              <p>
-                <Link href="/restaurant" className="hover:text-cheddar">
-                  Le restaurant
-                </Link>
-              </p>
-              <p>
-                <Link href="/galerie" className="hover:text-cheddar">
-                  Galerie
-                </Link>
-              </p>
-            </address>
+              </ul>
+            </nav>
           </div>
-          <div>
-            <p className="t-label text-sub">Horaires</p>
-            <dl className="mt-5 space-y-1.5 text-[0.88rem]">
-              {DAY_ORDER.map((d) => (
-                <div key={d} className="flex justify-between gap-4">
-                  <dt className="text-cream/55">{DAY_NAMES[d]}</dt>
-                  <dd className="text-right whitespace-nowrap text-cream/85 tabular-nums">{formatRanges(store.schedule.weekly.filter((r) => r.dayOfWeek === d))}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-          <div>
-            <p className="t-label text-sub">Commander</p>
-            <ul className="mt-5 space-y-2.5 text-[0.95rem] text-cream/80">
-              <li>
-                <Link href="/menu" className="hover:text-cheddar">
-                  Click &amp; collect
-                </Link>
-              </li>
-              <li>Retrait sur place</li>
-              <li>{store.paymentMethods.includes("card") ? "Carte en ligne ou au retrait" : "Paiement au retrait"}</li>
-            </ul>
-          </div>
-          <div>
-            <p className="t-label text-sub">Contact</p>
-            <ul className="mt-5 space-y-2.5 text-[0.95rem] text-cream/80">
-              <li>
-                <a href={store.phoneHref} className="hover:text-cheddar">
-                  {store.phone}
-                </a>
-              </li>
-              {store.email && (
-                <li>
-                  <a href={`mailto:${store.email}`} className="break-all hover:text-cheddar">
-                    {store.email}
-                  </a>
-                </li>
-              )}
-              {socials.map((s) => (
-                <li key={s.label}>
-                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="hover:text-cheddar">
-                    {s.label}
+
+          <address className="not-italic lg:text-right">
+            <p>
+              {address}{" "}
+              <a href={maps.directions} target="_blank" rel="noopener noreferrer" className="whitespace-nowrap underline decoration-cream/30 underline-offset-4 transition-colors duration-300 hover:text-cream">
+                Itinéraire
+              </a>
+            </p>
+            <ul className="mt-1 flex flex-wrap gap-x-5 lg:justify-end">
+              {contacts.map((c) => (
+                <li key={c.href}>
+                  <a href={c.href} {...("external" in c ? { target: "_blank", rel: "noopener noreferrer" } : {})} className={`${LINK} break-all`}>
+                    {c.label}
                   </a>
                 </li>
               ))}
             </ul>
-          </div>
+          </address>
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-rule py-6 text-xs text-cream/45 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-3 pt-5 text-xs text-cream/45 md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} {brand.legal.companyName} · {brand.legal.legalForm} · SIRET {brand.legal.siret}
+            © {new Date().getFullYear()} {brand.legal.companyName}, {brand.legal.legalForm}, SIRET {brand.legal.siret}
           </p>
-          <ul className="flex flex-wrap gap-x-6 gap-y-2">
+          <ul className="flex flex-wrap gap-x-5">
             {legalNav.map((l) => (
               <li key={l.href}>
-                <Link href={l.href} className="hover:text-cream">
+                <Link href={l.href} className={LINK}>
                   {l.label}
                 </Link>
               </li>
@@ -129,11 +83,6 @@ export function SiteFooter({ store, menu }: { store: PublicStore; menu: Pick<Men
           </ul>
         </div>
       </div>
-
-      <p aria-hidden className="pointer-events-none -mb-[5vw] flex items-baseline justify-center gap-[2vw] leading-[0.78] whitespace-nowrap text-cream select-none">
-        <span className="font-display text-[23vw] tracking-[-0.01em]">BURGER</span>
-        <span className="font-serif text-[17vw] text-pink italic">by M</span>
-      </p>
     </footer>
   );
 }
