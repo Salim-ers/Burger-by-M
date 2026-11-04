@@ -22,7 +22,7 @@ function openDaysLabel(weekly: WeeklyRange[]) {
   return `${WORDS[n]} jour${n > 1 ? "s" : ""} sur sept.`;
 }
 
-/** /restaurant : la vraie devanture, l'adresse en grand, horaires en direct (Neon), plan (après accord), terrasse. */
+/** /restaurant : la vraie devanture, l'adresse en grand, horaires en direct (Neon), plan (après accord). */
 export function RestaurantView() {
   const { store } = useSite();
   const notice = useOrderingNotice();
@@ -82,19 +82,21 @@ export function RestaurantView() {
       </section>
 
       <section data-theme="light" aria-labelledby="horaires-title" className="on-light bg-ivory py-[var(--space-xl)]">
-        <div className="container-bm grid gap-14 md:grid-cols-12">
-          <div className="md:col-span-5">
-            <p className="t-label text-cheddar-deep">Horaires</p>
-            <RevealText id="horaires-title" as="h2" className="mt-5" lines={[<span key="a" className="t-xl">Ouvert</span>, <span key="b" className="t-xl">{openDaysLabel(store.schedule.weekly)}</span>]} />
-            <p className="mt-6 max-w-sm leading-relaxed text-sub">Sur place ou à emporter. Commandez en ligne, choisissez votre heure de retrait : votre commande est préparée pour ce moment-là.</p>
-            <a href={store.phoneHref} className="t-m mt-8 inline-block underline decoration-ink/20 underline-offset-8 transition-colors hover:decoration-cheddar">
-              {store.phone}
-            </a>
+        <div className="container-bm">
+          <p className="t-label text-cheddar-deep">Horaires</p>
+          <RevealText id="horaires-title" as="h2" className="mt-5" lines={[<span key="a" className="t-xl">Ouvert</span>, <span key="b" className="t-xl">{openDaysLabel(store.schedule.weekly)}</span>]} />
+          <div className="mt-10 grid gap-10 md:grid-cols-12 md:gap-14">
+            <div className="md:col-span-5">
+              <p className="max-w-sm leading-relaxed text-sub">Sur place ou à emporter. Commandez en ligne, choisissez votre heure de retrait : votre commande est préparée pour ce moment-là.</p>
+              <a href={store.phoneHref} className="t-m mt-6 inline-block underline decoration-ink/20 underline-offset-8 transition-colors hover:decoration-cheddar">
+                {store.phone}
+              </a>
+            </div>
+            <FadeIn className="md:col-span-6 md:col-start-7">
+              <OpeningHours />
+              <UpcomingSpecials className="mt-6" />
+            </FadeIn>
           </div>
-          <FadeIn className="md:col-span-6 md:col-start-7">
-            <OpeningHours />
-            <UpcomingSpecials className="mt-6" />
-          </FadeIn>
         </div>
       </section>
 
@@ -122,20 +124,6 @@ export function RestaurantView() {
         </div>
       </section>
 
-      <section data-theme="dark" aria-labelledby="terrasse-title" className="on-charcoal bg-charcoal py-[var(--space-xl)]">
-        <div className="container-bm grid gap-12 md:grid-cols-12 md:items-center">
-          <div className="md:col-span-5 md:col-start-2">
-            <p className="t-label text-cheddar">Aux beaux jours</p>
-            <RevealText id="terrasse-title" as="h2" className="mt-5" lines={[<span key="a" className="t-xl">La</span>, <span key="b" className="t-xl">terrasse.</span>]} />
-            <p className="mt-6 max-w-sm leading-relaxed text-cream/70">Tables dehors, au calme, pour manger chaud sans attendre d’être rentré.</p>
-          </div>
-          <div className="md:col-span-5">
-            <RevealImage className="aspect-[1172/1282] w-full bg-ink" panel="var(--charcoal)" parallax={4}>
-              <Image src={media.terrasse.src} alt={media.terrasse.alt} fill sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" style={{ objectPosition: media.terrasse.position }} />
-            </RevealImage>
-          </div>
-        </div>
-      </section>
     </>
   );
 }

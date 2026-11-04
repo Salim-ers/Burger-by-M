@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Phone } from "lucide-react";
 import { useCart } from "@/features/cart/store";
 import { forgetPendingOrder, takePendingOrder } from "@/features/checkout/pending";
+import { subscribeDemo } from "@/features/demo/store";
 import { useSite } from "@/features/site-context";
 import type { PublicOrder } from "@/features/orders/public";
 import { mapsLinks } from "@/data/brand";
@@ -17,7 +18,7 @@ const POLL_MS = { pending: 2_500, active: 8_000 } as const;
 const NOT_PAID = new Set<PublicOrder["paymentStatus"]>(["failed", "canceled", "expired", "pending"]);
 
 /** Suivi client /commande/M1042 : grand numéro, avancement en direct (polling), récapitulatif, retrait. */
-export function OrderTracking({ orderNumber, token, initial }: { orderNumber: string; token: string; initial: PublicOrder }) {
+export function OrderTracking({ orderNumber, token, initial, load }: { orderNumber: string; token: string; initial: PublicOrder; /** Démonstration : lecture dans ce navigateur, sans appel au serveur. */ load?: () => PublicOrder | null }) {
   const { store } = useSite();
   const [order, setOrder] = useState(initial);
   const [stale, setStale] = useState(false);
@@ -44,7 +45,17 @@ export function OrderTracking({ orderNumber, token, initial }: { orderNumber: st
   }, [status, orderNumber]);
 
   useEffect(() => {
-    if (finished) return;
+    if (!load) return;
+    const read = () => {
+      const next = load();
+      if (next) setOrder(next);
+    };
+    read();
+    return subscribeDemo(read);
+  }, [load]);
+
+  useEffect(() => {
+    if (finished || load) return;
     let timer = 0;
     let stopped = false;
     const tick = async () => {
@@ -66,7 +77,7 @@ export function OrderTracking({ orderNumber, token, initial }: { orderNumber: st
       stopped = true;
       window.clearTimeout(timer);
     };
-  }, [orderNumber, token, finished, status]);
+  }, [orderNumber, token, finished, status, load]);
 
   const time = formatParisTime(order.requestedTime).replace(":", "h");
   const sameDay = parisParts(new Date(order.requestedTime)).ymd === parisParts(new Date()).ymd;

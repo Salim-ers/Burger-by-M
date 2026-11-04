@@ -38,7 +38,6 @@ export function ProductHeader({ product }: { product: MenuProduct }) {
         <Price cents={product.priceCents} />
       </p>
       <p className="mt-5 max-w-prose text-[1rem] leading-relaxed text-sub">{compositionText(product)}</p>
-      {product.image && product.needsFinalProductPhoto && <p className="mt-2 text-xs text-sub">Photo d’illustration : la présentation peut varier.</p>}
       {product.allergens && <p className="mt-3 text-sm text-sub">Allergènes : {product.allergens}</p>}
     </>
   );
@@ -156,7 +155,7 @@ export function ProductConfigurator({ product, editing, onDone, media, showHeade
               </div>
             )}
           </div>
-          <p className="mt-10 text-xs leading-relaxed text-sub">Photos non contractuelles. Allergènes : renseignez-vous auprès du restaurant ({store.phone}).</p>
+          <p className="mt-10 text-xs leading-relaxed text-sub">Allergènes : renseignez-vous auprès du restaurant ({store.phone}).</p>
         </div>
       </div>
 

@@ -18,7 +18,7 @@ export function RestaurantBar({ className }: { className?: string }) {
   const today = hydrated ? formatRanges(rangesForDate(parisParts(new Date()).ymd, store.schedule)) : null;
 
   return (
-    <div className={cn("flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-rule py-3.5", className)}>
+    <div className={cn("flex flex-wrap items-center justify-center gap-x-6 gap-y-2 border-y border-rule py-3.5 text-center", className)}>
       <p className="t-label inline-flex items-center gap-2" aria-live="polite">
         {status.ready && <span aria-hidden className={cn("size-2 rounded-full", status.isOpen ? "bg-open" : "bg-closed")} />}
         {status.ready ? (status.isOpen ? `Ouvert${status.closesAt ? ` · jusqu’à ${formatHour(status.closesAt)}` : ""}` : `Fermé${status.nextOpeningLabel ? ` · ouvre ${status.nextOpeningLabel}` : ""}`) : " "}
@@ -27,7 +27,7 @@ export function RestaurantBar({ className }: { className?: string }) {
       {store.pickupEnabled && <p className="t-label text-sub">Retrait sur place</p>}
       {store.prepMinutes !== null && !notice && <p className="t-label text-sub">≈ {store.prepMinutes} min{store.busyMode ? " · forte affluence" : ""}</p>}
       {notice && (
-        <p className="t-label ml-auto flex flex-wrap items-center gap-x-3 text-closed">
+        <p className="t-label flex flex-wrap items-center justify-center gap-x-3 text-closed">
           Commandes temporairement fermées
           <a href={store.phoneHref} className="text-fg underline underline-offset-4">
             {store.phone}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, Maximize, Minimize } from "lucide-react";
+import { ArrowLeft, Maximize, Minimize, Plus } from "lucide-react";
 import type { OrderStatus } from "@/db/schema";
 import type { OrderView } from "@/features/orders/service";
 import { acceptOrderAction, refuseOrderAction, setOrderStatusAction } from "@/features/admin/actions/orders";
@@ -46,13 +46,32 @@ function since(iso: string, now: number) {
 }
 
 /**
+ * Source des commandes de l'écran. Par défaut : le serveur (commandes réelles). En démonstration : le navigateur,
+ * sans compte, sans base et sans paiement.
+ */
+export interface KitchenSource {
+  load: () => Promise<{ orders: OrderView[]; serverTime: string }>;
+  accept: (id: string) => Promise<{ ok: boolean; error?: string }>;
+  refuse: (id: string, reason: string) => Promise<{ ok: true; data?: { payment?: string } } | { ok: false; error: string }>;
+  setStatus: (id: string, from: OrderStatus, to: OrderStatus) => Promise<{ ok: boolean; error?: string }>;
+  subscribe?: (listener: () => void) => () => void;
+}
+
+export interface KitchenDemo {
+  ordersEnabled: boolean;
+  onSimulate: () => void;
+  onToggleOrders: () => void;
+}
+
+/**
  * Écran cuisine (tablette) : DÉMARRER LE SERVICE (son, notifications, écran allumé), puis
  * NOUVELLES → EN PRÉPARATION → PRÊTES. Rafraîchissement continu (polling, en plus du push) :
  * une coupure réseau ne fait jamais perdre une commande, elle s'affiche au retour de la connexion.
  */
-export function KitchenBoard({ initial, initialServerTime }: { initial: OrderView[]; initialServerTime: string }) {
+export function KitchenBoard({ initial, initialServerTime, source, demo }: { initial: OrderView[]; initialServerTime: string; source?: KitchenSource; demo?: KitchenDemo }) {
   const notify = useNotify();
-  const push = usePushSubscription();
+  const push = usePushSubscription(!demo);
+  const home = demo ? "/demo" : "/admin";
   const [orders, setOrders] = useState(initial);
   const [online, setOnline] = useState(true);
   const [lastSync, setLastSync] = useState(initialServerTime);
@@ -96,7 +115,7 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
       setFlashKey((k) => k + 1);
       if (live.current.sound) playChime();
       notify(list.length === 1 ? `Nouvelle commande ${list[0]!.orderNumber} — ${formatPrice(list[0]!.totalCents)}` : `${list.length} nouvelles commandes`);
-      if ("Notification" in window && Notification.permission === "granted") {
+      if (!demo && "Notification" in window && Notification.permission === "granted") {
         for (const o of list) {
           const title = `Nouvelle commande ${o.orderNumber}`;
           const options: NotificationOptions = { body: `${o.customerFirstName} · ${formatPrice(o.totalCents)} · retrait ${formatParisTime(o.requestedTime)}`, tag: o.orderNumber, icon: "/icons/icon-192.png", data: { url: "/admin/cuisine" } };
@@ -109,20 +128,24 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
         }
       }
     },
-    [notify],
+    [notify, demo],
   );
 
   /* ---------------- Synchronisation ---------------- */
 
   const refresh = useCallback(async () => {
     try {
-      const res = await fetch("/api/admin/kitchen", { cache: "no-store" });
-      if (res.status === 401) {
-        window.location.href = "/admin/login?next=/admin/cuisine";
-        return;
+      let body: { orders: OrderView[]; serverTime: string };
+      if (source) body = await source.load();
+      else {
+        const res = await fetch("/api/admin/kitchen", { cache: "no-store" });
+        if (res.status === 401) {
+          window.location.href = "/admin/login?next=/admin/cuisine";
+          return;
+        }
+        if (!res.ok) throw new Error(String(res.status));
+        body = (await res.json()) as { orders: OrderView[]; serverTime: string };
       }
-      if (!res.ok) throw new Error(String(res.status));
-      const body = (await res.json()) as { orders: OrderView[]; serverTime: string };
       const arrived = body.orders.filter((o) => !known.current.has(o.id) && o.orderStatus === "new");
       body.orders.forEach((o) => known.current.add(o.id));
       if (arrived.length) alertNew(arrived);
@@ -133,7 +156,14 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
     } catch {
       setOnline(false);
     }
-  }, [alertNew]);
+  }, [alertNew, source]);
+
+  // Démonstration : les commandes arrivent dès qu'un autre onglet les crée.
+  useEffect(() => {
+    if (!source?.subscribe) return;
+    void refresh();
+    return source.subscribe(() => void refresh());
+  }, [source, refresh]);
 
   useEffect(() => {
     const id = window.setInterval(() => void refresh(), POLL_MS);
@@ -203,6 +233,7 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
       /* ignore */
     }
     void requestWake();
+    if (demo) return;
     if ("Notification" in window) {
       const permission = Notification.permission === "default" ? await Notification.requestPermission().catch(() => "default" as const) : Notification.permission;
       setNotif(permission);
@@ -258,13 +289,13 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
     return r.ok;
   };
 
-  const accept = (o: OrderView) => optimistic(o, "preparing", () => acceptOrderAction(o.id), o.paymentStatus === "authorized" ? `${o.orderNumber} acceptée · paiement encaissé` : `${o.orderNumber} acceptée`);
-  const move = (o: OrderView, to: OrderStatus) => optimistic(o, to, () => setOrderStatusAction(o.id, o.orderStatus, to));
+  const accept = (o: OrderView) => optimistic(o, "preparing", () => (source ? source.accept(o.id) : acceptOrderAction(o.id)), o.paymentStatus === "authorized" ? `${o.orderNumber} acceptée · paiement encaissé` : `${o.orderNumber} acceptée`);
+  const move = (o: OrderView, to: OrderStatus) => optimistic(o, to, () => (source ? source.setStatus(o.id, o.orderStatus, to) : setOrderStatusAction(o.id, o.orderStatus, to)));
 
   const refuse = async (o: OrderView, reason: string) => {
     if (inFlight.current.has(o.id)) return;
     inFlight.current.add(o.id);
-    const r = await refuseOrderAction(o.id, reason).catch(() => ({ ok: false as const, error: "Connexion perdue : refus non enregistré." }));
+    const r = await (source ? source.refuse(o.id, reason) : refuseOrderAction(o.id, reason)).catch(() => ({ ok: false as const, error: "Connexion perdue : refus non enregistré." }));
     inFlight.current.delete(o.id);
     if (!r.ok) {
       notify(r.error, "error");
@@ -293,7 +324,7 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
   const clock = new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", hour: "2-digit", minute: "2-digit" }).format(now);
 
   if (!started) {
-    return <StartScreen onStart={start} resumed={resumed} waiting={count("new")} active={count("preparing") + count("ready")} online={online} notif={notif} />;
+    return <StartScreen onStart={start} resumed={resumed} waiting={count("new")} active={count("preparing") + count("ready")} online={online} notif={notif} home={home} demo={Boolean(demo)} />;
   }
 
   return (
@@ -303,9 +334,10 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
       </AnimatePresence>
 
       <header className="flex shrink-0 flex-wrap items-center gap-x-3 gap-y-2 border-b border-rule px-3 py-2.5 md:px-5 xl:gap-x-4">
-        <Link href="/admin" className="grid size-11 place-items-center text-sub hover:text-fg" aria-label="Retour à l’administration">
+        <Link href={home} className="grid size-11 place-items-center text-sub hover:text-fg" aria-label={demo ? "Retour à la démonstration" : "Retour à l’administration"}>
           <ArrowLeft className="size-5" aria-hidden />
         </Link>
+        {demo && <span className="t-label rounded-full bg-cheddar px-3 py-1.5 text-ink">Démo</span>}
         <div className="flex items-center gap-3">
           <span className="inline-flex items-center gap-2 text-[0.72rem] font-bold tracking-[0.16em] text-open uppercase">
             <span className="relative size-2.5 rounded-full bg-open">
@@ -319,20 +351,32 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
           {online ? `À jour · ${formatParisTime(lastSync)}` : "Hors ligne — nouvelle tentative…"}
         </span>
         <div className="ml-auto flex flex-wrap items-center gap-1.5 max-md:w-full max-md:justify-between">
+          {demo && (
+            <>
+              <button type="button" onClick={demo.onSimulate} className="t-btn inline-flex h-11 items-center gap-2 rounded-full bg-cheddar px-4 text-ink transition-colors hover:bg-cream">
+                <Plus aria-hidden className="size-4" /> Simuler une commande
+              </button>
+              <Chip on={demo.ordersEnabled} warn={!demo.ordersEnabled} onClick={demo.onToggleOrders} pressed={demo.ordersEnabled}>
+                Commandes {demo.ordersEnabled ? "on" : "off"}
+              </Chip>
+            </>
+          )}
           <Chip on={sound} onClick={toggleSound} pressed={sound}>
             Son {sound ? "on" : "off"}
           </Chip>
           <Chip on={wake === "active"} warn={wake === "failed" || wake === "unsupported"} onClick={wake === "active" ? undefined : () => void requestWake()} title={wake === "active" ? "L’écran ne se mettra pas en veille" : "Mise en veille possible : désactivez-la dans les réglages de la tablette"}>
             {wake === "active" ? "Écran actif" : "Veille possible"}
           </Chip>
-          <Chip
-            on={notif === "granted"}
-            warn={notif === "denied"}
-            onClick={notif === "default" ? () => void Notification.requestPermission().then(setNotif) : push.subscribed ? () => void push.test() : undefined}
-            title={notif === "denied" ? "Notifications bloquées dans les réglages du navigateur" : undefined}
-          >
-            {notif === "granted" ? "Notif." : notif === "denied" ? "Notif. bloquées" : notif === "unsupported" ? "Sans notif." : "Activer notif."}
-          </Chip>
+          {!demo && (
+            <Chip
+              on={notif === "granted"}
+              warn={notif === "denied"}
+              onClick={notif === "default" ? () => void Notification.requestPermission().then(setNotif) : push.subscribed ? () => void push.test() : undefined}
+              title={notif === "denied" ? "Notifications bloquées dans les réglages du navigateur" : undefined}
+            >
+              {notif === "granted" ? "Notif." : notif === "denied" ? "Notif. bloquées" : notif === "unsupported" ? "Sans notif." : "Activer notif."}
+            </Chip>
+          )}
           <button type="button" onClick={() => setShowDone(true)} aria-label={`Commandes récupérées : ${count("completed")}`} className="h-11 border border-rule px-3 text-[0.68rem] font-bold tracking-[0.12em] text-sub uppercase hover:text-fg">
             Récup. · {count("completed")}
           </button>
@@ -348,6 +392,16 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
       {!online && (
         <p role="alert" className="shrink-0 bg-closed px-4 py-2 text-center text-sm font-bold text-ink">
           Connexion perdue : les commandes s’afficheront dès le retour du réseau. Aucune commande n’est perdue.
+        </p>
+      )}
+
+      {demo && count("new") + count("preparing") + count("ready") === 0 && (
+        <p className="shrink-0 border-b border-rule bg-cheddar/10 px-4 py-3 text-[0.95rem] text-cream">
+          <strong className="font-bold text-cheddar">Démo :</strong> passez une commande sur{" "}
+          <a href="/menu?demo=1" target="_blank" rel="noopener noreferrer" className="font-semibold underline underline-offset-2">
+            le site en mode démo
+          </a>{" "}
+          dans ce même navigateur (autre onglet), elle arrive ici avec la sonnerie. Sur une tablette seule, appuyez sur « Simuler une commande ».
         </p>
       )}
 
@@ -377,7 +431,7 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
               <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-3 pt-3 pb-24 md:pt-0">
                 <AnimatePresence initial={false}>
                   {list.map((o) => (
-                    <Ticket key={o.id} order={o} now={now} highlight={fresh.has(o.id)} onAccept={accept} onRefuse={setRefusing} onMove={move} />
+                    <Ticket key={o.id} order={o} now={now} highlight={fresh.has(o.id)} demo={Boolean(demo)} onAccept={accept} onRefuse={setRefusing} onMove={move} />
                   ))}
                 </AnimatePresence>
                 {list.length === 0 && <p className="py-14 text-center text-sm text-sub/60">{c.status === "new" ? "En attente de commandes" : "—"}</p>}
@@ -396,12 +450,12 @@ export function KitchenBoard({ initial, initialServerTime }: { initial: OrderVie
 
 /* ---------------- Démarrage du service ---------------- */
 
-function StartScreen({ onStart, resumed, waiting, active, online, notif }: { onStart: () => void; resumed: boolean; waiting: number; active: number; online: boolean; notif: NotifState }) {
+function StartScreen({ onStart, resumed, waiting, active, online, notif, home, demo }: { onStart: () => void; resumed: boolean; waiting: number; active: number; online: boolean; notif: NotifState; home: string; demo: boolean }) {
   return (
     <div className="flex min-h-dvh flex-col bg-ink px-5 py-6 md:px-10">
       <div className="flex items-center justify-between">
-        <Link href="/admin" className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.14em] text-sub uppercase hover:text-fg">
-          <ArrowLeft className="size-4" aria-hidden /> Administration
+        <Link href={home} className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.14em] text-sub uppercase hover:text-fg">
+          <ArrowLeft className="size-4" aria-hidden /> {demo ? "Démonstration" : "Administration"}
         </Link>
         <span className={cn("text-[0.68rem] font-bold tracking-[0.12em] uppercase", online ? "text-sub" : "text-closed")}>{online ? "Connecté" : "Hors ligne"}</span>
       </div>
@@ -421,6 +475,7 @@ function StartScreen({ onStart, resumed, waiting, active, online, notif }: { onS
         <button type="button" onClick={onStart} className="mt-10 h-24 w-full max-w-xl bg-cheddar font-display text-[2rem] tracking-[0.04em] text-ink uppercase transition-colors hover:bg-cream active:scale-[0.99]">
           {resumed ? "Reprendre" : "Démarrer"}
         </button>
+        {demo && <p className="mt-6 font-semibold text-cheddar">Démonstration : aucune vraie commande, aucun paiement.</p>}
         <ul className="mt-10 grid w-full max-w-xl gap-2 text-left text-sm text-fg/80 sm:grid-cols-3">
           <li className="border border-rule px-4 py-3">
             <span className="block font-bold text-fg">Son</span>
@@ -428,7 +483,7 @@ function StartScreen({ onStart, resumed, waiting, active, online, notif }: { onS
           </li>
           <li className="border border-rule px-4 py-3">
             <span className="block font-bold text-fg">Notifications</span>
-            {notif === "granted" ? "Autorisées sur cet appareil." : notif === "denied" ? "Bloquées : à autoriser dans le navigateur." : notif === "unsupported" ? "Non disponibles sur ce navigateur." : "Autorisation demandée au démarrage."}
+            {demo ? "Non utilisées en démonstration." : notif === "granted" ? "Autorisées sur cet appareil." : notif === "denied" ? "Bloquées : à autoriser dans le navigateur." : notif === "unsupported" ? "Non disponibles sur ce navigateur." : "Autorisation demandée au démarrage."}
           </li>
           <li className="border border-rule px-4 py-3">
             <span className="block font-bold text-fg">Écran</span>
@@ -466,7 +521,7 @@ function paymentTag(o: OrderView) {
   return { label: "Paiement à vérifier", tone: "text-closed" };
 }
 
-function Ticket({ order, now, highlight, onAccept, onRefuse, onMove }: { order: OrderView; now: number; highlight: boolean; onAccept: (o: OrderView) => void; onRefuse: (o: OrderView) => void; onMove: (o: OrderView, to: OrderStatus) => void }) {
+function Ticket({ order, now, highlight, demo, onAccept, onRefuse, onMove }: { order: OrderView; now: number; highlight: boolean; demo: boolean; onAccept: (o: OrderView) => void; onRefuse: (o: OrderView) => void; onMove: (o: OrderView, to: OrderStatus) => void }) {
   const due = new Date(order.requestedTime).getTime();
   const minutesLeft = Math.round((due - now) / 60_000);
   const late = (order.orderStatus === "new" || order.orderStatus === "preparing") && minutesLeft < 0;
@@ -541,9 +596,11 @@ function Ticket({ order, now, highlight, onAccept, onRefuse, onMove }: { order: 
         </div>
         <div className="mt-1 flex items-center justify-between gap-3">
           <span className={cn("text-[0.66rem] font-bold tracking-[0.1em] uppercase", pay.tone)}>{pay.label}</span>
-          <Link href={`/admin/orders/${order.orderNumber}`} className="text-[0.66rem] font-bold tracking-[0.1em] text-sub uppercase underline-offset-4 hover:text-fg hover:underline">
-            Détail
-          </Link>
+          {!demo && (
+            <Link href={`/admin/orders/${order.orderNumber}`} className="text-[0.66rem] font-bold tracking-[0.1em] text-sub uppercase underline-offset-4 hover:text-fg hover:underline">
+              Détail
+            </Link>
+          )}
         </div>
       </footer>
 

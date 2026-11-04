@@ -71,7 +71,7 @@ export function Hero() {
                 portraitId="hero-mobile"
                 priority
                 sizes="100vw"
-                position="100% 50%"
+                position="100% 100%"
                 alt="Scène d’ambiance : un burger au cheddar fondu sur une table, devant le comptoir et l’enseigne lumineuse Burger By M, le soir"
               />
             </div>

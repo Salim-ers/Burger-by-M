@@ -13,7 +13,7 @@ function urlBase64ToUint8Array(base64: string) {
  * Abonnement Web Push de cet appareil (service worker /sw.js, portée /admin/).
  * La permission n'est demandée qu'au clic sur « Notifications ».
  */
-export function usePushSubscription() {
+export function usePushSubscription(active = true) {
   const notify = useNotify();
   const [supported, setSupported] = useState(false);
   const [enabled, setEnabled] = useState(false);
@@ -22,7 +22,7 @@ export function usePushSubscription() {
   const [publicKey, setPublicKey] = useState<string | null>(null);
 
   useEffect(() => {
-    const ok = "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
+    const ok = active && "serviceWorker" in navigator && "PushManager" in window && "Notification" in window;
     setSupported(ok);
     if (!ok) return;
     void (async () => {
@@ -42,7 +42,7 @@ export function usePushSubscription() {
         console.warn("[push]", err);
       }
     })();
-  }, []);
+  }, [active]);
 
   const subscribe = useCallback(async () => {
     if (!publicKey) return;

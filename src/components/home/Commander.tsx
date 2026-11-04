@@ -9,8 +9,8 @@ import { formatHour } from "@/lib/schedule";
 import { cn } from "@/lib/utils";
 
 /**
- * Dernière séquence : une phrase, puis un seul geste. Le mot COMMANDER est le bouton, sur la seule grande
- * surface cheddar du site : le cheddar reste la couleur de l'action. Au survol, le crème part du pointeur.
+ * Dernière séquence : une phrase, puis un seul geste, au centre. Le cheddar reste la couleur de l'action.
+ * Au survol, le crème part du pointeur.
  */
 export function Commander() {
   const { store } = useSite();
@@ -29,16 +29,16 @@ export function Commander() {
   const statusText = !status.ready ? " " : status.isOpen ? `Ouvert${status.closesAt ? ` jusqu’à ${formatHour(status.closesAt)}` : ""}` : `Fermé${status.nextOpeningLabel ? `, ouvre ${status.nextOpeningLabel}` : ""}`;
 
   return (
-    <section data-theme="dark" aria-labelledby="commander-title" className="on-dark relative bg-ink pt-[clamp(6rem,20vh,14rem)] pb-[clamp(1.5rem,5vh,3.5rem)]">
+    <section data-theme="dark" aria-labelledby="commander-title" className="on-dark relative bg-ink pt-[clamp(5rem,14vh,10rem)] pb-[clamp(2.5rem,7vh,5rem)] text-center">
       <div className="container-cine">
-        <RevealText id="commander-title" lines={["Vous savez déjà", "ce que vous allez prendre."]} className="t-l text-[8.6vw] text-cream md:text-[clamp(3rem,6vw,8rem)]" />
+        <RevealText id="commander-title" lines={["Vous savez déjà", "ce que vous allez prendre."]} className="t-l text-[8.6vw] text-cream md:text-[clamp(2.6rem,4.6vw,5.5rem)]" />
 
         <Link
           ref={button}
           href="/menu"
           onPointerEnter={place}
           onPointerMove={place}
-          className={cn("final-cta mt-[clamp(2.5rem,7vh,5rem)]", notice && "final-cta-closed")}
+          className={cn("final-cta mt-[clamp(2rem,5vh,3.5rem)]", notice && "final-cta-closed")}
         >
           <span className="relative">{notice ? "La carte" : "Commander"}</span>
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden className="final-cta-arrow relative">
@@ -46,7 +46,7 @@ export function Commander() {
           </svg>
         </Link>
 
-        <div className="mt-6 flex flex-col gap-x-10 gap-y-1 text-[0.95rem] text-cream/65 sm:flex-row sm:justify-between" aria-live="polite">
+        <div className="mt-6 flex flex-col items-center justify-center gap-x-8 gap-y-1 text-[0.95rem] text-cream/65 sm:flex-row" aria-live="polite">
           {notice ? (
             <p>
               {ORDERING_CLOSED_LABEL}.{" "}
@@ -63,8 +63,6 @@ export function Commander() {
             </p>
           )}
         </div>
-
-        <p className="mt-8 max-w-xl text-[0.72rem] leading-relaxed text-cream/40">Visuels d’ambiance de cette page : créations illustrant l’univers Burger By M, non contractuelles.</p>
       </div>
     </section>
   );

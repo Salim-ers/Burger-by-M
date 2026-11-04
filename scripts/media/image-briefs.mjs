@@ -25,7 +25,7 @@ const BURGER = `The burger: a soft brioche bun with a lightly glazed, slightly u
 const PLACE = `The place must look exactly like the real photo, in the same natural light: bright, clean white walls; a warm white LED strip along the ceiling edge, with an ochre ceiling panel above it; a stainless steel extraction hood with its ducting and a stainless steel backsplash; a tidy working kitchen with its real equipment, and a cook in a black t-shirt with a black cap seen from behind; a counter with a smooth cream top; the counter front made of vertical natural oak slats with thin black gaps; mounted on those slats, a thin warm yellow LED neon sign in handwritten script reading exactly "Burger By M", with these letters and this spelling, same lettering style as the photo. Do not add any furniture, decoration, window or object that is not in the photo. Do not darken the room: same daylight-balanced brightness as the photo.`;
 
 /** Rendu de vraie photographie : ni étalonnage de film, ni pénombre, ni brillance d'image générée. */
-const NATURAL = `Style: a real, clean, natural photograph by a professional interiors and food photographer, on a full-frame camera with a 50mm lens, sharp and detailed. True-to-life colours, neutral white balance, soft even ambient light from the room, natural contrast, gentle realistic shadows, natural depth of field. The food looks real and appetising, with natural colours and slight imperfections.
+const NATURAL = `Style: a real, clean, natural photograph by a professional interiors and food photographer, on a full-frame camera with a 35mm lens at f/11, sharp and detailed everywhere. Deep depth of field: everything is in crisp focus from the foreground to the back wall, including the neon sign, the counter, the kitchen and the hood. No background blur, no bokeh. True-to-life colours, neutral white balance, soft even ambient light from the room, natural contrast, gentle realistic shadows. The food looks real and appetising, with natural colours and slight imperfections.
 Strictly forbidden: orange or teal colour grading, dramatic low-key lighting, dark moody atmosphere, haze, smoke, vignette, HDR look, oversaturated colours, oversharpening, plastic-looking cheese, waxy or CGI surfaces, any text, letter, number, logo or label other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text).`;
 
 /** Les milkshakes réels : gobelet transparent, sticker du logo, tenu à la main devant un mur beige. */
@@ -57,9 +57,9 @@ ${PLACE}
 
 ${BURGER}
 
-Scene: in the foreground, close to the camera, the burger rests on slightly crumpled plain white greaseproof paper, with only a fine, small-scale, faint grey newsprint texture and no large shapes, on a dark wooden table, with natural colours. Behind it, a few metres away and only slightly out of focus, the counter runs across the frame.
+Scene: in the foreground, close to the camera, the burger rests on slightly crumpled plain white greaseproof paper, with only a fine, small-scale, faint grey newsprint texture and no large shapes, on a dark wooden table, with natural colours. Behind it, a few metres away and just as sharp, the counter runs across the frame.
 
-Composition: the white wall, the hood and the kitchen fill the top of the frame. The neon sign is in the right half of the frame, above and behind the burger, never hidden by it, large and readable. The burger sits at the right third of the frame, low in the image, only about 22% of the frame width. The left half of the frame stays uncluttered, with the counter and the slats continuing, and leaves room for a headline over the slats and the table at the bottom left. The bottom of the frame is the dark wooden table.
+Composition: the white wall, the hood and the kitchen fill the top of the frame. The neon sign is in the right half of the frame, above and behind the burger, never hidden by it, large and readable. The burger sits at the right third of the frame, about 24% of the frame width, entirely visible, with its lowest point no lower than 78% of the frame height: a clear band of empty dark wooden table stays below it and its paper, because the picture is also cropped on wide computer screens. The left half of the frame stays uncluttered, with the counter and the slats continuing, and leaves room for a headline over the slats and the table at the bottom left.
 
 ${NATURAL}`,
   },
@@ -80,6 +80,17 @@ ${NATURAL}`,
   },
 
   // ---------------- « Votre burger commence quand vous commandez. » ----------------
+  "plancha-desktop": {
+    usage: "Séquence éditoriale, plein cadre paysage : le moment où le burger commence",
+    size: "3840x2160",
+    draftSize: "1536x864",
+    refs: ["public/images/food/smash-le-special.webp", "assets/sources/restaurant-comptoir-neon.png"],
+    prompt: `Reference 1 shows the restaurant's real finished burger: match its cheese, its beef crust and its colours. Reference 2 shows the real kitchen: same clean stainless steel, same natural light.
+
+Create a wide 16:9 photograph on a black steel flat-top griddle in this clean working kitchen: several thin smashed beef patties in a row across the griddle, just pressed, with craggy, lacy, deeply browned edges, each with a slice of cheddar that has only just begun to soften and slump over the meat. Tiny beads of sizzling fat around the edges, a little real steam. The worn edge of a metal spatula enters from the upper right. The patties fill the right two thirds of the frame; the griddle continues, calmer and darker, on the left and along the bottom, where a short caption will sit.
+
+Style: a real, clean, natural photograph by a professional food photographer, sharp and detailed, natural daylight-balanced light from the kitchen, true-to-life colours, natural contrast. Strictly forbidden: dark moody low-key lighting, heavy blur, orange colour grading, HDR look, oversaturated colours, plastic-looking cheese, any text, logo or watermark, toppings not listed.`,
+  },
   plancha: {
     usage: "Séquence éditoriale : le moment où le burger commence",
     size: "2160x2688",

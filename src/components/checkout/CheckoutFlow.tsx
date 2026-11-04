@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCart, useUi, cartCount } from "@/features/cart/store";
+import { createDemoOrder, demoSlots, useDemo } from "@/features/demo/store";
+import { priceLine } from "@/features/menu/pricing";
 import { checkCart } from "@/features/cart/lines";
 import { useSite } from "@/features/site-context";
 import { useOrderingNotice } from "@/features/store/use-status";
@@ -37,7 +39,10 @@ export function CheckoutFlow() {
   const setCartOpen = useUi((s) => s.setCartOpen);
   const { products, store } = useSite();
   const notice = useOrderingNotice();
-  const { data: slots, error: slotsError, refresh: refreshSlots } = useSlots();
+  const demo = useDemo((s) => s.active);
+  const { data: realSlots, error: slotsError, refresh: refreshSlots } = useSlots({ enabled: !demo });
+  const fakeSlots = useMemo(() => (demo ? demoSlots(store.prepMinutes) : null), [demo, store.prepMinutes]);
+  const slots = demo ? fakeSlots : realSlots;
   const checked = useMemo(() => checkCart(lines, products), [lines, products]);
 
   const [pickup, setPickup] = useState<PickupChoice | null>(null);
@@ -57,6 +62,7 @@ export function CheckoutFlow() {
 
   // Retour depuis la page de paiement sans avoir payé : proposer de reprendre ou de modifier.
   useEffect(() => {
+    if (demo) return;
     const p = readPendingOrder();
     if (!p) return;
     void fetch(`/api/orders/${encodeURIComponent(p.orderNumber)}?t=${encodeURIComponent(p.token)}`, { cache: "no-store" })
@@ -67,7 +73,12 @@ export function CheckoutFlow() {
         else forgetPendingOrder();
       })
       .catch(() => undefined);
-  }, [router]);
+  }, [router, demo]);
+
+  // Démonstration : coordonnées déjà remplies, pour aller droit au but pendant la présentation.
+  useEffect(() => {
+    if (demo) setCustomer((c) => (c.firstName ? c : { firstName: "Camille", lastName: "Démo", phone: "06 12 34 56 78", email: "camille.demo@example.com" }));
+  }, [demo]);
 
   // Créneau par défaut, et correction si le créneau choisi vient d'être complété.
   useEffect(() => {
@@ -143,6 +154,31 @@ export function CheckoutFlow() {
       return;
     }
     if (blocked || !pickup || !method) return;
+
+    if (demo) {
+      // Rien ne part vers le serveur : la commande reste dans ce navigateur.
+      const asap = pickup.mode === "asap";
+      const order = createDemoOrder({
+        customer,
+        requestedTime: asap ? (slots?.asap?.start ?? new Date().toISOString()) : pickup.slotStart,
+        isAsap: asap,
+        method,
+        notes,
+        lines: checked.lines.flatMap(({ line }) => {
+          const priced = priceLine(products.get(line.productId), line);
+          return priced.ok ? [priced.line] : [];
+        }),
+      });
+      if (method === "on_site") {
+        setRedirecting("C’est parti.");
+        useCart.getState().clear();
+        router.push(`/demo/suivi/${order.id}`);
+      } else {
+        setRedirecting("Paiement sécurisé…");
+        window.location.assign(`/demo/paiement/${order.id}`);
+      }
+      return;
+    }
 
     const payload = {
       lines: checked.lines.map(({ line }) => ({ productId: line.productId, quantity: line.quantity, modifierIds: line.modifierIds, removedIngredientIds: line.removedIngredientIds, ...(line.note ? { note: line.note } : {}) })),

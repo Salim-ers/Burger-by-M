@@ -20,6 +20,7 @@ const CINEMA = {
   "hero-desktop": [1280, 1920, 2560, 3840],
   "hero-mobile": [640, 828, 1170, 1620, 2160],
   plancha: [640, 960, 1280, 1800],
+  "plancha-desktop": [1280, 1920, 2560, 3840],
   "table-desktop": [1280, 1920, 2560, 3840],
   "table-mobile": [640, 828, 1170, 1620],
 };

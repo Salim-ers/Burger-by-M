@@ -55,8 +55,7 @@ export function MenuView() {
             );
           })}
 
-          <div className="mt-24 grid gap-6 border-t border-rule pt-8 text-xs leading-relaxed text-sub md:grid-cols-2">
-            <p>Photos non contractuelles. Les visuels marqués « photo d’illustration » montrent une préparation proche, pas le produit exact.</p>
+          <div className="mt-24 border-t border-rule pt-8 text-center text-xs leading-relaxed text-sub">
             <p>Allergènes : la liste des allergènes de chaque recette est disponible au restaurant. En cas d’allergie, appelez-nous au {store.phone} avant de commander.</p>
           </div>
         </div>

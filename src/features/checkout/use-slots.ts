@@ -19,7 +19,7 @@ export interface SlotsResponse {
   minOrderCents: number;
 }
 
-export function useSlots({ refreshMs = 60_000 }: { refreshMs?: number } = {}) {
+export function useSlots({ refreshMs = 60_000, enabled = true }: { refreshMs?: number; enabled?: boolean } = {}) {
   const [data, setData] = useState<SlotsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -41,11 +41,12 @@ export function useSlots({ refreshMs = 60_000 }: { refreshMs?: number } = {}) {
   }, []);
 
   useEffect(() => {
+    if (!enabled) return;
     void refresh();
     if (!refreshMs) return;
     const id = window.setInterval(() => void refresh(), refreshMs);
     return () => window.clearInterval(id);
-  }, [refresh, refreshMs]);
+  }, [refresh, refreshMs, enabled]);
 
   return { data, error, loading, refresh };
 }

@@ -9,7 +9,7 @@ export const cinemaAssets = {
       2560,
       3840
     ],
-    "lqip": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAABwBACdASoYAA4APu1iqU2ppaQiMAgBMB2JZACdMoMYAEskuDFbwKE9yv/S4AD+ylYw87siMRSJOBmYPKAHT4rpswjfRj1vqRPF9yl6miHyJN/BJWDsr3LcCsN4LTOe+oSqY1ke8V6QniaI1y9hg9682p60gOObUKrrYLjPCMrXihR9hFn4M6ICDjfAl3sHmRommpQCXfx4A82zx/6DWcvX3oiO73W1wAA="
+    "lqip": "data:image/webp;base64,UklGRsIAAABXRUJQVlA4ILYAAAAwBQCdASoYAA4APu1iqU2ppaOiMAgBMB2JYgCdMoMYLI1z/4tgllIRs24NRJrG3t6qAAD+4ZYTrfxRGcZjtFWWtdEwS3Zorj2QASTGF6XLixVwl/nnL17yoVu8xsE4V8Tvw3Ludw3vSmD4ytSLnUjGwIJJ434FBK0yNMCCc7FTnonsNEX74XG3BVk9x9Tt8obP9a+Qjo0ze5+2KNdKtG0fGGS0ZGPOc5uzArCO9PwEeAUekM0AAA=="
   },
   "hero-mobile": {
     "width": 2160,
@@ -21,7 +21,7 @@ export const cinemaAssets = {
       1620,
       2160
     ],
-    "lqip": "data:image/webp;base64,UklGRiABAABXRUJQVlA4IBQBAADwBwCdASoYACsAPu1oqlCppaOiqrgMATAdiWIArDNF9Xv/lP8B+qyu3KFeb8Tuchr0NpuPbszzcUf0JW6/sfC2OBgyBytMKAAA/rI3qg8VBcl4vZWW0+NNB9x3O7y5sgCu3lYnVlgsymrfdKF+8gPGDZOnzyLrgGdz7tYE86JRbHDvE9J7bneUtO+HyudipwpIIi3AJndsqCEjL5v88GP4lBMq/ehXYBSUC6gZopJ1lzaHs7VKJcnxfxEIAoxlbDshijQuxzga2ynMwbNOBvJEvITbrdm+D7+Hp1DF9fJxLz3oNJgTTs0USH1euLVAoMzkEhq4WQvI6BIZNtbT0gyXHJUGhMmAO4X6pOBuWHGZaxpAAAA="
+    "lqip": "data:image/webp;base64,UklGRhoBAABXRUJQVlA4IA4BAAAQBwCdASoYACsAPu1oq1AppaOiqrgMATAdiUAVHruAH9b9ZpouyXx5GklGGRYCk24IifYlUQ0ewvAgy/ShboVAAAD+kbIFgYdhoHPOcOeKgI79WsVnHspmHi9aMXv0fYNyjnU1rkGp2nV46M8+MC0zB4htR6Ly47GWagz/HRAf4JFX+IMN0UAU5H0T5qs/GCX3AzrYIFd8A3QcNMH7gIboFvwrKWY63iKaRr9bkxKYU5C3E9eRHCJJKZwC+BbcJy4lB1Fs/JDPFCMHQEHfMOYUbNaHFCFw9t5vWMmqDRLJI6ySkpuvn4/cJd4A3D55N5OinmEHERvNm/pIncE/mQdbAr3OcK/YoZ/ykFAsAAA="
   },
   "plancha": {
     "width": 2160,
@@ -33,6 +33,17 @@ export const cinemaAssets = {
       1800
     ],
     "lqip": "data:image/webp;base64,UklGRg4BAABXRUJQVlA4IAIBAABQBgCdASoYAB4APu1qr1CppaSiqAqpMB2JbACxFKrazrgTLiSPXE194rFg0EBwq9DBnny6liwYu3YakAD+3PlH/veFXrapQPO0KNu4do/WYG/2ZDKZg02AaX2tP41Q+RGAF6SlRA08TcR490N/tzX73jZbay3XkwgbuGGBo8BViqr5qol9/5JULvTdnFCBKzSoE0wkBxH3euxLpUWf0a1BjqIfMLpt6Smd2Hmimh+YA7JmI7SdEFTKaocDx6gTaVJgS3BnjNVdBhUyfMyqHHPUyDQRHhxqs7m/chbhfeV/nfY4y6qbRc13bBCN7hEuVrCbiyJSUPTc6eXorLFLXxVoAAA="
+  },
+  "plancha-desktop": {
+    "width": 3840,
+    "height": 2160,
+    "widths": [
+      1280,
+      1920,
+      2560,
+      3840
+    ],
+    "lqip": "data:image/webp;base64,UklGRrQAAABXRUJQVlA4IKgAAABwBACdASoYAA4APu1iqU2ppaOiMAgBMB2JbACdLwDs/wFbtI9zyj05kiSoAADh3/OhEvmqD/F7g59dNcGKSReOY+Zj+j7kcXyukBjgKLf1SX+UIh+9N84EPTyLP8S7PzUzYT4EnZ8UfGorKep7Z/BKL7yaakJcRu7m73jhziFyKSbVnIrUPMz+OQ43w/2456wPhR0p9oZ7F6V5F3hAG+XXIrfgu1bloAA="
   },
   "table-desktop": {
     "width": 3840,

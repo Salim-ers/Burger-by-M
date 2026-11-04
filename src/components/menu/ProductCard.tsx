@@ -19,7 +19,6 @@ export function ProductCard({ product, priority }: { product: MenuProduct; prior
       <div className="relative">
         <ProductImage image={product.image} name={product.name} sizes="(min-width: 1024px) 46vw, 100vw" priority={priority} zoom className="aspect-[3/2] w-full md:rounded-2xl" />
         <ProductBadges product={product} className="absolute top-3 left-3" />
-        {product.image && product.needsFinalProductPhoto && <span className="t-label absolute right-3 bottom-3 rounded-full bg-ivory/90 px-2.5 py-1 text-[0.58rem] text-ink/70">Photo d’illustration</span>}
       </div>
       <div className="flex flex-1 flex-col px-1 pt-5 pb-6 md:px-5">
         <div className="flex items-start justify-between gap-6">

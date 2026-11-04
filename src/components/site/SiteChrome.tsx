@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { MobileCartBar } from "@/components/cart/MobileCartBar";
+import { DemoBanner } from "@/components/demo/DemoBanner";
 import { Toast } from "./Toast";
 import { ScrollProgress } from "./ScrollProgress";
 import { PageTransition } from "./PageTransition";
@@ -17,6 +18,7 @@ export function SiteChrome() {
       <ProductSheet />
       <CartDrawer />
       <MobileCartBar />
+      <DemoBanner />
       <Toast />
       <ScrollProgress />
       <PageTransition />

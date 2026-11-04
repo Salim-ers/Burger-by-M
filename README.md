@@ -128,17 +128,25 @@ Toutes les images passent par [src/data/media.ts](src/data/media.ts) (banque uni
 - `public/images/cutouts/` : versions détourées pour fonds clairs ; `cutouts/dark/` : versions décontaminées pour fonds sombres. Servent aux compositions de `editorial/`, plus affichées directement.
 - `public/images/editorial/` : compositions réalisées à partir des vrais visuels produits (alignements 2400×1350). Aucune source 3840×2160 n’existe dans le projet (les plus grandes font ~1800 px) : pour des plans larges en très haute définition, fournir de nouvelles photos.
 - `public/images/food/`, `restaurant/` : photos réelles.
-- Un produit dont la photo n’est pas exactement le produit porte `needsFinalProductPhoto` → mention « Photo d’illustration » sur le site (frites, milkshake à composer). À remplacer par de vraies photos depuis `/admin/menu` (import → WebP stocké en base, servi par `/media/…`).
+- Un produit dont la photo n’est pas exactement le produit porte `needsFinalProductPhoto` : repère réservé à `/admin/menu`, plus affiché sur le site à la demande du restaurant. À remplacer par de vraies photos depuis `/admin/menu` (import → WebP stocké en base, servi par `/media/…`).
 
 ### Visuels générés (accueil et frites)
 
-L’accueil (`public/images/cinema/`), les visuels de frites et de milkshakes (`public/images/products/frites-*.webp`, `milkshake-*.webp`) sont des **créations générées** via l’API d’images OpenAI, à partir des vraies photos du restaurant (recette, barquettes, papier, table, et le comptoir au néon pour le hero : `assets/sources/restaurant-comptoir-neon.png`). Ce ne sont pas des photos du restaurant : le site les présente comme des visuels d’ambiance ou d’illustration, jamais comme contractuels.
+L’accueil (`public/images/cinema/`), les visuels de frites et de milkshakes (`public/images/products/frites-*.webp`, `milkshake-*.webp`) sont des **créations générées** via l’API d’images OpenAI, à partir des vraies photos du restaurant (recette, barquettes, papier, table, et le comptoir au néon pour le hero : `assets/sources/restaurant-comptoir-neon.png`). Ce ne sont pas des photos du restaurant : aucune mention n’est affichée sur le site à la demande du restaurant, et les mentions légales précisent que les photographies ne sont pas contractuelles.
 
 - `scripts/media/image-briefs.mjs` : direction artistique et prompts. `assets/generated/` : fichiers sources et `manifest.json` (modèle, prompt, références, version retenue, statut « à valider »).
 - `npm run media:generate -- --only hero-desktop --draft` juge un cadrage à bas coût, `--only hero-desktop --refine` le reprend en pleine définition, `npm run media:publish` produit les variantes web (AVIF + WebP par largeur pour l’accueil).
 - La clé `OPENAI_API_KEY` reste dans `.env.local` (non versionné). Ces scripts se lancent uniquement à la main : le site ne les appelle jamais, ni au build ni à la visite d’une page. **Ne pas déclarer la clé sur Vercel.**
-- Remplacer un visuel par une vraie photo : import depuis `/admin/menu`, puis retirer « Photo d’illustration » dans la fiche du produit. Les migrations `0003` et `0004` n’écrasent jamais une image importée.
+- Remplacer un visuel par une vraie photo : import depuis `/admin/menu`. Les migrations `0003` et `0004` n’écrasent jamais une image importée.
 - **Note Google** de l’accueil : valeur fixe dans `src/data/brand.ts`, à tenir à jour à la main. Le lien mène à l’URL des avis renseignée dans `/admin/settings` (sinon à la fiche Google Maps).
+
+### Mode démonstration (présentation au restaurateur)
+
+Rien n'est envoyé au serveur : tout reste dans le navigateur (`src/features/demo/store.ts`). Aucune commande réelle, aucun paiement, aucune écriture en base.
+
+- `/demo` : point d'entrée, avec les deux parcours. Le site passe en mode démo avec `?demo=1` (bandeau « Mode démo », bouton « Quitter » ou `?demo=0` pour sortir). Paiement simulé, puis suivi de commande.
+- `/demo/cuisine` : le vrai écran cuisine, sans compte. Les commandes passées dans un autre onglet **du même navigateur** arrivent avec la sonnerie. Sur une tablette seule, « Simuler une commande » en crée une. « Commandes on/off » coupe la commande côté site démo.
+- Un téléphone et une tablette ne se synchronisent pas en démo (pas de base) : c'est le cas uniquement sur le vrai parcours.
 
 ## 8. À compléter avant la mise en ligne publique
 

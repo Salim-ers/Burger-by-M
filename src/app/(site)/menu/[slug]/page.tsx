@@ -78,7 +78,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <div className="mt-8 grid gap-10 md:grid-cols-12 md:gap-14">
             <div className="md:col-span-7">
               <ProductImage image={product.image} name={product.name} sizes="(min-width: 768px) 58vw, 100vw" priority className="aspect-[3/2] w-full md:rounded-2xl" />
-              {product.image && product.needsFinalProductPhoto && <p className="mt-3 text-xs text-sub">Photo d’illustration : la présentation peut varier.</p>}
             </div>
             <div className="flex flex-col md:col-span-5 md:pt-4">
               <ProductBadges product={product} />

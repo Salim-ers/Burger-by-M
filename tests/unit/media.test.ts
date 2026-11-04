@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { productPhoto } from "@/data/media";
 import { cinemaAssets } from "@/data/cinema-assets";
-import { PRODUCTS } from "@/db/seed/menu-data";
+import { MODIFIER_GROUPS, PRODUCTS } from "@/db/seed/menu-data";
 
 const FRITES = ["frites-classiques", "frites-cheddar", "frites-cheddar-oignons-frits", "frites-cheddar-bacon"];
 
@@ -40,6 +40,17 @@ describe("visuels des milkshakes", () => {
       expect(existsSync(`public${productPhoto[p.photo!].src}`)).toBe(true);
       expect(p.needsFinalProductPhoto).toBe(true);
     }
+  });
+});
+
+describe("commandes simulées de la démonstration", () => {
+  it("ne citent que des produits et des boissons de la carte", () => {
+    const source = readFileSync("src/features/demo/sample.ts", "utf8");
+    const slugs = [...source.matchAll(/slug: "([a-z-]+)"/g)].map((m) => m[1]!);
+    expect(slugs.length).toBeGreaterThan(0);
+    for (const slug of slugs) expect(PRODUCTS.find((p) => p.slug === slug)?.priceCents ?? null, slug).not.toBeNull();
+    const drinks = MODIFIER_GROUPS.find((g) => g.key === "boisson-menu")!.modifiers.map((m) => m.name);
+    for (const m of source.matchAll(/menu: "([^"]+)"/g)) expect(drinks).toContain(m[1]);
   });
 });
 

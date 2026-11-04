@@ -55,7 +55,7 @@ export function CategoryNav({ categories }: { categories: Pick<MenuCategory, "id
           stuck ? "before:opacity-100" : "before:opacity-0",
         )}
       >
-      <div ref={navRef} className="no-scrollbar container-bm flex gap-1 overflow-x-auto">
+      <div ref={navRef} className="no-scrollbar container-bm flex gap-1 overflow-x-auto md:justify-center">
         {categories.map((c) => (
           <a
             key={c.id}
