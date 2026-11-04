@@ -378,9 +378,9 @@
       ]
     },
     "plancha": {
-      "usage": "Séquence éditoriale : le moment où le burger commence",
+      "usage": "Séquence éditoriale, cadrage portrait : le moment où le burger commence",
       "status": "à valider",
-      "selected": "assets/generated/plancha/plancha__genere-ia__20261104T130624.webp",
+      "selected": "assets/generated/plancha/plancha__genere-ia__20261104T163231.webp",
       "versions": [
         {
           "file": "assets/generated/_drafts/plancha__genere-ia__20261104T125936.webp",
@@ -433,6 +433,61 @@
               "text_tokens": 0
             },
             "total_tokens": 6184
+          }
+        },
+        {
+          "file": "assets/generated/_drafts/plancha__genere-ia__20261104T163045.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "864x1536",
+          "quality": "medium",
+          "draft": true,
+          "references": [
+            "assets/generated/plancha-desktop/plancha-desktop__genere-ia__20261104T162820.webp",
+            "public/images/food/smash-le-special.webp"
+          ],
+          "prompt": "Reference 1 is the wide photograph of the scene: same griddle, same clean kitchen, same light, same look of the patties and cheese. Reference 2 shows the restaurant's real finished burger. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera, nothing new.\n\nThin smashed beef patties on the griddle, just pressed, with craggy, lacy, deeply browned edges, each with a slice of cheddar that has only just begun to soften and slump over the meat. A little real steam. Three patties stacked in depth, filling the upper two thirds of the frame. The lower third of the frame is the calm, empty griddle, where a short caption will sit.\n\nThe griddle is spotless and perfectly maintained, as in a very clean professional kitchen: a smooth, even, clean dark steel surface with a soft natural sheen. Around the patties there is only a thin, small, natural line of sizzling fat. Absolutely no burnt residue, no black crust on the plate, no scraps, no crumbs, no splatter, no stains, no rust, no grime, no scratches, no scattered bits of meat anywhere on the griddle. The stainless steel splash guard behind is bright and clean. The metal spatula is a clean, new-looking brushed stainless steel blade, with no rust and no stains.\n\nStyle: a real, clean, natural photograph by a professional food photographer, razor sharp and detailed, natural daylight-balanced light from the kitchen, true-to-life colours, natural contrast. Strictly forbidden: dark moody low-key lighting, heavy blur, orange colour grading, HDR look, oversaturated colours, plastic-looking cheese, any text, logo or watermark, toppings not listed.",
+          "createdAt": "2026-11-04T16:30:45.933Z",
+          "usage": {
+            "input_tokens": 2763,
+            "input_tokens_details": {
+              "image_tokens": 2382,
+              "text_tokens": 381
+            },
+            "output_tokens": 280,
+            "output_tokens_details": {
+              "image_tokens": 280,
+              "text_tokens": 0
+            },
+            "total_tokens": 3043
+          }
+        },
+        {
+          "file": "assets/generated/plancha/plancha__genere-ia__20261104T163231.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "2160x3840",
+          "quality": "max",
+          "draft": false,
+          "references": [
+            "assets/generated/_drafts/plancha__genere-ia__20261104T163045.webp",
+            "assets/generated/plancha-desktop/plancha-desktop__retouche__20261104T162820.webp",
+            "public/images/food/smash-le-special.webp"
+          ],
+          "prompt": "The FIRST attached image is the approved composition. Reproduce this exact composition, framing, objects and lighting at much higher resolution, with finer natural detail. The other attached images are the references below, numbered from 1 in order, used only to stay faithful to the real products.\n\nReference 1 is the wide photograph of the scene: same griddle, same clean kitchen, same light, same look of the patties and cheese. Reference 2 shows the restaurant's real finished burger. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera, nothing new.\n\nThin smashed beef patties on the griddle, just pressed, with craggy, lacy, deeply browned edges, each with a slice of cheddar that has only just begun to soften and slump over the meat. A little real steam. Three patties stacked in depth, filling the upper two thirds of the frame. The lower third of the frame is the calm, empty griddle, where a short caption will sit.\n\nThe griddle is spotless and perfectly maintained, as in a very clean professional kitchen: a smooth, even, clean dark steel surface with a soft natural sheen. Around the patties there is only a thin, small, natural line of sizzling fat. Absolutely no burnt residue, no black crust on the plate, no scraps, no crumbs, no splatter, no stains, no rust, no grime, no scratches, no scattered bits of meat anywhere on the griddle. The stainless steel splash guard behind is bright and clean. The metal spatula is a clean, new-looking brushed stainless steel blade, with no rust and no stains.\n\nStyle: a real, clean, natural photograph by a professional food photographer, razor sharp and detailed, natural daylight-balanced light from the kitchen, true-to-life colours, natural contrast. Strictly forbidden: dark moody low-key lighting, heavy blur, orange colour grading, HDR look, oversaturated colours, plastic-looking cheese, any text, logo or watermark, toppings not listed.\n\nDirector's note: Razor sharp fine detail everywhere. Keep exactly the same framing as the first attached image and keep the griddle, the steel and the spatula spotless, with no stray scraps anywhere on the griddle.",
+          "createdAt": "2026-11-04T16:32:31.846Z",
+          "usage": {
+            "input_tokens": 4169,
+            "input_tokens_details": {
+              "image_tokens": 3678,
+              "text_tokens": 491
+            },
+            "output_tokens": 13342,
+            "output_tokens_details": {
+              "image_tokens": 13342,
+              "text_tokens": 0
+            },
+            "total_tokens": 17511
           }
         }
       ]
@@ -1456,7 +1511,7 @@
     "plancha-desktop": {
       "usage": "Séquence éditoriale, plein cadre paysage : le moment où le burger commence",
       "status": "à valider",
-      "selected": "assets/generated/plancha-desktop/plancha-desktop__genere-ia__20261104T151235.webp",
+      "selected": "assets/generated/plancha-desktop/plancha-desktop__retouche__20261104T162820.webp",
       "versions": [
         {
           "file": "assets/generated/_drafts/plancha-desktop__genere-ia__20261104T150928.webp",
@@ -1511,6 +1566,62 @@
               "text_tokens": 0
             },
             "total_tokens": 16658
+          }
+        },
+        {
+          "file": "assets/generated/_drafts/plancha-desktop__genere-ia__20261104T162427.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "1536x864",
+          "quality": "medium",
+          "draft": true,
+          "references": [
+            "assets/generated/plancha-desktop/plancha-desktop__genere-ia__20261104T151235.webp",
+            "public/images/food/smash-le-special.webp",
+            "assets/sources/restaurant-comptoir-neon.png"
+          ],
+          "prompt": "The FIRST attached image is the approved composition. Reproduce this exact composition, framing, objects and lighting at much higher resolution, with finer natural detail. The other attached images are the references below, numbered from 1 in order, used only to stay faithful to the real products.\n\nReference 1 shows the restaurant's real finished burger: match its cheese, its beef crust and its colours. Reference 2 shows the real kitchen: same clean stainless steel, same natural light.\n\nCreate a wide 16:9 photograph on a black steel flat-top griddle in this clean working kitchen: several thin smashed beef patties in a row across the griddle, just pressed, with craggy, lacy, deeply browned edges, each with a slice of cheddar that has only just begun to soften and slump over the meat. Tiny beads of sizzling fat around the edges, a little real steam. The worn edge of a metal spatula enters from the upper right. The patties fill the right two thirds of the frame; the griddle continues, calmer and darker, on the left and along the bottom, where a short caption will sit.\n\nStyle: a real, clean, natural photograph by a professional food photographer, sharp and detailed, natural daylight-balanced light from the kitchen, true-to-life colours, natural contrast. Strictly forbidden: dark moody low-key lighting, heavy blur, orange colour grading, HDR look, oversaturated colours, plastic-looking cheese, any text, logo or watermark, toppings not listed.\n\nDirector's note: Keep the framing and the look of the meat and cheese, but make the griddle and the spatula spotlessly clean as described: remove every burnt speck, stain, splatter and all rust.",
+          "createdAt": "2026-11-04T16:24:27.849Z",
+          "usage": {
+            "input_tokens": 3573,
+            "input_tokens_details": {
+              "image_tokens": 3188,
+              "text_tokens": 385
+            },
+            "output_tokens": 280,
+            "output_tokens_details": {
+              "image_tokens": 280,
+              "text_tokens": 0
+            },
+            "total_tokens": 3853
+          }
+        },
+        {
+          "file": "assets/generated/plancha-desktop/plancha-desktop__genere-ia__20261104T162820.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "3840x2160",
+          "quality": "max",
+          "draft": false,
+          "references": [
+            "assets/generated/_drafts/plancha-desktop__genere-ia__20261104T162427.webp",
+            "public/images/food/smash-le-special.webp",
+            "assets/sources/restaurant-comptoir-neon.png"
+          ],
+          "prompt": "The FIRST attached image is the approved composition. Reproduce this exact composition, framing, objects and lighting at much higher resolution, with finer natural detail. The other attached images are the references below, numbered from 1 in order, used only to stay faithful to the real products.\n\nReference 1 shows the restaurant's real finished burger: match its cheese, its beef crust and its colours. Reference 2 shows the real kitchen: same clean stainless steel, same natural light.\n\nCreate a wide 16:9 photograph on a flat-top griddle in this clean working kitchen: several thin smashed beef patties in a row across the griddle, just pressed, with craggy, lacy, deeply browned edges, each with a slice of cheddar that has only just begun to soften and slump over the meat. A little real steam. The edge of a metal spatula enters from the upper right. The patties fill the right two thirds of the frame; the griddle continues, calm and empty, on the left and along the bottom, where a short caption will sit.\n\nThe griddle is spotless and perfectly maintained, as in a very clean professional kitchen: a smooth, even, clean dark steel surface with a soft natural sheen. Around the patties there is only a thin, small, natural line of sizzling fat. Absolutely no burnt residue, no black crust on the plate, no scraps, no crumbs, no splatter, no stains, no rust, no grime, no scratches, no scattered bits of meat anywhere on the griddle. The stainless steel splash guard behind is bright and clean. The metal spatula is a clean, new-looking brushed stainless steel blade, with no rust and no stains.\n\nStyle: a real, clean, natural photograph by a professional food photographer, razor sharp and detailed, natural daylight-balanced light from the kitchen, true-to-life colours, natural contrast. Strictly forbidden: dark moody low-key lighting, heavy blur, orange colour grading, HDR look, oversaturated colours, plastic-looking cheese, any text, logo or watermark, toppings not listed.\n\nDirector's note: Razor sharp fine detail everywhere. Keep exactly the same framing as the first attached image and keep the griddle, the steel and the spatula spotless.",
+          "createdAt": "2026-11-04T16:28:20.448Z",
+          "usage": {
+            "input_tokens": 3467,
+            "input_tokens_details": {
+              "image_tokens": 2976,
+              "text_tokens": 491
+            },
+            "output_tokens": 13342,
+            "output_tokens_details": {
+              "image_tokens": 13342,
+              "text_tokens": 0
+            },
+            "total_tokens": 16809
           }
         }
       ]

@@ -121,12 +121,14 @@ export function SiteHeader() {
           className={cn(
             "on-dark pointer-events-auto flex w-full items-center justify-between rounded-full border border-white/10 pr-1.5 pl-1.5 text-cream backdrop-blur-xl backdrop-saturate-150 lg:grid lg:grid-cols-[1fr_auto_1fr]",
             "shadow-[0_18px_50px_-18px_rgb(0_0_0/0.65),inset_0_1px_0_rgb(255_255_255/0.08)] transition-[max-width,height,background-color] duration-500 ease-[var(--ease-food)]",
-            compact ? "h-14 max-w-[60rem]" : "h-[3.75rem] max-w-[68rem]",
+            compact ? "h-[3.25rem]" : "h-14",
+            // Trois liens n'ont pas besoin de toute la largeur ; « Commandes fermées », plus long, demande un peu plus.
+            notice ? "max-w-[46rem]" : compact ? "max-w-[39rem]" : "max-w-[43rem]",
             pathname !== "/" ? "bg-[rgb(18_14_11/0.93)]" : compact ? "bg-[rgb(18_14_11/0.86)]" : "bg-[rgb(18_14_11/0.74)]",
           )}
         >
           <Link href="/" className="group flex w-fit shrink-0 items-center rounded-full" aria-label={`${store.name} — accueil`}>
-            <Image src={brand.logo.src} alt="" width={48} height={48} preload sizes="48px" className={cn("rounded-full transition-[width,height,transform] duration-500 ease-[var(--ease-food)] group-hover:rotate-[-6deg]", compact ? "size-11" : "size-12")} />
+            <Image src={brand.logo.src} alt="" width={48} height={48} preload sizes="48px" className={cn("rounded-full transition-[width,height,transform] duration-500 ease-[var(--ease-food)] group-hover:rotate-[-6deg]", compact ? "size-10" : "size-11")} />
           </Link>
 
           <DesktopLinks pathname={pathname} />
@@ -150,7 +152,7 @@ export function SiteHeader() {
             <Link
               href="/menu"
               className={cn(
-                "nav-cta inline-flex h-11 items-center rounded-full px-4 text-[0.74rem] font-bold tracking-[0.02em] transition-colors duration-300 sm:px-5",
+                "nav-cta inline-flex h-11 items-center rounded-full px-4 text-[0.74rem] font-bold tracking-[0.02em] whitespace-nowrap transition-colors duration-300 sm:px-5",
                 notice ? "border border-white/20 text-cream/70 hover:text-cream" : "bg-cheddar text-ink hover:bg-cream",
               )}
             >

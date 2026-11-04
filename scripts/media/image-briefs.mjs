@@ -35,6 +35,9 @@ Composition: camera at eye level, a little further back than the real photo. The
 
 const SHAKE_STYLE = `Style: a real, clean, natural photograph, sharp and detailed, true-to-life colours, slight natural imperfections in the cream and the drips. Strictly forbidden: plastic-looking cream, CGI surfaces, extra fingers, oversaturated colours, HDR look, ingredients not listed, any wrapper or brand lettering on food.`;
 
+/** Une cuisine doit donner confiance : plaque et ustensiles impeccables. */
+const CLEAN_GRIDDLE = `The griddle is spotless and perfectly maintained, as in a very clean professional kitchen: a smooth, even, clean dark steel surface with a soft natural sheen. Around the patties there is only a thin, small, natural line of sizzling fat. Absolutely no burnt residue, no black crust on the plate, no scraps, no crumbs, no splatter, no stains, no rust, no grime, no scratches, no scattered bits of meat anywhere on the griddle. The stainless steel splash guard behind is bright and clean. The metal spatula is a clean, new-looking brushed stainless steel blade, with no rust and no stains.`;
+
 /** Trois vraies recettes de la carte, sans invention. */
 const BURGERS = `Three different burgers from the restaurant's real menu, all in the same soft, lightly glazed golden brioche bun with a slightly uneven crown:
 1. Le Spécial: double thin smashed beef patties with dark, lacy, crispy edges, melted cheddar, crispy fried onions, a few pickle slices (as in the real photo).
@@ -94,22 +97,26 @@ ${NATURAL}`,
     refs: ["public/images/food/smash-le-special.webp", "assets/sources/restaurant-comptoir-neon.png"],
     prompt: `Reference 1 shows the restaurant's real finished burger: match its cheese, its beef crust and its colours. Reference 2 shows the real kitchen: same clean stainless steel, same natural light.
 
-Create a wide 16:9 photograph on a black steel flat-top griddle in this clean working kitchen: several thin smashed beef patties in a row across the griddle, just pressed, with craggy, lacy, deeply browned edges, each with a slice of cheddar that has only just begun to soften and slump over the meat. Tiny beads of sizzling fat around the edges, a little real steam. The worn edge of a metal spatula enters from the upper right. The patties fill the right two thirds of the frame; the griddle continues, calmer and darker, on the left and along the bottom, where a short caption will sit.
+Create a wide 16:9 photograph on a flat-top griddle in this clean working kitchen: several thin smashed beef patties in a row across the griddle, just pressed, with craggy, lacy, deeply browned edges, each with a slice of cheddar that has only just begun to soften and slump over the meat. A little real steam. The edge of a metal spatula enters from the upper right. The patties fill the right two thirds of the frame; the griddle continues, calm and empty, on the left and along the bottom, where a short caption will sit.
 
-Style: a real, clean, natural photograph by a professional food photographer, sharp and detailed, natural daylight-balanced light from the kitchen, true-to-life colours, natural contrast. Strictly forbidden: dark moody low-key lighting, heavy blur, orange colour grading, HDR look, oversaturated colours, plastic-looking cheese, any text, logo or watermark, toppings not listed.`,
+${CLEAN_GRIDDLE}
+
+Style: a real, clean, natural photograph by a professional food photographer, razor sharp and detailed, natural daylight-balanced light from the kitchen, true-to-life colours, natural contrast. Strictly forbidden: dark moody low-key lighting, heavy blur, orange colour grading, HDR look, oversaturated colours, plastic-looking cheese, any text, logo or watermark, toppings not listed.`,
   },
+
   plancha: {
-    usage: "Séquence éditoriale : le moment où le burger commence",
-    size: "2160x2688",
-    draftSize: "1024x1280",
-    refs: ["public/images/food/smash-le-special.webp"],
-    prompt: `Reference 1 shows the real finished burger: match its cheese, its beef crust and its warm colour.
+    usage: "Séquence éditoriale, cadrage portrait : le moment où le burger commence",
+    size: "2160x3840",
+    draftSize: "864x1536",
+    refs: [{ asset: "plancha-desktop" }, "public/images/food/smash-le-special.webp"],
+    prompt: `Reference 1 is the wide photograph of the scene: same griddle, same clean kitchen, same light, same look of the patties and cheese. Reference 2 shows the restaurant's real finished burger. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera, nothing new.
 
-Create a close-up action photograph on a black steel flat-top griddle in a working restaurant kitchen: two thin smashed beef patties, just pressed, with craggy, lacy, deeply browned edges, each with a slice of cheddar that has only just begun to soften and slump over the meat. Tiny beads of sizzling fat around the edges, a real wisp of steam backlit by a warm lamp. The worn, scratched edge of a metal spatula enters the frame from the upper right. Very shallow depth of field. The griddle surface is seasoned, dark, with honest traces of use. The lower-left part of the frame falls into darkness.
+Thin smashed beef patties on the griddle, just pressed, with craggy, lacy, deeply browned edges, each with a slice of cheddar that has only just begun to soften and slump over the meat. A little real steam. Three patties stacked in depth, filling the upper two thirds of the frame. The lower third of the frame is the calm, empty griddle, where a short caption will sit.
 
-${CRAFT}`,
+${CLEAN_GRIDDLE}
+
+Style: a real, clean, natural photograph by a professional food photographer, razor sharp and detailed, natural daylight-balanced light from the kitchen, true-to-life colours, natural contrast. Strictly forbidden: dark moody low-key lighting, heavy blur, orange colour grading, HDR look, oversaturated colours, plastic-looking cheese, any text, logo or watermark, toppings not listed.`,
   },
-
   // ---------------- « Généreux par nature. » ----------------
   "table-desktop": {
     usage: "Plein cadre : la table — cadrage paysage",
