@@ -305,24 +305,26 @@ html.intro-seen .cine-logo { display: none; }
   to { transform: scale(1); }
 }
 
-/* Dégradés de lecture : le bas se fond exactement dans le noir de la section suivante. */
+/* Dégradés de lecture, limités à la zone du texte : le burger et le néon gardent toute leur lumière.
+   Le bas se fond exactement dans le noir de la section suivante. */
 .cine-shade {
   background:
-    linear-gradient(to top, rgb(10 10 10) 0%, rgb(10 10 10 / 0.74) 22%, rgb(10 10 10 / 0.18) 46%, transparent 62%),
-    linear-gradient(to bottom, rgb(10 10 10 / 0.42) 0%, transparent 18%);
+    linear-gradient(to top, rgb(10 10 10) 0%, rgb(10 10 10 / 0.6) 6%, transparent 15%),
+    radial-gradient(82% 92% at 0% 100%, rgb(10 10 10 / 0.94) 0%, rgb(10 10 10 / 0.8) 42%, rgb(10 10 10 / 0.3) 72%, transparent 100%),
+    linear-gradient(to bottom, rgb(10 10 10 / 0.38) 0%, transparent 15%);
 }
 
-/* Portrait : la photo remonte pour que le titre se pose sous le burger, sur le comptoir. */
+/* Portrait : l'image a son propre cadrage (néon, burger, puis table vide pour le titre). */
 @media (orientation: portrait) {
-  [data-hero-pointer] { top: -8%; bottom: 9%; }
   .cine-shade {
     background:
-      linear-gradient(to top, rgb(10 10 10) 0%, rgb(10 10 10) 10%, rgb(10 10 10 / 0.78) 30%, rgb(10 10 10 / 0.2) 50%, transparent 64%),
-      linear-gradient(to bottom, rgb(10 10 10 / 0.42) 0%, transparent 18%);
+      linear-gradient(to top, rgb(10 10 10) 0%, rgb(10 10 10) 12%, rgb(10 10 10 / 0.84) 32%, rgb(10 10 10 / 0.4) 43%, transparent 52%),
+      linear-gradient(to bottom, rgb(10 10 10 / 0.38) 0%, transparent 14%);
   }
 }
-/* Très petits écrans : le titre et les boutons d'abord (la phrase reste lue par les lecteurs d'écran dans le titre). */
-@media (orientation: portrait) and (max-height: 620px) {
+/* Téléphones courts : le titre et les boutons d'abord, pour laisser le burger visible
+   (la phrase reste lue par les lecteurs d'écran dans le titre). */
+@media (orientation: portrait) and (max-height: 720px) {
   .cine-sentence { display: none; }
 }
 
@@ -334,7 +336,7 @@ html.intro-seen .cine-logo { display: none; }
   text-transform: uppercase;
 }
 @media (min-width: 1024px) {
-  .cine-title { font-size: clamp(5.4rem, min(10.8vw, 23svh), 19rem); }
+  .cine-title { font-size: clamp(5.2rem, min(10.2vw, 22svh), 18rem); }
 }
 /* Masque d'une ligne : marges pour les accents (Û) et le jambage du q italique. */
 .cine-line {
@@ -433,6 +435,12 @@ html:not(.intro-seen):has(.cine-hero) [data-nav] > nav { animation: nav-drop 1s 
   .cta:hover .cta-label > span, .cta:hover .cta-label::after, .cta:focus-visible .cta-label > span, .cta:focus-visible .cta-label::after { transform: translateY(-100%); }
   .cta:hover .cta-arrow > svg, .cta:focus-visible .cta-arrow > svg { transform: translateX(0); }
   .cta-glass:hover, .cta-glass:focus-visible { color: var(--color-ink); }
+}
+
+/* Téléphones : deux boutons côte à côte, centrés, sans disque (le survol n'y existe pas). */
+@media (max-width: 639px) {
+  .cta { justify-content: center; padding-inline: 0.75rem; font-size: 0.84rem; }
+  .cta-disc { display: none; }
 }
 
 /* Très grands écrans : les boutons et la phrase suivent l'échelle du titre. */

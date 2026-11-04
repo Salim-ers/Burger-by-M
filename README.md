@@ -132,7 +132,7 @@ Toutes les images passent par [src/data/media.ts](src/data/media.ts) (banque uni
 
 ### Visuels générés (accueil et frites)
 
-L’accueil (`public/images/cinema/`) et les quatre visuels de frites (`public/images/products/frites-*.webp`) sont des **créations générées** via l’API d’images OpenAI, à partir des vraies photos du restaurant (recette, barquettes, papier, table). Ce ne sont pas des photos du restaurant : le site les présente comme des visuels d’ambiance ou d’illustration, jamais comme contractuels.
+L’accueil (`public/images/cinema/`) et les quatre visuels de frites (`public/images/products/frites-*.webp`) sont des **créations générées** via l’API d’images OpenAI, à partir des vraies photos du restaurant (recette, barquettes, papier, table, et le comptoir au néon pour le hero : `assets/sources/restaurant-comptoir-neon.png`). Ce ne sont pas des photos du restaurant : le site les présente comme des visuels d’ambiance ou d’illustration, jamais comme contractuels.
 
 - `scripts/media/image-briefs.mjs` : direction artistique et prompts. `assets/generated/` : fichiers sources et `manifest.json` (modèle, prompt, références, version retenue, statut « à valider »).
 - `npm run media:generate -- --only hero-desktop --draft` juge un cadrage à bas coût, `--only hero-desktop --refine` le reprend en pleine définition, `npm run media:publish` produit les variantes web (AVIF + WebP par largeur pour l’accueil).

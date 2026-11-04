@@ -29,10 +29,10 @@ export function CinemaPreload({ landscape, portrait, sizes }: { landscape: Cinem
  */
 export function CinemaPicture({ id, portraitId, alt, sizes, priority, position, className }: { id: CinemaId; portraitId?: CinemaId; alt: string; sizes: string; priority?: boolean; position?: string; className?: string }) {
   const main = cinemaAssets[id];
-  const blur = (lqip: string) => ({ backgroundImage: `url("${lqip}")`, backgroundSize: "cover", backgroundPosition: position ?? "center" });
+  const blur = (lqip: string, at = "center") => ({ backgroundImage: `url("${lqip}")`, backgroundSize: "cover", backgroundPosition: at });
   return (
     <>
-      <span aria-hidden className={cn("absolute inset-0", portraitId && "portrait:hidden")} style={blur(main.lqip)} />
+      <span aria-hidden className={cn("absolute inset-0", portraitId && "portrait:hidden")} style={blur(main.lqip, position)} />
       {portraitId && <span aria-hidden className="absolute inset-0 landscape:hidden" style={blur(cinemaAssets[portraitId].lqip)} />}
       <picture>
         {portraitId && <source media={PORTRAIT} type="image/avif" srcSet={srcSet(portraitId, "avif")} sizes={sizes} />}
@@ -49,7 +49,7 @@ export function CinemaPicture({ id, portraitId, alt, sizes, priority, position, 
           decoding={priority ? "sync" : "async"}
           fetchPriority={priority ? "high" : "auto"}
           draggable={false}
-          className={cn("absolute inset-0 size-full object-cover", className)}
+          className={cn("absolute inset-0 size-full object-cover", portraitId && "portrait:object-center!", className)}
           style={position ? { objectPosition: position } : undefined}
         />
       </picture>

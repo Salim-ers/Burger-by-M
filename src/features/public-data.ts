@@ -10,10 +10,15 @@ import type { ScheduleInput } from "@/lib/schedule";
 /**
  * Données publiques mises en cache (carte, réglages, horaires).
  * Invalidation immédiate à chaque modification depuis l'administration (tags « menu », « store »).
+ *
+ * Ce cache survit aux déploiements : une migration qui modifie la carte n'y apparaît qu'après une heure,
+ * sauf si elle change aussi la version ci-dessous (dernière en date : 0003_visuels_frites).
  */
 export const CACHE_TAGS = { menu: "menu", store: "store" } as const;
 
-export const getPublicMenu = unstable_cache(async () => loadMenu(getDb()), ["public-menu"], { tags: [CACHE_TAGS.menu], revalidate: 3600 });
+const MENU_CACHE_VERSION = "2";
+
+export const getPublicMenu = unstable_cache(async () => loadMenu(getDb()), ["public-menu", MENU_CACHE_VERSION], { tags: [CACHE_TAGS.menu], revalidate: 3600 });
 
 const getStoreRaw = unstable_cache(
   async () => {

@@ -66,7 +66,8 @@ export function Hero() {
                 portraitId="hero-mobile"
                 priority
                 sizes="100vw"
-                alt="Scène d’ambiance : un burger au cheddar fondu posé sur le comptoir d’une cuisine, le soir, sous une lumière chaude"
+                position="100% 50%"
+                alt="Scène d’ambiance : un burger au cheddar fondu sur une table, devant le comptoir et l’enseigne lumineuse Burger By M, le soir"
               />
             </div>
           </div>
@@ -99,11 +100,11 @@ export function Hero() {
 
           <div className="cine-enter flex flex-col gap-5">
             <p className="cine-sentence text-[1rem] leading-snug text-cream/85 md:text-[1.1rem] min-[1800px]:text-[1.4rem]">Smash burgers préparés à la commande, à Rantigny.</p>
-            <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
-              <Magnetic className="w-full sm:w-auto">
+            <div className="flex gap-2.5 max-[359px]:flex-col sm:flex-wrap">
+              <Magnetic className="min-w-0 flex-1 sm:flex-none">
                 <Cta href="/menu" label={notice ? "Commandes fermées" : "Commander"} tone={notice ? "glass" : "solid"} className="w-full sm:w-auto" />
               </Magnetic>
-              <Magnetic className="w-full sm:w-auto">
+              <Magnetic className="min-w-0 flex-1 sm:flex-none">
                 <Cta href="/menu" label="Découvrir la carte" tone="glass" className="w-full sm:w-auto" />
               </Magnetic>
             </div>

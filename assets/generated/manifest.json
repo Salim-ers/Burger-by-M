@@ -4,7 +4,7 @@
     "hero-desktop": {
       "usage": "Hero de l'accueil — cadrage paysage",
       "status": "à valider",
-      "selected": "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T131614.webp",
+      "selected": "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T140006.webp",
       "versions": [
         {
           "file": "assets/generated/_drafts/hero-desktop__genere-ia__20261104T125935.webp",
@@ -114,6 +114,63 @@
               "text_tokens": 0
             },
             "total_tokens": 6898
+          }
+        },
+        {
+          "file": "assets/generated/_drafts/hero-desktop__genere-ia__20261104T135908.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "1536x864",
+          "quality": "medium",
+          "draft": true,
+          "references": [
+            "assets/sources/restaurant-comptoir-neon.png",
+            "public/images/food/smash-le-special.webp",
+            "public/images/food/plateau-burgers-frites.webp"
+          ],
+          "prompt": "Reference 1 is a real photo of the inside of the restaurant. Reference 2 is its real burger. Reference 3 shows its real paper and table. Create a wide cinematic campaign photograph taken inside this exact restaurant.\n\nThe place must stay faithful to the real photo: a counter whose front is made of vertical dark wooden slats, with a cream counter top; mounted on those slats, a warm yellow neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo; behind the counter, an open kitchen with white walls, a stainless steel extraction hood and backsplash, and a cook in black with a black cap seen from behind, out of focus; a warm light strip along the ceiling. Do not add any furniture, decoration, window or object that is not in the photo. Only the light changes: it is evening, the room lights are dimmed, the neon glows warm yellow and the white walls fall into warm shadow.\n\nThe burger: a soft brioche bun with a lightly glazed, slightly uneven golden crown and a few natural wrinkles; two thin smashed beef patties with dark, craggy, lacy crispy edges; real melted cheddar pooling irregularly over the meat; a loose pile of crispy fried onions; a couple of pickle slices barely visible. Nothing else in the burger.\n\nScene: late evening. In the foreground, close to the camera, the burger rests on slightly crumpled greaseproof paper on a dark table. Behind it, a few metres away and softly out of focus, the restaurant's counter runs across the frame, seen at a slight angle.\n\nComposition: a wide shot. The burger sits at the right third of the frame, low in the image, only about 22% of the frame width. The neon sign is in the right half of the frame, above and behind the burger, never hidden by it, large enough to read at a glance. The left half of the frame is calmer and darker, with the counter and the kitchen receding into warm shadow, leaving room for a headline. The bottom of the frame is the dark table, falling smoothly to near black. A thin wisp of steam rises from the burger. Palette: warm yellow neon glow, warm wood, deep shadow.\n\nStyle: real editorial advertising food photography, captured on location with a medium-format digital camera and an 80mm lens around f/4. One warm practical tungsten key light and very little fill, natural falloff into deep shadow, faint film grain, believable micro-texture. Slight human imperfection everywhere: uneven crumbs, irregular cheese drips, small grease marks. It must look photographed, not rendered.\nStrictly forbidden: any text, letter, number, logo, sticker, label or watermark other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text); plastic-looking cheese; waxy or CGI surfaces; a perfectly symmetrical bun; impossibly tall stacks; floating ingredients; HDR look; oversaturated colours; oversharpening; toppings not explicitly listed.",
+          "createdAt": "2026-11-04T13:59:08.786Z",
+          "usage": {
+            "input_tokens": 3222,
+            "input_tokens_details": {
+              "image_tokens": 2554,
+              "text_tokens": 668
+            },
+            "output_tokens": 280,
+            "output_tokens_details": {
+              "image_tokens": 280,
+              "text_tokens": 0
+            },
+            "total_tokens": 3502
+          }
+        },
+        {
+          "file": "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T140006.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "3840x2160",
+          "quality": "high",
+          "draft": false,
+          "references": [
+            "assets/generated/_drafts/hero-desktop__genere-ia__20261104T135908.webp",
+            "assets/sources/restaurant-comptoir-neon.png",
+            "public/images/food/smash-le-special.webp",
+            "public/images/food/plateau-burgers-frites.webp"
+          ],
+          "prompt": "The FIRST attached image is the approved composition. Reproduce this exact composition, framing, objects and lighting at much higher resolution, with finer natural detail. The other attached images are the references below, numbered from 1 in order, used only to stay faithful to the real products.\n\nReference 1 is a real photo of the inside of the restaurant. Reference 2 is its real burger. Reference 3 shows its real paper and table. Create a wide cinematic campaign photograph taken inside this exact restaurant.\n\nThe place must stay faithful to the real photo: a counter whose front is made of vertical dark wooden slats, with a cream counter top; mounted on those slats, a warm yellow neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo; behind the counter, an open kitchen with white walls, a stainless steel extraction hood and backsplash, and a cook in black with a black cap seen from behind, out of focus; a warm light strip along the ceiling. Do not add any furniture, decoration, window or object that is not in the photo. Only the light changes: it is evening, the room lights are dimmed, the neon glows warm yellow and the white walls fall into warm shadow.\n\nThe burger: a soft brioche bun with a lightly glazed, slightly uneven golden crown and a few natural wrinkles; two thin smashed beef patties with dark, craggy, lacy crispy edges; real melted cheddar pooling irregularly over the meat; a loose pile of crispy fried onions; a couple of pickle slices barely visible. Nothing else in the burger.\n\nScene: late evening. In the foreground, close to the camera, the burger rests on slightly crumpled greaseproof paper on a dark table. Behind it, a few metres away and softly out of focus, the restaurant's counter runs across the frame, seen at a slight angle.\n\nComposition: a wide shot. The burger sits at the right third of the frame, low in the image, only about 22% of the frame width. The neon sign is in the right half of the frame, above and behind the burger, never hidden by it, large enough to read at a glance. The left half of the frame is calmer and darker, with the counter and the kitchen receding into warm shadow, leaving room for a headline. The bottom of the frame is the dark table, falling smoothly to near black. A thin wisp of steam rises from the burger. Palette: warm yellow neon glow, warm wood, deep shadow.\n\nStyle: real editorial advertising food photography, captured on location with a medium-format digital camera and an 80mm lens around f/4. One warm practical tungsten key light and very little fill, natural falloff into deep shadow, faint film grain, believable micro-texture. Slight human imperfection everywhere: uneven crumbs, irregular cheese drips, small grease marks. It must look photographed, not rendered.\nStrictly forbidden: any text, letter, number, logo, sticker, label or watermark other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text); plastic-looking cheese; waxy or CGI surfaces; a perfectly symmetrical bun; impossibly tall stacks; floating ingredients; HDR look; oversaturated colours; oversharpening; toppings not explicitly listed.",
+          "createdAt": "2026-11-04T14:00:06.452Z",
+          "usage": {
+            "input_tokens": 4584,
+            "input_tokens_details": {
+              "image_tokens": 3850,
+              "text_tokens": 734
+            },
+            "output_tokens": 3336,
+            "output_tokens_details": {
+              "image_tokens": 3336,
+              "text_tokens": 0
+            },
+            "total_tokens": 7920
           }
         }
       ]
@@ -362,7 +419,7 @@
     "hero-mobile": {
       "usage": "Hero de l'accueil — cadrage portrait (vrai recadrage, pas une découpe)",
       "status": "à valider",
-      "selected": "assets/generated/hero-mobile/hero-mobile__genere-ia__20261104T131700.webp",
+      "selected": "assets/generated/hero-mobile/hero-mobile__genere-ia__20261104T140723.webp",
       "versions": [
         {
           "file": "assets/generated/_drafts/hero-mobile__genere-ia__20261104T130304.webp",
@@ -471,6 +528,120 @@
               "text_tokens": 0
             },
             "total_tokens": 6094
+          }
+        },
+        {
+          "file": "assets/generated/_drafts/hero-mobile__genere-ia__20261104T140026.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "864x1536",
+          "quality": "medium",
+          "draft": true,
+          "references": [
+            "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T140006.webp",
+            "assets/sources/restaurant-comptoir-neon.png",
+            "public/images/food/smash-le-special.webp"
+          ],
+          "prompt": "Reference 1 is the campaign scene. Reference 2 is a real photo of the same restaurant. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera: same place, same light, same burger, same mood, nothing new.\n\nThe place must stay faithful to the real photo: a counter whose front is made of vertical dark wooden slats, with a cream counter top; mounted on those slats, a warm yellow neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo; behind the counter, an open kitchen with white walls, a stainless steel extraction hood and backsplash, and a cook in black with a black cap seen from behind, out of focus; a warm light strip along the ceiling. Do not add any furniture, decoration, window or object that is not in the photo. Only the light changes: it is evening, the room lights are dimmed, the neon glows warm yellow and the white walls fall into warm shadow.\n\nThe burger: a soft brioche bun with a lightly glazed, slightly uneven golden crown and a few natural wrinkles; two thin smashed beef patties with dark, craggy, lacy crispy edges; real melted cheddar pooling irregularly over the meat; a loose pile of crispy fried onions; a couple of pickle slices barely visible. Nothing else in the burger.\n\nComposition, from top to bottom: the kitchen and the hood in soft shadow; then the neon sign, horizontally centred, whole and readable, about 62% of the frame width, its centre about 24% from the top of the frame; then the burger on its paper, horizontally centred, its centre about 42% from the top, only about 55% of the frame width, never hiding the neon. The lower 45% of the frame is the dark table, falling smoothly to near black, calm enough for a large headline. A thin wisp of steam rises from the burger.\n\nStyle: real editorial advertising food photography, captured on location with a medium-format digital camera and an 80mm lens around f/4. One warm practical tungsten key light and very little fill, natural falloff into deep shadow, faint film grain, believable micro-texture. Slight human imperfection everywhere: uneven crumbs, irregular cheese drips, small grease marks. It must look photographed, not rendered.\nStrictly forbidden: any text, letter, number, logo, sticker, label or watermark other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text); plastic-looking cheese; waxy or CGI surfaces; a perfectly symmetrical bun; impossibly tall stacks; floating ingredients; HDR look; oversaturated colours; oversharpening; toppings not explicitly listed.",
+          "createdAt": "2026-11-04T14:00:26.252Z",
+          "usage": {
+            "input_tokens": 3799,
+            "input_tokens_details": {
+              "image_tokens": 3188,
+              "text_tokens": 611
+            },
+            "output_tokens": 280,
+            "output_tokens_details": {
+              "image_tokens": 280,
+              "text_tokens": 0
+            },
+            "total_tokens": 4079
+          }
+        },
+        {
+          "file": "assets/generated/hero-mobile/hero-mobile__genere-ia__20261104T140123.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "2160x3840",
+          "quality": "high",
+          "draft": false,
+          "references": [
+            "assets/generated/_drafts/hero-mobile__genere-ia__20261104T140026.webp",
+            "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T140006.webp",
+            "assets/sources/restaurant-comptoir-neon.png",
+            "public/images/food/smash-le-special.webp"
+          ],
+          "prompt": "The FIRST attached image is the approved composition. Reproduce this exact composition, framing, objects and lighting at much higher resolution, with finer natural detail. The other attached images are the references below, numbered from 1 in order, used only to stay faithful to the real products.\n\nReference 1 is the campaign scene. Reference 2 is a real photo of the same restaurant. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera: same place, same light, same burger, same mood, nothing new.\n\nThe place must stay faithful to the real photo: a counter whose front is made of vertical dark wooden slats, with a cream counter top; mounted on those slats, a warm yellow neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo; behind the counter, an open kitchen with white walls, a stainless steel extraction hood and backsplash, and a cook in black with a black cap seen from behind, out of focus; a warm light strip along the ceiling. Do not add any furniture, decoration, window or object that is not in the photo. Only the light changes: it is evening, the room lights are dimmed, the neon glows warm yellow and the white walls fall into warm shadow.\n\nThe burger: a soft brioche bun with a lightly glazed, slightly uneven golden crown and a few natural wrinkles; two thin smashed beef patties with dark, craggy, lacy crispy edges; real melted cheddar pooling irregularly over the meat; a loose pile of crispy fried onions; a couple of pickle slices barely visible. Nothing else in the burger.\n\nComposition, from top to bottom: the kitchen and the hood in soft shadow; then the neon sign, horizontally centred, whole and readable, about 62% of the frame width, its centre about 24% from the top of the frame; then the burger on its paper, horizontally centred, its centre about 42% from the top, only about 55% of the frame width, never hiding the neon. The lower 45% of the frame is the dark table, falling smoothly to near black, calm enough for a large headline. A thin wisp of steam rises from the burger.\n\nStyle: real editorial advertising food photography, captured on location with a medium-format digital camera and an 80mm lens around f/4. One warm practical tungsten key light and very little fill, natural falloff into deep shadow, faint film grain, believable micro-texture. Slight human imperfection everywhere: uneven crumbs, irregular cheese drips, small grease marks. It must look photographed, not rendered.\nStrictly forbidden: any text, letter, number, logo, sticker, label or watermark other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text); plastic-looking cheese; waxy or CGI surfaces; a perfectly symmetrical bun; impossibly tall stacks; floating ingredients; HDR look; oversaturated colours; oversharpening; toppings not explicitly listed.",
+          "createdAt": "2026-11-04T14:01:23.263Z",
+          "usage": {
+            "input_tokens": 5161,
+            "input_tokens_details": {
+              "image_tokens": 4484,
+              "text_tokens": 677
+            },
+            "output_tokens": 3336,
+            "output_tokens_details": {
+              "image_tokens": 3336,
+              "text_tokens": 0
+            },
+            "total_tokens": 8497
+          }
+        },
+        {
+          "file": "assets/generated/_drafts/hero-mobile__genere-ia__20261104T140623.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "864x1536",
+          "quality": "medium",
+          "draft": true,
+          "references": [
+            "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T140006.webp",
+            "assets/sources/restaurant-comptoir-neon.png",
+            "public/images/food/smash-le-special.webp"
+          ],
+          "prompt": "Reference 1 is the campaign scene. Reference 2 is a real photo of the same restaurant. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera: same place, same light, same burger, same mood, nothing new.\n\nThe place must stay faithful to the real photo: a counter whose front is made of vertical dark wooden slats, with a cream counter top; mounted on those slats, a warm yellow neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo; behind the counter, an open kitchen with white walls, a stainless steel extraction hood and backsplash, and a cook in black with a black cap seen from behind, out of focus; a warm light strip along the ceiling. Do not add any furniture, decoration, window or object that is not in the photo. Only the light changes: it is evening, the room lights are dimmed, the neon glows warm yellow and the white walls fall into warm shadow.\n\nThe burger: a soft brioche bun with a lightly glazed, slightly uneven golden crown and a few natural wrinkles; two thin smashed beef patties with dark, craggy, lacy crispy edges; real melted cheddar pooling irregularly over the meat; a loose pile of crispy fried onions; a couple of pickle slices barely visible. Nothing else in the burger.\n\nComposition, from top to bottom, the camera further back: a narrow band of kitchen in soft shadow at the very top; then the neon sign, horizontally centred, whole and readable, about 66% of the frame width, its centre about 21% from the top of the frame; then the burger on its paper, horizontally centred, small in the frame: only about 44% of the frame width, its centre about 36% from the top, and nothing of the burger or its paper lower than 47% from the top. It must not hide the neon. Everything below 47% from the top is only the dark empty table, falling smoothly to near black, calm enough for a large headline. A thin wisp of steam rises from the burger.\n\nStyle: real editorial advertising food photography, captured on location with a medium-format digital camera and an 80mm lens around f/4. One warm practical tungsten key light and very little fill, natural falloff into deep shadow, faint film grain, believable micro-texture. Slight human imperfection everywhere: uneven crumbs, irregular cheese drips, small grease marks. It must look photographed, not rendered.\nStrictly forbidden: any text, letter, number, logo, sticker, label or watermark other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text); plastic-looking cheese; waxy or CGI surfaces; a perfectly symmetrical bun; impossibly tall stacks; floating ingredients; HDR look; oversaturated colours; oversharpening; toppings not explicitly listed.",
+          "createdAt": "2026-11-04T14:06:23.294Z",
+          "usage": {
+            "input_tokens": 3834,
+            "input_tokens_details": {
+              "image_tokens": 3188,
+              "text_tokens": 646
+            },
+            "output_tokens": 280,
+            "output_tokens_details": {
+              "image_tokens": 280,
+              "text_tokens": 0
+            },
+            "total_tokens": 4114
+          }
+        },
+        {
+          "file": "assets/generated/hero-mobile/hero-mobile__genere-ia__20261104T140723.webp",
+          "generated": true,
+          "model": "gpt-image-2.5-sunburst",
+          "size": "2160x3840",
+          "quality": "high",
+          "draft": false,
+          "references": [
+            "assets/generated/_drafts/hero-mobile__genere-ia__20261104T140623.webp",
+            "assets/generated/hero-desktop/hero-desktop__genere-ia__20261104T140006.webp",
+            "assets/sources/restaurant-comptoir-neon.png",
+            "public/images/food/smash-le-special.webp"
+          ],
+          "prompt": "The FIRST attached image is the approved composition. Reproduce this exact composition, framing, objects and lighting at much higher resolution, with finer natural detail. The other attached images are the references below, numbered from 1 in order, used only to stay faithful to the real products.\n\nReference 1 is the campaign scene. Reference 2 is a real photo of the same restaurant. Recompose the same scene as a true vertical photograph, as if the photographer had turned the camera: same place, same light, same burger, same mood, nothing new.\n\nThe place must stay faithful to the real photo: a counter whose front is made of vertical dark wooden slats, with a cream counter top; mounted on those slats, a warm yellow neon sign in handwritten script reading exactly \"Burger By M\", with these letters and this spelling, same lettering style as the photo; behind the counter, an open kitchen with white walls, a stainless steel extraction hood and backsplash, and a cook in black with a black cap seen from behind, out of focus; a warm light strip along the ceiling. Do not add any furniture, decoration, window or object that is not in the photo. Only the light changes: it is evening, the room lights are dimmed, the neon glows warm yellow and the white walls fall into warm shadow.\n\nThe burger: a soft brioche bun with a lightly glazed, slightly uneven golden crown and a few natural wrinkles; two thin smashed beef patties with dark, craggy, lacy crispy edges; real melted cheddar pooling irregularly over the meat; a loose pile of crispy fried onions; a couple of pickle slices barely visible. Nothing else in the burger.\n\nComposition, from top to bottom, the camera further back: a narrow band of kitchen in soft shadow at the very top; then the neon sign, horizontally centred, whole and readable, about 66% of the frame width, its centre about 21% from the top of the frame; then the burger on its paper, horizontally centred, small in the frame: only about 44% of the frame width, its centre about 36% from the top, and nothing of the burger or its paper lower than 47% from the top. It must not hide the neon. Everything below 47% from the top is only the dark empty table, falling smoothly to near black, calm enough for a large headline. A thin wisp of steam rises from the burger.\n\nStyle: real editorial advertising food photography, captured on location with a medium-format digital camera and an 80mm lens around f/4. One warm practical tungsten key light and very little fill, natural falloff into deep shadow, faint film grain, believable micro-texture. Slight human imperfection everywhere: uneven crumbs, irregular cheese drips, small grease marks. It must look photographed, not rendered.\nStrictly forbidden: any text, letter, number, logo, sticker, label or watermark other than the neon sign (the paper has only an abstract grey pattern with no readable words, and the cook's clothes carry no readable text); plastic-looking cheese; waxy or CGI surfaces; a perfectly symmetrical bun; impossibly tall stacks; floating ingredients; HDR look; oversaturated colours; oversharpening; toppings not explicitly listed.",
+          "createdAt": "2026-11-04T14:07:23.972Z",
+          "usage": {
+            "input_tokens": 5196,
+            "input_tokens_details": {
+              "image_tokens": 4484,
+              "text_tokens": 712
+            },
+            "output_tokens": 3336,
+            "output_tokens_details": {
+              "image_tokens": 3336,
+              "text_tokens": 0
+            },
+            "total_tokens": 8532
           }
         }
       ]
