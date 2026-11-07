@@ -19,25 +19,31 @@ export function Cursor() {
     if (!finePointer() || reducedMotion()) return;
     setEnabled(true);
     let x = -100, y = -100, cx = -100, cy = -100, raf = 0;
+    // La boucle ne tourne que pendant que l'étiquette rattrape la souris : au repos, plus aucun calcul par image.
+    const loop = () => {
+      cx += (x - cx) * 0.22;
+      cy += (y - cy) * 0.22;
+      const settled = Math.abs(x - cx) < 0.1 && Math.abs(y - cy) < 0.1;
+      if (settled) {
+        cx = x;
+        cy = y;
+      }
+      if (ref.current) ref.current.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+      raf = settled ? 0 : requestAnimationFrame(loop);
+    };
     const move = (e: PointerEvent) => {
       x = e.clientX;
       y = e.clientY;
       const t = e.target as HTMLElement | null;
       const labelled = t?.closest<HTMLElement>("[data-cursor]");
       setMode(labelled?.dataset.cursor ?? "idle");
-    };
-    const loop = () => {
-      cx += (x - cx) * 0.22;
-      cy += (y - cy) * 0.22;
-      if (ref.current) ref.current.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
-      raf = requestAnimationFrame(loop);
+      if (!raf) raf = requestAnimationFrame(loop);
     };
     const leave = () => setMode("hidden");
     const clicked = () => setMode("idle");
     window.addEventListener("pointermove", move, { passive: true });
     document.documentElement.addEventListener("pointerleave", leave);
     window.addEventListener("click", clicked, true);
-    raf = requestAnimationFrame(loop);
     return () => {
       window.removeEventListener("pointermove", move);
       document.documentElement.removeEventListener("pointerleave", leave);

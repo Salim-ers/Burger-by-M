@@ -17,7 +17,8 @@ export const brand = {
   phone: { display: "03 44 24 89 18", e164: "+33344248918" },
   /** Note Google communiquée par le restaurant, à tenir à jour : elle n'est pas relue automatiquement chez Google. */
   googleRating: { label: "4,9" },
-  logo: { src: "/images/logo/burger-by-m.webp", png: "/images/logo/burger-by-m.png", width: 532, height: 532 },
+  /** intro : version 480 px de l'ouverture de l'accueil (affichée à 200 px au plus, chargée en priorité). */
+  logo: { src: "/images/logo/burger-by-m.webp", png: "/images/logo/burger-by-m.png", intro: "/images/logo/burger-by-m-480.webp", width: 532, height: 532 },
 } as const;
 
 export const fullAddress = `${brand.address.street}, ${brand.address.postalCode} ${brand.address.city}`;

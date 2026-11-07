@@ -2,7 +2,7 @@
 
 import { useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { useCart, useUi } from "@/features/cart/store";
 import { useSite } from "@/features/site-context";
 import { useModal } from "@/hooks/use-modal";
@@ -53,8 +53,8 @@ export function ProductSheet() {
     <AnimatePresence>
       {product && (
         <div className="on-light fixed inset-0 z-[80]">
-          <motion.div className="absolute inset-0 bg-ink/70" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} aria-hidden />
-          <motion.div
+          <m.div className="absolute inset-0 bg-ink/70" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} aria-hidden />
+          <m.div
             ref={ref}
             role="dialog"
             aria-modal="true"
@@ -71,9 +71,9 @@ export function ProductSheet() {
             {wide ? (
               <>
                 <div className="flex h-full min-h-0 flex-col overflow-y-auto overscroll-contain border-r border-rule">
-                  <motion.div ref={photoRef} className="relative shrink-0 overflow-hidden bg-sand" initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 0.8, ease: [0.77, 0, 0.18, 1] }}>
+                  <m.div ref={photoRef} className="relative shrink-0 overflow-hidden bg-sand" initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 0.8, ease: [0.77, 0, 0.18, 1] }}>
                     <ProductImage image={product.image} name={product.name} sizes="(min-width: 1280px) 680px, 54vw" className="aspect-[3/2] w-full" priority />
-                  </motion.div>
+                  </m.div>
                   <div className="px-12 py-9">
                     <ProductHeader product={product} />
                   </div>
@@ -93,7 +93,7 @@ export function ProductSheet() {
                 }
               />
             )}
-          </motion.div>
+          </m.div>
         </div>
       )}
     </AnimatePresence>,

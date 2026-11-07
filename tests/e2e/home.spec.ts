@@ -7,7 +7,8 @@ test.describe("accueil", () => {
     const hero = page.locator(".cine-hero");
     // Deux actions, plus le lien discret vers les avis Google.
     await expect(hero.locator(".cta")).toHaveCount(2);
-    await expect(hero.getByRole("link", { name: /Note Google/ })).toBeVisible();
+    // Le nom accessible commence par le texte visible (« 4,9 sur Google »).
+    await expect(hero.getByRole("link", { name: /^4,9 sur Google/ })).toBeVisible();
     await expect(hero.getByRole("link", { name: "Découvrir la carte" })).toHaveAttribute("href", "/menu");
   });
 

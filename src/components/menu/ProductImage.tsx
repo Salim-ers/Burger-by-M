@@ -16,6 +16,7 @@ export function ProductImage({ image, name, sizes, className, priority, zoom }: 
         fill
         sizes={sizes}
         preload={priority}
+        fetchPriority={priority ? "high" : undefined}
         quality={80}
         className={cn("object-cover transition-transform duration-[600ms] ease-[var(--ease-food)]", zoom && "group-hover:scale-[1.03]")}
         style={image.position ? { objectPosition: image.position } : undefined}

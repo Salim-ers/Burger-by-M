@@ -75,7 +75,7 @@ export function RestaurantView() {
           </div>
           <div className="md:col-span-5">
             <RevealImage className="aspect-[4/5] w-full bg-charcoal" panel="var(--ink)">
-              <Image src={media.devanture.src} alt={media.devanture.alt} fill preload sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" style={{ objectPosition: media.devanture.position }} />
+              <Image src={media.devanture.src} alt={media.devanture.alt} fill preload fetchPriority="high" sizes="(min-width: 768px) 40vw, 100vw" className="object-cover" style={{ objectPosition: media.devanture.position }} />
             </RevealImage>
           </div>
         </div>

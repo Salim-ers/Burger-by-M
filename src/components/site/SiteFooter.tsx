@@ -69,7 +69,7 @@ export function SiteFooter({ store }: { store: PublicStore }) {
           </address>
         </div>
 
-        <div className="flex flex-col items-center gap-2 pt-5 text-xs text-cream/45 md:flex-row md:justify-between">
+        <div className="flex flex-col items-center gap-2 pt-5 text-xs text-cream/55 md:flex-row md:justify-between">
           <p>
             © {new Date().getFullYear()} {brand.name}
           </p>

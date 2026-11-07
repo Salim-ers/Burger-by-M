@@ -1,7 +1,7 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useModal } from "@/hooks/use-modal";
 import { cn } from "@/lib/utils";
@@ -30,8 +30,8 @@ export function Sheet({ open, onClose, labelledBy, desktop = "center", className
     <AnimatePresence>
       {open && (
         <div className={cn("fixed inset-0 z-[80]", tone === "dark" ? "on-dark" : "on-light", center && "flex items-center justify-center p-6")}>
-          <motion.div className="absolute inset-0 bg-ink/70" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} onClick={onClose} aria-hidden />
-          <motion.div
+          <m.div className="absolute inset-0 bg-ink/70" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} onClick={onClose} aria-hidden />
+          <m.div
             ref={ref}
             role="dialog"
             aria-modal="true"
@@ -52,7 +52,7 @@ export function Sheet({ open, onClose, labelledBy, desktop = "center", className
               Fermer ✕
             </button>
             {children}
-          </motion.div>
+          </m.div>
         </div>
       )}
     </AnimatePresence>,

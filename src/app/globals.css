@@ -16,7 +16,7 @@
   --color-sand: #e9dfcf; /* fond des visuels produits */
   --color-brown: #5b3322; /* brun cuisson */
   --color-cheddar: #e79a24; /* cheddar — fonctionnel */
-  --color-cheddar-deep: #a9620e; /* cheddar lisible sur fond clair */
+  --color-cheddar-deep: #955609; /* cheddar lisible sur fond clair (contraste ≥ 4,5:1 sur ivoire et crème) */
   --color-pink: #f8c4c0; /* rose signature du logo */
   --color-open: #3b9a62;
   --color-closed: #d0563c;

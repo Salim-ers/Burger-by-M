@@ -65,7 +65,7 @@ export function Hero() {
 
       <div aria-hidden className="cine-logo">
         {/* eslint-disable-next-line @next/next/no-img-element -- doit s'afficher immédiatement, sans passer par l'optimiseur */}
-        <img src={brand.logo.src} alt="" width={200} height={200} fetchPriority="high" decoding="sync" className="size-40 md:size-[200px]" />
+        <img src={brand.logo.intro} alt="" width={200} height={200} fetchPriority="high" decoding="sync" className="size-40 md:size-[200px]" />
       </div>
 
       <div data-hero-copy className="container-cine relative flex h-full flex-col justify-end pb-[max(1.5rem,env(safe-area-inset-bottom))] md:pb-[clamp(2rem,5svh,4rem)]">

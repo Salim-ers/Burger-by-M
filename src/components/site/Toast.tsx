@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { create } from "zustand";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { Check } from "lucide-react";
 import { useUi } from "@/features/cart/store";
 
@@ -30,7 +30,7 @@ export function Toast() {
     <div aria-live="polite" className="pointer-events-none fixed inset-x-3 bottom-24 z-[70] flex justify-center md:inset-x-auto md:top-24 md:right-6 md:bottom-auto">
       <AnimatePresence>
         {msg && (
-          <motion.div
+          <m.div
             key={msg.id}
             role="status"
             initial={{ opacity: 0, y: 14 }}
@@ -53,7 +53,7 @@ export function Toast() {
             >
               Panier
             </button>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

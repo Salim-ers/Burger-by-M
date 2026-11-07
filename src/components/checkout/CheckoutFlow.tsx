@@ -11,7 +11,6 @@ import { useSite } from "@/features/site-context";
 import { useOrderingNotice } from "@/features/store/use-status";
 import { useHydrated } from "@/hooks/use-hydrated";
 import { useSlots } from "@/features/checkout/use-slots";
-import { customerSchema } from "@/features/checkout/schema";
 import { forgetPendingOrder, readPendingOrder, rememberPendingOrder, type PendingOrder } from "@/features/checkout/pending";
 import type { PublicOrder } from "@/features/orders/public";
 import { Field, TextArea } from "@/components/ui/Field";
@@ -26,6 +25,12 @@ type CheckoutResponse = { orderNumber: string; accessToken: string; totalCents: 
 type ErrorResponse = { error?: string; code?: string; fields?: Record<string, string> };
 
 const EMPTY: Customer = { firstName: "", lastName: "", phone: "", email: "" };
+
+/**
+ * La validation du formulaire repose sur Zod (≈ 95 Ko compressés) : chargée à part, elle ne retarde plus
+ * l'affichage de la page de commande. Elle est préchargée dès que le navigateur est inactif.
+ */
+const loadCustomerSchema = () => import("@/features/checkout/schema").then((m) => m.customerSchema);
 
 /**
  * Click & collect, sans compte : 01 votre commande → 02 votre créneau → 03 vos informations → 04 paiement.
@@ -57,6 +62,18 @@ export function CheckoutFlow() {
   const [redirecting, setRedirecting] = useState<string | null>(null);
   const [pending, setPending] = useState<(PendingOrder & { resumeUrl: string | null; totalCents: number }) | null>(null);
   const idem = useRef<{ key: string; for: string } | null>(null);
+  const validating = useRef(false);
+
+  useEffect(() => {
+    const preload = () => void loadCustomerSchema().catch(() => undefined);
+    // Safari ne connaît pas requestIdleCallback : simple minuteur à la place.
+    if (typeof window.requestIdleCallback === "function") {
+      const id = window.requestIdleCallback(preload, { timeout: 4000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = window.setTimeout(preload, 1500);
+    return () => window.clearTimeout(id);
+  }, []);
 
   const methods: Method[] = slots?.paymentMethods ?? store.paymentMethods;
 
@@ -139,9 +156,20 @@ export function CheckoutFlow() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (submitting) return;
+    if (submitting || validating.current) return;
     setFormError(null);
     setSlotError(null);
+
+    let customerSchema: Awaited<ReturnType<typeof loadCustomerSchema>>;
+    validating.current = true;
+    try {
+      customerSchema = await loadCustomerSchema();
+    } catch {
+      setFormError("Connexion interrompue. Vérifiez votre réseau et réessayez.");
+      return;
+    } finally {
+      validating.current = false;
+    }
 
     const nextErrors: Record<string, string> = {};
     const parsed = customerSchema.safeParse(customer);

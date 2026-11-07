@@ -8,6 +8,8 @@ export function ScrollProgress() {
   const ref = useRef<HTMLDivElement>(null);
   const home = usePathname() === "/";
   useEffect(() => {
+    // Sur l'accueil, le fil n'est pas affiché : pas d'écouteur de défilement (ni de lecture de mise en page par image).
+    if (home) return;
     let raf = 0;
     const update = () => {
       raf = 0;
@@ -25,7 +27,7 @@ export function ScrollProgress() {
       window.removeEventListener("resize", onScroll);
       cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [home]);
   if (home) return null;
   return (
     <div aria-hidden className="pointer-events-none fixed top-0 right-0 z-[70] h-dvh w-px bg-transparent">

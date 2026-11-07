@@ -64,7 +64,7 @@ export function CategoryNav({ categories }: { categories: Pick<MenuCategory, "id
             data-no-transition
             aria-current={active === c.slug ? "true" : undefined}
             onClick={() => setActive(c.slug)}
-            className={cn("t-label relative shrink-0 px-4 py-4 whitespace-nowrap transition-colors md:px-5", active === c.slug ? "text-ink" : "text-ink/40 hover:text-ink")}
+            className={cn("t-label relative shrink-0 px-4 py-4 whitespace-nowrap transition-colors md:px-5", active === c.slug ? "text-ink" : "text-ink/60 hover:text-ink")}
           >
             {c.name}
             <span className={cn("absolute inset-x-4 bottom-0 h-[2px] origin-left bg-cheddar transition-transform duration-500 ease-[var(--ease-food)] md:inset-x-5", active === c.slug ? "scale-x-100" : "scale-x-0")} />

@@ -15,7 +15,7 @@ export function GoogleRating({ className }: { className?: string }) {
   const { store } = useSite();
   const href = store.googleReviewsUrl ?? mapsLinks(`${store.street}, ${store.postalCode} ${store.city}`).search;
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`Note Google : ${brand.googleRating.label} sur 5. Voir les avis`} className={cn("inline-flex min-h-8 w-fit items-center gap-2 rounded-full bg-ink/60 px-3 text-[0.92rem] text-cream backdrop-blur-sm", className)}>
+    <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`${brand.googleRating.label} sur Google, note sur 5 : voir les avis`} className={cn("inline-flex min-h-8 w-fit items-center gap-2 rounded-full bg-ink/60 px-3 text-[0.92rem] text-cream backdrop-blur-sm", className)}>
       <span className="flex gap-0.5 text-cheddar">
         {Array.from({ length: 5 }, (_, i) => (
           <Star key={i} />

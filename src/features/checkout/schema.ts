@@ -1,6 +1,10 @@
 import { z } from "zod";
 import { MAX_ITEM_NOTE, MAX_QUANTITY } from "@/features/menu/pricing";
 
+// La CSP du site interdit eval : sans cela, Zod tente une compilation accélérée (new Function), bloquée,
+// ce qui laisse une erreur dans la console de Firefox et de Safari. Les schémas sont petits : aucun coût.
+z.config({ jitless: true });
+
 /** Numéros français : 06 12 34 56 78, 0612345678, +33 6 12 34 56 78… */
 export const FR_PHONE = /^(?:(?:\+|00)33\s?|0)[1-9](?:[\s.-]?\d{2}){4}$/;
 

@@ -49,15 +49,39 @@ export function PageTransition() {
 
   useEffect(() => {
     let safety = 0;
+
+    /** Lien interne vers une autre page du site, qui mérite la transition ; sinon null. */
+    const destination = (target: EventTarget | null) => {
+      const a = (target as HTMLElement | null)?.closest?.<HTMLAnchorElement>("a[href]");
+      if (!a || a.target === "_blank" || a.hasAttribute("download") || a.dataset.noTransition !== undefined) return null;
+      const url = new URL(a.href, window.location.href);
+      if (url.origin !== window.location.origin || url.pathname.startsWith("/admin") || url.pathname.startsWith("/api")) return null;
+      if (url.pathname === window.location.pathname) return null; // ancre ou même page : défilement natif
+      const label = transitionLabel(url.pathname);
+      return label ? { url, label } : null;
+    };
+
+    /**
+     * Préchargement complet dès l'intention (survol, focus, appui) : les pages sont dynamiques (CSP à nonce),
+     * Next ne les précharge donc pas de lui-même et chaque navigation attendait le serveur après la fermeture
+     * des volets. La requête part maintenant avant le clic, pendant que les volets se referment.
+     */
+    const warmed = new Map<string, number>();
+    const warm = (e: Event) => {
+      const dest = destination(e.target);
+      if (!dest) return;
+      const href = dest.url.pathname + dest.url.search;
+      if (Date.now() - (warmed.get(href) ?? 0) < 30_000) return;
+      warmed.set(href, Date.now());
+      router.prefetch(href, { kind: "full" } as unknown as Parameters<typeof router.prefetch>[1]);
+    };
+
     const onClick = (e: MouseEvent) => {
       if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || reducedMotion()) return;
-      const a = (e.target as HTMLElement | null)?.closest<HTMLAnchorElement>("a[href]");
-      if (!a || a.target === "_blank" || a.hasAttribute("download") || a.dataset.noTransition !== undefined) return;
-      const url = new URL(a.href, window.location.href);
-      if (url.origin !== window.location.origin || url.pathname.startsWith("/admin") || url.pathname.startsWith("/api")) return;
-      if (url.pathname === window.location.pathname) return; // ancre ou même page : défilement natif
-      const next = transitionLabel(url.pathname);
-      if (!next || !root.current) return;
+      const dest = destination(e.target);
+      if (!dest || !root.current) return;
+      const { url, label: next } = dest;
+      warm(e);
       e.preventDefault();
       pending.current = true;
       setLabel(next);
@@ -77,8 +101,11 @@ export function PageTransition() {
     };
     // Phase de capture : passe avant le gestionnaire de <Link> (qui respecte defaultPrevented).
     window.addEventListener("click", onClick, true);
+    const intent = { capture: true, passive: true } as const;
+    for (const type of ["pointerover", "pointerdown", "focusin"]) window.addEventListener(type, warm, intent);
     return () => {
       window.removeEventListener("click", onClick, true);
+      for (const type of ["pointerover", "pointerdown", "focusin"]) window.removeEventListener(type, warm, intent);
       window.clearTimeout(safety);
     };
   }, [router]);

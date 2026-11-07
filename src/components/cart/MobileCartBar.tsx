@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import { useCart, useUi, cartCount } from "@/features/cart/store";
 import { checkCart } from "@/features/cart/lines";
 import { useSite } from "@/features/site-context";
@@ -31,7 +31,7 @@ export function MobileCartBar() {
   return (
     <AnimatePresence>
       {visible && (
-        <motion.div
+        <m.div
           className="fixed inset-x-0 bottom-0 z-40 px-3 pt-2 pb-[max(0.75rem,env(safe-area-inset-bottom))] md:hidden"
           initial={{ y: "120%" }}
           animate={{ y: 0 }}
@@ -55,7 +55,7 @@ export function MobileCartBar() {
               {notice ? ORDERING_CLOSED_LABEL : "Commander"}
             </Link>
           )}
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );
